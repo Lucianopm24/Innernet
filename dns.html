@@ -800,7 +800,7 @@ async function initUser() {
 
 // ── SEARCH ─────────────────────────────────────────────────────
 async function doSearch() {
-  const q = document.getElementById("search-input").value.trim();
+  const q = document.getElementById("search-input").value.trim().toLowerCase();
   if (!q) return;
 
   const exactEl = document.getElementById("exact-result");
@@ -890,7 +890,7 @@ async function doSearch_lookup(domain) {
 // ── REGISTER ──────────────────────────────────────────────────
 async function registerExact() {
   if (!token) { openAuth(); return; }
-  const domain = pendingRegisterDomain;
+  const domain = pendingRegisterDomain?.toLowerCase();
   if (!domain) return;
 
   const btn = document.getElementById("exact-btn");
@@ -1070,7 +1070,7 @@ document.getElementById("modal-overlay").addEventListener("click", e => {
 // ── APPEND TLD ────────────────────────────────────────────────
 function appendTld(tld) {
   const inp = document.getElementById("search-input");
-  let val = inp.value.trim();
+  let val = inp.value.trim().toLowerCase();
   // Remove existing tld if any
   [".lbc",".green",".party",".cc"].forEach(t => {
     if (val.endsWith(t)) val = val.slice(0, -t.length);
