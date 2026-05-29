@@ -5,793 +5,528 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Innernet</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #f7f5f0;
-  --bg2: #eeeae2;
-  --bg3: #e5e0d5;
-  --ink: #1c1a16;
-  --ink2: #6b6558;
-  --ink3: #a09880;
-  --ink4: #c8bfaa;
-  --accent: #c7522a;
-  --accent2: #e06840;
-  --blue: #2a5fc7;
-  --green: #2e7d4f;
-  --border: #ddd9cf;
-  --border2: #ccc8bc;
-  --card: #ffffff;
-  --shadow-sm: 0 1px 3px rgba(28,26,22,0.08);
-  --shadow: 0 4px 16px rgba(28,26,22,0.1);
+  --bg:      #f6f3ed;
+  --bg2:     #ede9df;
+  --bg3:     #e3ddd0;
+  --ink:     #1a1815;
+  --ink2:    #5c5649;
+  --ink3:    #968c78;
+  --ink4:    #c2b9a6;
+  --accent:  #c0471e;
+  --accent2: #d9602e;
+  --blue:    #1e5abf;
+  --green:   #1e6e3e;
+  --teal:    #1a7070;
+  --border:  #d9d4c7;
+  --border2: #c8c2b3;
+  --card:    #ffffff;
+  --shadow-sm: 0 1px 4px rgba(26,24,21,.07);
+  --shadow:    0 6px 24px rgba(26,24,21,.10);
+  --shadow-lg: 0 16px 48px rgba(26,24,21,.14);
+  --r: 10px;
+  --r-sm: 6px;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
-  height: 100%;
-  font-family: 'Geist', 'DM Mono', sans-serif;
+  height: 100%; overflow: hidden;
+  font-family: 'Geist', sans-serif;
   background: var(--bg);
   color: var(--ink);
   font-size: 14px;
-  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* ════════════════════════════════════
-   BROWSER CHROME
-════════════════════════════════════ */
-#browser {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100vw;
-}
+/* ═══════════════════════════════
+   BROWSER SHELL
+═══════════════════════════════ */
+#browser { display: flex; flex-direction: column; height: 100vh; width: 100vw; }
 
 /* ── TITLE BAR ── */
 #title-bar {
-  height: 38px;
+  height: 36px;
   background: var(--bg3);
   border-bottom: 1px solid var(--border2);
-  display: flex;
-  align-items: center;
-  padding: 0 1rem;
-  gap: 0.5rem;
-  -webkit-app-region: drag;
+  display: flex; align-items: center;
+  padding: 0 .75rem;
+  gap: .5rem;
   user-select: none;
   flex-shrink: 0;
 }
 
-.traffic-lights {
-  display: flex;
-  gap: 6px;
-  margin-right: 0.5rem;
-}
+.traffic-lights { display: flex; gap: 5px; margin-right: .5rem; }
 .tl {
-  width: 12px; height: 12px;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: filter 0.15s;
+  width: 11px; height: 11px; border-radius: 50%; cursor: pointer;
+  transition: filter .15s;
 }
-.tl:hover { filter: brightness(0.85); }
-.tl-red { background: #ff5f57; }
+.tl:hover { filter: brightness(.8); }
+.tl-red    { background: #ff5f57; }
 .tl-yellow { background: #ffbd2e; }
-.tl-green { background: #28ca41; }
+.tl-green  { background: #28ca41; }
 
 .tab-strip {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  flex: 1;
-  overflow: hidden;
+  display: flex; align-items: flex-end;
+  gap: 2px; flex: 1;
+  overflow: hidden; height: 100%;
 }
 
 .tab {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0 0.8rem;
-  height: 26px;
-  background: var(--bg);
-  border: 1px solid var(--border2);
+  display: flex; align-items: center; gap: .35rem;
+  padding: 0 .7rem;
+  height: 28px;
+  background: var(--bg2);
+  border: 1px solid transparent;
   border-bottom: none;
-  border-radius: 6px 6px 0 0;
-  font-size: 0.68rem;
-  color: var(--ink2);
+  border-radius: var(--r-sm) var(--r-sm) 0 0;
+  font-size: .67rem;
+  color: var(--ink3);
   cursor: pointer;
-  max-width: 180px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  max-width: 175px;
+  white-space: nowrap; overflow: hidden;
   font-family: 'Geist', sans-serif;
-  letter-spacing: 0.01em;
-  transition: background 0.1s;
+  letter-spacing: .01em;
+  transition: background .1s, color .1s;
   position: relative;
 }
 .tab.active {
   background: var(--bg);
   color: var(--ink);
   border-color: var(--border);
-  z-index: 1;
+  z-index: 2;
 }
-.tab:not(.active):hover { background: var(--bg2); }
-.tab-favicon { font-size: 0.7rem; flex-shrink: 0; }
-.tab-title { overflow: hidden; text-overflow: ellipsis; }
+.tab:not(.active):hover { background: var(--bg3); }
+.tab-favicon { font-size: .7rem; flex-shrink: 0; }
+.tab-title { overflow: hidden; text-overflow: ellipsis; flex: 1; }
 .tab-close {
-  margin-left: auto;
   flex-shrink: 0;
   width: 14px; height: 14px;
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.6rem;
-  color: var(--ink3);
-  transition: all 0.12s;
+  font-size: .6rem; color: var(--ink3);
+  transition: all .12s;
 }
 .tab-close:hover { background: var(--border2); color: var(--ink); }
 
 .btn-new-tab {
-  width: 26px; height: 26px;
-  background: none;
-  border: 1px solid transparent;
-  border-radius: 5px;
-  color: var(--ink3);
-  font-size: 1rem;
+  width: 24px; height: 24px; margin-bottom: 2px;
+  background: none; border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  color: var(--ink3); font-size: .95rem;
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  transition: all 0.12s;
-  flex-shrink: 0;
-  line-height: 1;
+  transition: all .12s; flex-shrink: 0;
 }
-.btn-new-tab:hover { background: var(--bg2); border-color: var(--border); color: var(--ink); }
+.btn-new-tab:hover { background: var(--bg); border-color: var(--border); color: var(--ink); }
 
 /* ── NAV BAR ── */
 #nav-bar {
-  height: 48px;
+  height: 46px;
   background: var(--bg2);
   border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  padding: 0 0.8rem;
-  gap: 0.4rem;
+  display: flex; align-items: center;
+  padding: 0 .7rem;
+  gap: .35rem;
   flex-shrink: 0;
 }
 
 .nav-btn {
-  width: 30px; height: 30px;
-  background: none;
-  border: none;
-  border-radius: 6px;
-  color: var(--ink3);
-  font-size: 0.9rem;
+  width: 28px; height: 28px;
+  background: none; border: none; border-radius: var(--r-sm);
+  color: var(--ink3); font-size: .9rem;
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  transition: all 0.12s;
-  flex-shrink: 0;
+  transition: all .12s; flex-shrink: 0;
 }
-.nav-btn:hover { background: var(--border); color: var(--ink); }
-.nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-.nav-btn:disabled:hover { background: none; }
+.nav-btn:hover:not(:disabled) { background: var(--border); color: var(--ink); }
+.nav-btn:disabled { opacity: .3; cursor: not-allowed; }
+
+.nav-sep { width: 1px; height: 18px; background: var(--border2); flex-shrink: 0; margin: 0 .1rem; }
 
 /* Address bar */
 #address-bar-wrap {
-  flex: 1;
-  position: relative;
-  display: flex;
-  align-items: center;
+  flex: 1; position: relative;
+  display: flex; align-items: center;
 }
 
-.addr-protocol {
-  position: absolute;
-  left: 0.75rem;
-  font-size: 0.65rem;
-  color: var(--green);
-  letter-spacing: 0.04em;
+.addr-prefix {
+  position: absolute; left: .75rem;
+  font-size: .63rem; color: var(--green);
+  letter-spacing: .05em;
   font-family: 'DM Mono', monospace;
-  pointer-events: none;
-  font-weight: 500;
+  pointer-events: none; font-weight: 500;
+  display: flex; align-items: center; gap: .3rem;
 }
+.addr-prefix .lock-icon { opacity: .7; }
 
 #address-input {
-  width: 100%;
-  height: 32px;
+  width: 100%; height: 30px;
   background: var(--card);
-  border: 1px solid var(--border2);
-  border-radius: 16px;
-  padding: 0 1rem 0 3.2rem;
+  border: 1.5px solid var(--border2);
+  border-radius: 15px;
+  padding: 0 1rem 0 4rem;
   font-family: 'DM Mono', monospace;
-  font-size: 0.78rem;
-  color: var(--ink);
-  outline: none;
-  transition: all 0.15s;
+  font-size: .77rem; color: var(--ink);
+  outline: none; transition: all .15s;
   caret-color: var(--accent);
-  letter-spacing: 0.01em;
+  letter-spacing: .01em;
 }
 #address-input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(199,82,42,0.1);
-  border-radius: 8px;
+  box-shadow: 0 0 0 3px rgba(192,71,30,.09);
+  border-radius: var(--r-sm);
 }
 #address-input::placeholder { color: var(--ink4); }
-#address-input:focus::placeholder { color: var(--ink3); }
 
-/* Suggestions */
+/* Suggestions dropdown */
 #suggestions {
-  position: absolute;
-  top: calc(100% + 4px);
+  position: absolute; top: calc(100% + 5px);
   left: 0; right: 0;
   background: var(--card);
   border: 1px solid var(--border2);
-  border-radius: 8px;
-  box-shadow: var(--shadow);
-  z-index: 300;
-  display: none;
-  overflow: hidden;
-  max-height: 260px;
-  overflow-y: auto;
+  border-radius: var(--r);
+  box-shadow: var(--shadow-lg);
+  z-index: 400; display: none;
+  overflow: hidden; max-height: 280px; overflow-y: auto;
 }
 #suggestions.open { display: block; }
 
-.suggestion-item {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  padding: 0.55rem 0.9rem;
-  cursor: pointer;
-  transition: background 0.1s;
-  font-size: 0.78rem;
+.sug-item {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .52rem .85rem;
+  cursor: pointer; transition: background .08s;
+  font-size: .77rem;
 }
-.suggestion-item:hover, .suggestion-item.focused { background: var(--bg); }
-.sug-icon { font-size: 0.8rem; flex-shrink: 0; color: var(--ink3); }
+.sug-item:hover { background: var(--bg); }
+.sug-ico { font-size: .78rem; flex-shrink: 0; color: var(--ink3); }
 .sug-main { color: var(--ink); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .sug-main em { color: var(--accent); font-style: normal; font-weight: 600; }
-.sug-sub { font-size: 0.65rem; color: var(--ink3); flex-shrink: 0; }
+.sug-tag { font-size: .6rem; color: var(--ink3); flex-shrink: 0; font-family: 'DM Mono', monospace; }
 
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  flex-shrink: 0;
-}
+/* Nav right */
+.nav-right { display: flex; align-items: center; gap: .3rem; flex-shrink: 0; }
 
 #user-pill {
-  display: none;
-  align-items: center;
-  gap: 0.4rem;
+  display: none; align-items: center; gap: .35rem;
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 20px;
-  padding: 0.2rem 0.7rem 0.2rem 0.4rem;
-  font-size: 0.68rem;
-  color: var(--ink2);
-  cursor: pointer;
-  transition: border-color 0.15s;
+  padding: .18rem .65rem .18rem .32rem;
+  font-size: .67rem; color: var(--ink2);
+  cursor: pointer; transition: border-color .15s;
 }
 #user-pill:hover { border-color: var(--border2); }
-.user-avatar {
+.user-av {
   width: 18px; height: 18px;
-  background: var(--accent);
-  border-radius: 50%;
+  background: var(--accent); border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.55rem;
-  color: #fff;
-  font-weight: 600;
+  font-size: .54rem; color: #fff; font-weight: 700;
   text-transform: uppercase;
-  font-family: 'Geist', sans-serif;
 }
-#lucks-count {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.65rem;
-  color: #b8902a;
-}
+#lucks-count { font-family: 'DM Mono', monospace; font-size: .63rem; color: #a07820; }
 
 #sign-in-btn {
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 0.3rem 0.8rem;
-  font-family: 'Geist', sans-serif;
-  font-size: 0.7rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.15s;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: var(--r-sm);
+  padding: .28rem .75rem;
+  font-family: 'Geist', sans-serif; font-size: .68rem; font-weight: 600;
+  cursor: pointer; transition: background .15s;
+  letter-spacing: .02em;
 }
 #sign-in-btn:hover { background: var(--accent2); }
 
-/* ════════════════════════════════════
-   CONTENT AREA
-════════════════════════════════════ */
-#content-area {
-  flex: 1;
-  overflow: hidden;
-  position: relative;
-}
+/* ═══════════════════════════════
+   CONTENT
+═══════════════════════════════ */
+#content-area { flex: 1; overflow: hidden; position: relative; }
 
-/* Iframe for loaded pages */
 #page-frame {
-  width: 100%;
-  height: 100%;
-  border: none;
-  display: none;
-  background: #fff;
+  width: 100%; height: 100%;
+  border: none; display: none; background: #fff;
 }
 
-/* ════════════════════════════════════
+/* ═══════════════════════════════
    HOME PAGE
-════════════════════════════════════ */
+═══════════════════════════════ */
 #home-page {
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  background: var(--bg);
-  display: flex;
-  flex-direction: column;
+  width: 100%; height: 100%;
+  overflow-y: auto; background: var(--bg);
+  display: flex; flex-direction: column;
 }
 
 .home-inner {
   flex: 1;
-  display: flex;
-  flex-direction: column;
+  display: flex; flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  padding: 5vh 1.5rem 3rem;
-  max-width: 680px;
-  margin: 0 auto;
-  width: 100%;
+  padding: 6vh 1.5rem 3rem;
+  max-width: 640px; margin: 0 auto; width: 100%;
 }
 
-/* Hero wordmark */
+/* Wordmark */
 .home-wordmark {
-  margin-bottom: 2.5rem;
-  text-align: center;
-  animation: fadeDown 0.5s cubic-bezier(0.16,1,0.3,1) both;
+  text-align: center; margin-bottom: 2.8rem;
+  animation: fadeDown .5s cubic-bezier(.16,1,.3,1) both;
 }
 @keyframes fadeDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.wordmark-title {
+.wm-title {
   font-family: 'Instrument Serif', serif;
   font-size: clamp(3rem, 8vw, 5.5rem);
-  letter-spacing: -0.04em;
-  color: var(--ink);
-  line-height: 0.95;
-  display: flex;
-  align-items: baseline;
-  gap: 0.1em;
+  letter-spacing: -.045em;
+  color: var(--ink); line-height: .92;
+  display: flex; align-items: baseline; gap: .06em;
 }
-.wordmark-title em {
-  font-style: italic;
-  color: var(--accent);
-}
-.wordmark-sub {
+.wm-title em { font-style: italic; color: var(--accent); }
+.wm-sub {
   font-family: 'DM Mono', monospace;
-  font-size: 0.68rem;
-  color: var(--ink3);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  margin-top: 0.6rem;
+  font-size: .65rem; color: var(--ink3);
+  letter-spacing: .16em; text-transform: uppercase;
+  margin-top: .65rem;
 }
 
-/* Home search */
+/* Search */
 .home-search-wrap {
-  width: 100%;
-  margin-bottom: 2.5rem;
-  animation: fadeUp 0.5s 0.1s cubic-bezier(0.16,1,0.3,1) both;
+  width: 100%; margin-bottom: 2.5rem;
+  animation: fadeUp .5s .1s cubic-bezier(.16,1,.3,1) both;
 }
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .home-search-box {
-  display: flex;
-  align-items: center;
+  display: flex; align-items: center;
   background: var(--card);
   border: 1.5px solid var(--border2);
   border-radius: 12px;
   box-shadow: var(--shadow-sm);
   overflow: hidden;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: border-color .15s, box-shadow .15s;
 }
 .home-search-box:focus-within {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(199,82,42,0.1), var(--shadow-sm);
+  box-shadow: 0 0 0 3px rgba(192,71,30,.08), var(--shadow-sm);
 }
-
-.home-search-icon {
-  padding: 0 0.9rem;
-  color: var(--ink3);
-  font-size: 1rem;
-  flex-shrink: 0;
-}
-
+.home-search-icon { padding: 0 .85rem; color: var(--ink3); font-size: .95rem; flex-shrink: 0; }
 #home-search-input {
-  flex: 1;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-family: 'DM Mono', monospace;
-  font-size: 0.9rem;
-  color: var(--ink);
-  padding: 0.9rem 0;
-  caret-color: var(--accent);
-  letter-spacing: 0.01em;
+  flex: 1; border: none; outline: none; background: transparent;
+  font-family: 'DM Mono', monospace; font-size: .88rem; color: var(--ink);
+  padding: .9rem 0; caret-color: var(--accent);
 }
 #home-search-input::placeholder { color: var(--ink4); }
-
-.home-search-btn {
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  padding: 0 1.3rem;
-  height: 100%;
-  min-height: 48px;
-  font-family: 'Geist', sans-serif;
-  font-weight: 600;
-  font-size: 0.78rem;
-  letter-spacing: 0.03em;
-  cursor: pointer;
-  transition: background 0.15s;
-  flex-shrink: 0;
+.home-go-btn {
+  background: var(--accent); color: #fff;
+  border: none; padding: 0 1.2rem;
+  min-height: 46px; font-family: 'Geist', sans-serif;
+  font-weight: 600; font-size: .77rem; letter-spacing: .03em;
+  cursor: pointer; transition: background .15s; flex-shrink: 0;
 }
-.home-search-btn:hover { background: var(--accent2); }
+.home-go-btn:hover { background: var(--accent2); }
 
-/* TLD quick filters */
 .tld-row {
-  display: flex;
-  gap: 0.4rem;
-  margin-top: 0.7rem;
-  justify-content: center;
-  flex-wrap: wrap;
+  display: flex; gap: .35rem; margin-top: .65rem;
+  justify-content: center; flex-wrap: wrap;
 }
 .tld-tag {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.65rem;
-  padding: 0.18rem 0.55rem;
-  border: 1px solid var(--border2);
-  border-radius: 20px;
-  color: var(--ink3);
-  cursor: pointer;
-  transition: all 0.12s;
-  letter-spacing: 0.04em;
+  font-family: 'DM Mono', monospace; font-size: .63rem;
+  padding: .16rem .52rem;
+  border: 1px solid var(--border2); border-radius: 20px;
+  color: var(--ink3); cursor: pointer; transition: all .12s;
+  letter-spacing: .04em;
 }
-.tld-tag:hover { border-color: var(--accent); color: var(--accent); background: rgba(199,82,42,0.04); }
+.tld-tag:hover { border-color: var(--accent); color: var(--accent); background: rgba(192,71,30,.04); }
 
-/* Search results on home */
+/* Results */
 #home-results {
-  width: 100%;
-  display: none;
-  animation: fadeUp 0.3s cubic-bezier(0.16,1,0.3,1) both;
+  width: 100%; display: none;
+  animation: fadeUp .3s cubic-bezier(.16,1,.3,1) both;
 }
-
-.results-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.8rem;
+.results-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: .75rem;
 }
 .results-label {
-  font-size: 0.65rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink3);
-  font-family: 'DM Mono', monospace;
+  font-size: .62rem; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--ink3); font-family: 'DM Mono', monospace;
 }
-.results-count {
-  font-size: 0.65rem;
-  color: var(--ink3);
-  font-family: 'DM Mono', monospace;
-}
+.results-count { font-size: .62rem; color: var(--ink3); font-family: 'DM Mono', monospace; }
 
-.search-result-card {
+.result-card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.9rem 1rem;
-  margin-bottom: 0.4rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.8rem;
-  cursor: pointer;
-  transition: all 0.12s;
+  border-radius: var(--r);
+  padding: .85rem .95rem;
+  margin-bottom: .4rem;
+  display: flex; align-items: center;
+  justify-content: space-between; gap: .7rem;
+  cursor: pointer; transition: all .12s;
   box-shadow: var(--shadow-sm);
 }
-.search-result-card:hover {
+.result-card:hover {
   border-color: var(--border2);
   box-shadow: var(--shadow);
   transform: translateY(-1px);
 }
-
-.src-left { flex: 1; min-width: 0; }
-.src-domain {
+.rc-left { flex: 1; min-width: 0; }
+.rc-domain {
   font-family: 'Instrument Serif', serif;
-  font-size: 1.1rem;
-  letter-spacing: -0.02em;
-  color: var(--ink);
-  margin-bottom: 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 1.08rem; letter-spacing: -.02em;
+  color: var(--ink); margin-bottom: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.src-meta {
-  font-size: 0.62rem;
-  color: var(--ink3);
-  font-family: 'DM Mono', monospace;
-  letter-spacing: 0.04em;
+.rc-meta {
+  font-size: .61rem; color: var(--ink3);
+  font-family: 'DM Mono', monospace; letter-spacing: .04em;
 }
-.src-meta .owner { color: var(--ink2); }
-.src-meta .has-cname { color: var(--green); }
-
-.src-right {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-shrink: 0;
-}
-
+.rc-meta .owner { color: var(--ink2); }
+.rc-meta .live { color: var(--green); }
+.rc-right { display: flex; align-items: center; gap: .45rem; flex-shrink: 0; }
 .badge {
-  font-size: 0.58rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 0.15rem 0.45rem;
-  border-radius: 4px;
+  font-size: .57rem; letter-spacing: .09em; text-transform: uppercase;
+  padding: .13rem .42rem; border-radius: 4px;
   font-family: 'DM Mono', monospace;
 }
-.badge-live { background: rgba(46,125,79,0.1); color: var(--green); border: 1px solid rgba(46,125,79,0.2); }
-.badge-dns { background: rgba(42,95,199,0.1); color: var(--blue); border: 1px solid rgba(42,95,199,0.2); }
+.badge-live { background: rgba(30,110,62,.09); color: var(--green); border: 1px solid rgba(30,110,62,.18); }
+.badge-dns  { background: rgba(30,90,191,.09); color: var(--blue);  border: 1px solid rgba(30,90,191,.18); }
+.btn-visit {
+  background: var(--accent); color: #fff;
+  border: none; border-radius: var(--r-sm);
+  padding: .28rem .65rem;
+  font-family: 'Geist', sans-serif; font-weight: 500; font-size: .67rem;
+  cursor: pointer; transition: background .12s; white-space: nowrap;
+}
+.btn-visit:hover { background: var(--accent2); }
 
-.btn-visit-card {
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 0.3rem 0.7rem;
-  font-family: 'Geist', sans-serif;
-  font-weight: 500;
-  font-size: 0.68rem;
-  cursor: pointer;
-  transition: background 0.12s;
-  white-space: nowrap;
-}
-.btn-visit-card:hover { background: var(--accent2); }
-
-/* Domain info card (when no CNAME) */
-.domain-info-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 1.5rem 1.4rem;
-  width: 100%;
-  box-shadow: var(--shadow-sm);
-}
-.dic-domain {
-  font-family: 'Instrument Serif', serif;
-  font-size: 1.8rem;
-  letter-spacing: -0.04em;
-  color: var(--ink);
-  margin-bottom: 1rem;
-}
-.dic-row {
-  display: flex;
-  gap: 0.8rem;
-  font-size: 0.75rem;
-  margin-bottom: 0.4rem;
-  align-items: baseline;
-}
-.dic-key {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink3);
-  min-width: 52px;
-  flex-shrink: 0;
-}
-.dic-val {
-  color: var(--ink);
-  font-family: 'DM Mono', monospace;
-  word-break: break-all;
-}
-.dic-val.none { color: var(--ink3); font-style: italic; }
-.dic-val.green { color: var(--green); }
-.dic-notice {
-  margin-top: 1rem;
-  padding: 0.6rem 0.8rem;
-  background: var(--bg);
-  border-radius: 6px;
-  font-size: 0.68rem;
-  color: var(--ink2);
-  font-family: 'DM Mono', monospace;
-  line-height: 1.6;
-  border: 1px solid var(--border);
-}
-
-/* ── PORTAL GRID ── */
+/* Portal grid */
 .portal-grid {
   width: 100%;
-  animation: fadeUp 0.5s 0.2s cubic-bezier(0.16,1,0.3,1) both;
+  animation: fadeUp .5s .2s cubic-bezier(.16,1,.3,1) both;
 }
-
 .portal-label {
-  font-size: 0.62rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--ink3);
-  font-family: 'DM Mono', monospace;
-  margin-bottom: 0.8rem;
+  font-size: .6rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--ink3); font-family: 'DM Mono', monospace;
+  margin-bottom: .75rem;
 }
-
 .portal-apps {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(136px, 1fr));
+  gap: .45rem;
 }
-
 .portal-app {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 1rem 0.9rem;
-  cursor: pointer;
-  transition: all 0.15s;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r); padding: .95rem .85rem;
+  cursor: pointer; transition: all .15s;
   box-shadow: var(--shadow-sm);
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
+  display: flex; flex-direction: column; gap: .35rem;
 }
 .portal-app:hover {
-  border-color: var(--border2);
-  box-shadow: var(--shadow);
+  border-color: var(--border2); box-shadow: var(--shadow);
   transform: translateY(-2px);
 }
+.pa-icon { font-size: 1.35rem; line-height: 1; }
+.pa-name { font-family: 'Geist', sans-serif; font-weight: 600; font-size: .77rem; color: var(--ink); }
+.pa-domain { font-family: 'DM Mono', monospace; font-size: .58rem; color: var(--ink3); letter-spacing: .04em; }
+.pa-desc { font-size: .63rem; color: var(--ink2); line-height: 1.45; }
 
-.pa-icon { font-size: 1.4rem; line-height: 1; }
-.pa-name {
-  font-family: 'Geist', sans-serif;
-  font-weight: 600;
-  font-size: 0.78rem;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-}
-.pa-domain {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.6rem;
-  color: var(--ink3);
-  letter-spacing: 0.04em;
-}
-.pa-desc {
-  font-size: 0.65rem;
-  color: var(--ink2);
-  line-height: 1.4;
-}
-
-/* ════════════════════════════════════
-   DOMAIN INFO PAGE (in content area)
-════════════════════════════════════ */
+/* ═══════════════════════════════
+   DOMAIN INFO PAGE
+═══════════════════════════════ */
 #domain-info-page {
-  display: none;
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  background: var(--bg);
-  align-items: center;
-  justify-content: center;
+  display: none; width: 100%; height: 100%;
+  overflow-y: auto; background: var(--bg);
+  align-items: center; justify-content: center;
 }
-.dip-wrap {
-  max-width: 520px;
-  width: 100%;
-  padding: 3rem 1.5rem;
-}
+.dip-wrap { max-width: 500px; width: 100%; padding: 3rem 1.5rem; }
 .dip-eyebrow {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--ink3);
-  margin-bottom: 0.5rem;
+  font-family: 'DM Mono', monospace; font-size: .6rem;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--ink3); margin-bottom: .45rem;
 }
 .dip-title {
   font-family: 'Instrument Serif', serif;
-  font-size: 2.5rem;
-  letter-spacing: -0.04em;
-  color: var(--ink);
-  margin-bottom: 1.2rem;
-  line-height: 1;
+  font-size: 2.4rem; letter-spacing: -.04em;
+  color: var(--ink); margin-bottom: 1.2rem; line-height: 1;
 }
 .dip-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  margin-bottom: 1rem;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r); overflow: hidden;
+  box-shadow: var(--shadow-sm); margin-bottom: 1rem;
 }
 .dip-row {
-  display: flex;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--border);
-  gap: 0.8rem;
-  font-size: 0.78rem;
+  display: flex; align-items: center; padding: .7rem .95rem;
+  border-bottom: 1px solid var(--border); gap: .75rem; font-size: .77rem;
 }
 .dip-row:last-child { border-bottom: none; }
 .dip-key {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink3);
-  min-width: 56px;
-  flex-shrink: 0;
+  font-family: 'DM Mono', monospace; font-size: .58rem;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--ink3); min-width: 52px; flex-shrink: 0;
 }
 .dip-val { color: var(--ink); font-family: 'DM Mono', monospace; word-break: break-all; }
-.dip-val.none { color: var(--ink3); font-style: italic; font-family: 'Geist',sans-serif; font-size: 0.75rem; }
+.dip-val.none { color: var(--ink3); font-style: italic; font-family: 'Geist', sans-serif; font-size: .73rem; }
 .dip-val.green { color: var(--green); }
 .dip-notice {
-  padding: 0.8rem 1rem;
-  background: rgba(199,82,42,0.04);
-  border: 1px solid rgba(199,82,42,0.15);
-  border-radius: 8px;
-  font-size: 0.7rem;
-  color: var(--ink2);
-  font-family: 'DM Mono', monospace;
-  line-height: 1.7;
+  padding: .75rem .95rem;
+  background: rgba(192,71,30,.04);
+  border: 1px solid rgba(192,71,30,.14);
+  border-radius: var(--r-sm);
+  font-size: .69rem; color: var(--ink2);
+  font-family: 'DM Mono', monospace; line-height: 1.7;
 }
-.dip-notice a {
-  color: var(--accent);
-  text-decoration: none;
-  cursor: pointer;
-}
+.dip-notice a { color: var(--accent); text-decoration: none; cursor: pointer; }
 .dip-notice a:hover { text-decoration: underline; }
 
-/* ════════════════════════════════════
+/* ═══════════════════════════════
    404 PAGE
-════════════════════════════════════ */
+═══════════════════════════════ */
 #not-found-page {
-  display: none;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 0.6rem;
+  display: none; width: 100%; height: 100%;
+  align-items: center; justify-content: center;
+  flex-direction: column; gap: .55rem;
   background: var(--bg);
 }
 .nfp-code {
   font-family: 'Instrument Serif', serif;
-  font-size: 6rem;
-  letter-spacing: -0.06em;
-  color: var(--ink4);
-  line-height: 1;
+  font-size: 7rem; letter-spacing: -.07em;
+  color: var(--ink4); line-height: 1;
 }
 .nfp-msg {
-  font-size: 0.8rem;
-  color: var(--ink3);
-  letter-spacing: 0.06em;
-  font-family: 'DM Mono', monospace;
+  font-size: .77rem; color: var(--ink3);
+  letter-spacing: .06em; font-family: 'DM Mono', monospace;
 }
 .nfp-domain {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.75rem;
-  color: var(--ink2);
-  background: var(--bg2);
-  padding: 0.3rem 0.7rem;
-  border-radius: 6px;
-  border: 1px solid var(--border);
+  font-family: 'DM Mono', monospace; font-size: .73rem;
+  color: var(--ink2); background: var(--bg2);
+  padding: .28rem .65rem; border-radius: var(--r-sm);
+  border: 1px solid var(--border); max-width: 400px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+.nfp-actions { display: flex; gap: .5rem; margin-top: .5rem; }
+.nfp-btn {
+  font-size: .68rem; padding: .3rem .7rem;
+  border: 1px solid var(--border2); border-radius: var(--r-sm);
+  background: var(--card); color: var(--ink2);
+  cursor: pointer; transition: all .12s; font-family: 'Geist', sans-serif;
+}
+.nfp-btn:hover { border-color: var(--accent); color: var(--accent); }
+.nfp-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.nfp-btn.primary:hover { background: var(--accent2); }
 
-/* ════════════════════════════════════
+/* ═══════════════════════════════
    AUTH MODAL
-════════════════════════════════════ */
+═══════════════════════════════ */
 #modal-overlay {
   position: fixed; inset: 0;
-  background: rgba(28,26,22,0.5);
-  z-index: 500;
+  background: rgba(26,24,21,.52);
+  z-index: 600;
   display: none; align-items: center; justify-content: center;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(5px);
 }
 #modal-overlay.open { display: flex; }
 
@@ -799,97 +534,111 @@ html, body {
   background: var(--card);
   border: 1px solid var(--border2);
   border-radius: 14px;
-  box-shadow: var(--shadow), 0 20px 60px rgba(28,26,22,0.15);
-  padding: 2rem;
-  width: 100%; max-width: 340px;
+  box-shadow: var(--shadow-lg), 0 24px 64px rgba(26,24,21,.16);
+  padding: 1.8rem;
+  width: 100%; max-width: 330px;
   position: relative;
-  animation: modalIn 0.2s cubic-bezier(0.16,1,0.3,1);
+  animation: modalIn .2s cubic-bezier(.16,1,.3,1);
 }
 @keyframes modalIn {
-  from { opacity: 0; transform: scale(0.96) translateY(-8px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  from { opacity: 0; transform: scale(.95) translateY(-10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
 }
-.modal-title {
-  font-family: 'Instrument Serif', serif;
-  font-size: 1.5rem;
-  letter-spacing: -0.03em;
-  margin-bottom: 0.2rem;
-}
-.modal-sub { font-size: 0.72rem; color: var(--ink2); margin-bottom: 1.3rem; line-height: 1.5; }
-.modal-field { margin-bottom: 0.8rem; }
+.modal-title { font-family: 'Instrument Serif', serif; font-size: 1.5rem; letter-spacing: -.03em; margin-bottom: .2rem; }
+.modal-sub   { font-size: .7rem; color: var(--ink2); margin-bottom: 1.2rem; line-height: 1.55; }
+.modal-field { margin-bottom: .75rem; }
 .modal-field label {
-  display: block; font-size: 0.6rem;
-  letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--ink3); margin-bottom: 0.3rem;
+  display: block; font-size: .58rem;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink3); margin-bottom: .28rem;
   font-family: 'DM Mono', monospace;
 }
 .modal-field input {
-  width: 100%; background: var(--bg);
-  border: 1px solid var(--border2); border-radius: 7px;
-  color: var(--ink); font-family: 'DM Mono', monospace;
-  font-size: 0.82rem; padding: 0.55rem 0.8rem;
-  outline: none; transition: border-color 0.15s;
+  width: 100%; background: var(--bg); border: 1px solid var(--border2);
+  border-radius: var(--r-sm); color: var(--ink);
+  font-family: 'DM Mono', monospace; font-size: .8rem;
+  padding: .52rem .75rem; outline: none; transition: border-color .15s;
   caret-color: var(--accent);
 }
 .modal-field input:focus { border-color: var(--accent); }
 .modal-submit {
   width: 100%; background: var(--accent); color: #fff;
-  border: none; border-radius: 8px; padding: 0.7rem;
-  font-family: 'Geist', sans-serif; font-weight: 600;
-  font-size: 0.85rem; cursor: pointer;
-  transition: background 0.15s; margin-top: 0.4rem;
+  border: none; border-radius: var(--r-sm); padding: .65rem;
+  font-family: 'Geist', sans-serif; font-weight: 600; font-size: .83rem;
+  cursor: pointer; transition: background .15s; margin-top: .35rem;
 }
 .modal-submit:hover { background: var(--accent2); }
-.modal-error { font-size: 0.68rem; color: var(--accent); margin-top: 0.4rem; min-height: 1rem; }
-.modal-switch { text-align: center; margin-top: 0.9rem; font-size: 0.7rem; color: var(--ink2); }
+.modal-error { font-size: .66rem; color: var(--accent); margin-top: .35rem; min-height: .9rem; }
+.modal-switch { text-align: center; margin-top: .8rem; font-size: .68rem; color: var(--ink2); }
 .modal-switch a { color: var(--accent); text-decoration: none; cursor: pointer; }
 .modal-close {
-  position: absolute; top: 0.8rem; right: 1rem;
+  position: absolute; top: .75rem; right: .9rem;
   background: none; border: none; cursor: pointer;
-  font-size: 1.1rem; color: var(--ink3); line-height: 1; border-radius: 50%;
-  width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
+  font-size: 1.05rem; color: var(--ink3);
+  width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
 }
 .modal-close:hover { background: var(--bg); color: var(--ink); }
 
-/* ── LOADING BAR ── */
+/* ═══════════════════════════════
+   LOADING BAR
+═══════════════════════════════ */
 #loading-bar {
   position: fixed; top: 0; left: 0;
   height: 2px; width: 0%;
-  background: var(--accent);
-  z-index: 1000;
-  transition: width 0.3s ease;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  z-index: 900; transition: width .25s ease;
   pointer-events: none;
 }
-#loading-bar.done { width: 100%; opacity: 0; transition: width 0.2s, opacity 0.3s 0.2s; }
+#loading-bar.finish { width: 100%; opacity: 0; transition: width .15s, opacity .25s .15s; }
 
-/* ── TOAST ── */
+/* ═══════════════════════════════
+   TOAST
+═══════════════════════════════ */
 #toast {
-  position: fixed; bottom: 1.2rem; right: 1.2rem;
+  position: fixed; bottom: 1.1rem; right: 1.1rem;
   background: var(--ink); color: var(--bg);
-  padding: 0.6rem 1rem; border-radius: 8px;
-  font-size: 0.72rem; letter-spacing: 0.02em;
-  z-index: 999; opacity: 0; transform: translateY(8px);
-  transition: all 0.25s; pointer-events: none;
-  max-width: 260px; line-height: 1.4;
-  box-shadow: var(--shadow);
+  padding: .55rem .95rem; border-radius: var(--r-sm);
+  font-size: .7rem; letter-spacing: .02em;
+  z-index: 999; opacity: 0; transform: translateY(6px);
+  transition: all .22s; pointer-events: none;
+  max-width: 260px; line-height: 1.45;
+  box-shadow: var(--shadow-lg);
   font-family: 'Geist', sans-serif;
 }
 #toast.show { opacity: 1; transform: translateY(0); }
 
-/* ── SPINNER ── */
-.spinner {
+/* ═══════════════════════════════
+   SPINNER
+═══════════════════════════════ */
+.spin {
   display: inline-block; width: 9px; height: 9px;
   border: 1.5px solid currentColor; border-top-color: transparent;
-  border-radius: 50%; animation: spin 0.6s linear infinite;
+  border-radius: 50%; animation: rot .6s linear infinite;
   margin-right: 5px; vertical-align: middle;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes rot { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════
+   PROXY LOADING STATE
+═══════════════════════════════ */
+#frame-overlay {
+  position: absolute; inset: 0;
+  background: var(--bg);
+  display: none; align-items: center; justify-content: center;
+  flex-direction: column; gap: .6rem;
+  z-index: 10;
+}
+#frame-overlay.show { display: flex; }
+.fo-domain { font-family: 'Instrument Serif', serif; font-size: 1.5rem; letter-spacing: -.03em; color: var(--ink); }
+.fo-status { font-family: 'DM Mono', monospace; font-size: .65rem; color: var(--ink3); letter-spacing: .08em; }
 
 @media (max-width: 600px) {
-  .tab { max-width: 120px; }
+  .tab { max-width: 110px; }
   .portal-apps { grid-template-columns: repeat(2, 1fr); }
   .home-inner { padding: 3vh 1rem 2rem; }
-  .wordmark-title { font-size: 3rem; }
+  .wm-title { font-size: 3rem; }
 }
 </style>
 </head>
@@ -897,40 +646,40 @@ html, body {
 
 <div id="loading-bar"></div>
 
-<!-- BROWSER -->
 <div id="browser">
 
-  <!-- TITLE BAR -->
+  <!-- ═══════════ TITLE BAR ═══════════ -->
   <div id="title-bar">
     <div class="traffic-lights">
       <div class="tl tl-red"></div>
       <div class="tl tl-yellow"></div>
       <div class="tl tl-green"></div>
     </div>
-    <div class="tab-strip" id="tab-strip">
-      <!-- tabs injected here -->
-    </div>
+    <div class="tab-strip" id="tab-strip"></div>
     <button class="btn-new-tab" onclick="newTab()" title="New tab">+</button>
   </div>
 
-  <!-- NAV BAR -->
+  <!-- ═══════════ NAV BAR ═══════════ -->
   <div id="nav-bar">
-    <button class="nav-btn" id="btn-back" onclick="goBack()" title="Back" disabled>←</button>
-    <button class="nav-btn" id="btn-fwd" onclick="goForward()" title="Forward" disabled>→</button>
-    <button class="nav-btn" id="btn-reload" onclick="reloadTab()" title="Reload">↺</button>
-    <button class="nav-btn" onclick="goHome()" title="Home">⌂</button>
+    <button class="nav-btn" id="btn-back"    onclick="goBack()"    disabled title="Back">←</button>
+    <button class="nav-btn" id="btn-fwd"     onclick="goForward()" disabled title="Forward">→</button>
+    <button class="nav-btn" id="btn-reload"  onclick="reloadTab()"          title="Reload">↺</button>
+    <button class="nav-btn"                  onclick="goHome()"             title="Home">⌂</button>
+    <div class="nav-sep"></div>
 
     <div id="address-bar-wrap">
-      <span class="addr-protocol" id="addr-protocol">inn://</span>
+      <span class="addr-prefix" id="addr-prefix">
+        <span class="lock-icon">🔒</span>inn://
+      </span>
       <input type="text" id="address-input"
-        placeholder="Search or type a domain (e.g. luciano.lbc)"
+        placeholder="Search domains or type one to visit (e.g. blog.lbc/about)"
         autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
       <div id="suggestions"></div>
     </div>
 
     <div class="nav-right">
       <div id="user-pill" onclick="openAuth()">
-        <div class="user-avatar" id="user-avatar">?</div>
+        <div class="user-av" id="user-av">?</div>
         <span id="user-name-pill">—</span>
         <span id="lucks-count">0 ⚡</span>
       </div>
@@ -938,25 +687,25 @@ html, body {
     </div>
   </div>
 
-  <!-- CONTENT -->
+  <!-- ═══════════ CONTENT ═══════════ -->
   <div id="content-area">
 
-    <!-- Home page -->
+    <!-- Home -->
     <div id="home-page">
       <div class="home-inner">
 
         <div class="home-wordmark">
-          <div class="wordmark-title">Inner<em>net</em></div>
-          <div class="wordmark-sub">// the web inside the web</div>
+          <div class="wm-title">Inner<em>net</em></div>
+          <div class="wm-sub">// the web inside the web</div>
         </div>
 
         <div class="home-search-wrap">
           <div class="home-search-box">
             <span class="home-search-icon">⌕</span>
             <input type="text" id="home-search-input"
-              placeholder="Search domains or type one to visit..."
+              placeholder="Search domains or visit one directly..."
               autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-            <button class="home-search-btn" onclick="homeSearch()">Go</button>
+            <button class="home-go-btn" onclick="homeSearch()">Go</button>
           </div>
           <div class="tld-row">
             <span class="tld-tag" onclick="homeTld('.lbc')">.lbc</span>
@@ -1001,15 +750,19 @@ html, body {
       </div>
     </div>
 
-    <!-- Iframe for live pages -->
-    <iframe id="page-frame" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
+    <!-- Proxy frame -->
+    <div id="frame-overlay">
+      <div class="fo-domain" id="fo-domain">—</div>
+      <div class="fo-status"><span class="spin"></span>loading via proxy…</div>
+    </div>
+    <iframe id="page-frame" sandbox="allow-scripts allow-forms allow-same-origin allow-popups"></iframe>
 
     <!-- Domain info (no CNAME) -->
     <div id="domain-info-page">
       <div class="dip-wrap">
         <div class="dip-eyebrow">// domain info</div>
         <div class="dip-title" id="dip-title">—</div>
-        <div class="dip-card" id="dip-card"></div>
+        <div class="dip-card"  id="dip-card"></div>
         <div class="dip-notice" id="dip-notice"></div>
       </div>
     </div>
@@ -1019,6 +772,10 @@ html, body {
       <div class="nfp-code">404</div>
       <div class="nfp-msg">domain not found on the inner net</div>
       <div class="nfp-domain" id="nfp-domain">—</div>
+      <div class="nfp-actions">
+        <button class="nfp-btn" onclick="showHome()">← Home</button>
+        <button class="nfp-btn primary" onclick="navigateTo('getaname.lbc')">Register it →</button>
+      </div>
     </div>
 
   </div>
@@ -1029,10 +786,10 @@ html, body {
   <div class="modal">
     <button class="modal-close" onclick="closeAuth()">×</button>
     <div class="modal-title" id="modal-title">Sign In</div>
-    <div class="modal-sub" id="modal-sub">Access your Innernet account.</div>
+    <div class="modal-sub"   id="modal-sub">Access your Innernet account.</div>
     <div class="modal-field">
       <label>Username</label>
-      <input type="text" id="m-user" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="username">
+      <input type="text"     id="m-user" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="username">
     </div>
     <div class="modal-field">
       <label>Password</label>
@@ -1049,89 +806,56 @@ html, body {
 <div id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════
+// ═══════════════════════════════════════════
 // CONFIG
-// ══════════════════════════════════════════
-const CONFIG = {
-  api: "https://own-net.vercel.app",  // ← change this
-  apps: {
-    "getaname.lbc": null,   // null = served by this browser as portal link
-    "host.lbc": null,
-    "mail.party": null,
-    "bankly.lbc": null,
-    "innernet.lbc": "home",
-  }
-};
+// ═══════════════════════════════════════════
+const API = "https://own-net.vercel.app";
 
-// ══════════════════════════════════════════
+// ═══════════════════════════════════════════
 // STATE
-// ══════════════════════════════════════════
-let token = localStorage.getItem("inn_token") || null;
+// ═══════════════════════════════════════════
+let token    = localStorage.getItem("inn_token") || null;
 let username = localStorage.getItem("inn_username") || null;
 let authMode = "login";
 
-// Tab system
-let tabs = [];
-let activeTabId = null;
-let tabCounter = 0;
+let tabs = [], activeTabId = null, tabCounter = 0;
 
-// Per-tab history
-// tab.history = [url, url, ...]
-// tab.historyIndex = int
-
-// ══════════════════════════════════════════
+// ═══════════════════════════════════════════
 // INIT
-// ══════════════════════════════════════════
+// ═══════════════════════════════════════════
 window.addEventListener("DOMContentLoaded", async () => {
   setupAddressBar();
   setupHomeSearch();
 
-  // Handle /d/DOMAIN routing
-  const path = location.pathname;
-  const domainMatch = path.match(/^\/d\/(.+)$/);
-
-  newTab(domainMatch ? domainMatch[1] : null);
+  // Support /d/DOMAIN or /d/DOMAIN/path routing
+  const m = location.pathname.match(/^\/d\/(.+)$/);
+  newTab(m ? m[1] : null);
 
   if (token) await initUser();
 });
 
 async function initUser() {
   try {
-    const res = await api("GET", "/me");
+    const res = await apiFetch("GET", "/me");
     username = res.username;
-    const pill = document.getElementById("user-pill");
-    const signIn = document.getElementById("sign-in-btn");
-    document.getElementById("user-avatar").textContent = username[0].toUpperCase();
+    document.getElementById("user-av").textContent = username[0].toUpperCase();
     document.getElementById("user-name-pill").textContent = username;
     document.getElementById("lucks-count").textContent = res.lucks + " ⚡";
-    pill.style.display = "flex";
-    signIn.style.display = "none";
+    document.getElementById("user-pill").style.display   = "flex";
+    document.getElementById("sign-in-btn").style.display = "none";
   } catch { logout(); }
 }
 
-// ══════════════════════════════════════════
+// ═══════════════════════════════════════════
 // TAB SYSTEM
-// ══════════════════════════════════════════
+// ═══════════════════════════════════════════
 function newTab(url = null) {
   const id = ++tabCounter;
-  const tab = {
-    id,
-    title: "New Tab",
-    favicon: "🌐",
-    url: null,
-    history: [],
-    historyIndex: -1,
-    page: "home"  // "home" | "frame" | "domaininfo" | "notfound"
-  };
+  const tab = { id, title: "New Tab", favicon: "🌐", url: null,
+                history: [], historyIndex: -1, page: "home" };
   tabs.push(tab);
   setActiveTab(id);
-  renderTabs();
-
-  if (url) {
-    navigateTo(url);
-  } else {
-    showHome();
-  }
+  url ? navigateTo(url) : showHome();
 }
 
 function setActiveTab(id) {
@@ -1141,27 +865,20 @@ function setActiveTab(id) {
   if (tab) restoreTabView(tab);
 }
 
-function getTab(id) { return tabs.find(t => t.id === id); }
-function getActiveTab() { return getTab(activeTabId); }
+function getTab(id)    { return tabs.find(t => t.id === id); }
+function getActiveTab(){ return getTab(activeTabId); }
 
 function closeTab(id, e) {
   e && e.stopPropagation();
   const idx = tabs.findIndex(t => t.id === id);
   tabs.splice(idx, 1);
-  if (tabs.length === 0) {
-    newTab();
-    return;
-  }
-  if (activeTabId === id) {
-    const newActive = tabs[Math.min(idx, tabs.length - 1)];
-    setActiveTab(newActive.id);
-  }
+  if (tabs.length === 0) { newTab(); return; }
+  if (activeTabId === id) setActiveTab(tabs[Math.min(idx, tabs.length - 1)].id);
   renderTabs();
 }
 
 function renderTabs() {
-  const strip = document.getElementById("tab-strip");
-  strip.innerHTML = tabs.map(tab => `
+  document.getElementById("tab-strip").innerHTML = tabs.map(tab => `
     <div class="tab ${tab.id === activeTabId ? "active" : ""}" onclick="setActiveTab(${tab.id})">
       <span class="tab-favicon">${esc(tab.favicon)}</span>
       <span class="tab-title">${esc(tab.title)}</span>
@@ -1173,96 +890,206 @@ function renderTabs() {
 function restoreTabView(tab) {
   setAddrBar(tab.url || "");
   showPage(tab.page, false);
-  updateNavButtons();
+  // Re-load frame content if needed
+  if (tab.page === "frame" && tab.frameHtml) {
+    loadHtmlInFrame(tab.frameHtml);
+  }
+  updateNavBtns();
 }
 
-// ══════════════════════════════════════════
-// NAVIGATION
-// ══════════════════════════════════════════
+// ═══════════════════════════════════════════
+// NAVIGATION — URL PARSER
+// ═══════════════════════════════════════════
+// Handles: domain.tld  /  domain.tld/path  /  domain.tld/path.html
+function parseUrl(raw) {
+  const s = raw.trim().replace(/^inn:\/\//i, "").replace(/^\/+/, "").toLowerCase();
+  const slash = s.indexOf("/");
+  if (slash === -1) return { domain: s, path: null };
+  return { domain: s.slice(0, slash), path: s.slice(slash + 1) || null };
+}
+
 async function navigateTo(rawUrl) {
-  const domain = rawUrl.trim().replace(/^inn:\/\//i, "").replace(/\/+$/, "").toLowerCase();
+  const { domain, path } = parseUrl(rawUrl);
   if (!domain) { showHome(); return; }
 
-  // Update address bar
-  setAddrBar(domain);
+  const fullAddr = path ? `${domain}/${path}` : domain;
+  setAddrBar(fullAddr);
   hideSuggestions();
 
   const tab = getActiveTab();
-
-  // Push to history
   tab.history = tab.history.slice(0, tab.historyIndex + 1);
-  tab.history.push(domain);
+  tab.history.push(fullAddr);
   tab.historyIndex = tab.history.length - 1;
-  tab.url = domain;
-  updateNavButtons();
+  tab.url = fullAddr;
+  updateNavBtns();
 
-  // Loading bar
   startLoading();
-
   try {
-    const data = await api("GET", `/resolve/${encodeURIComponent(domain)}`);
-
-    if (data.cname) {
-      // Has CNAME — try to load in iframe
-      loadFrame(data.cname, domain, data);
-    } else {
-      // No CNAME — show domain info
-      showDomainInfo(data);
-    }
+    await resolveAndLoad(domain, path, tab);
   } catch (e) {
-    if (e.status === 404) {
-      showNotFound(domain);
-    } else {
-      toast("Navigation error: " + (e.message || "unknown"));
-      showNotFound(domain);
-    }
+    if (e.status === 404) showNotFound(fullAddr);
+    else { toast("Error: " + (e.message || "unknown")); showNotFound(fullAddr); }
   } finally {
     stopLoading();
   }
 }
 
-function loadFrame(cname, domain, domainData) {
-  const frame = document.getElementById("page-frame");
-  frame.src = cname;
+// Core resolution logic
+async function resolveAndLoad(domain, path, tab) {
+  const data = await apiFetch("GET", `/resolve/${encodeURIComponent(domain)}`);
+
+  if (!data.cname) {
+    showDomainInfo(data);
+    return;
+  }
+
+  // Determine how to serve based on cname type
+  const cname = data.cname;
+
+  // Check if cname is a project URL (our own backend /projects/ID/...)
+  const projectMatch = cname.match(/^https?:\/\/[^/]+\/projects\/([^/]+)(?:\/(.*))?$/);
+  // Check if cname is an upload URL (/upload/ID)
+  const uploadMatch  = cname.match(/^https?:\/\/[^/]+\/upload\/([^/]+)$/);
+
+  let html;
+
+  if (projectMatch) {
+    // ── PROJECT-BACKED DOMAIN ──
+    const projectId   = projectMatch[1];
+    const basePath    = projectMatch[2] || "";
+    const filePath    = resolveFilePath(basePath, path);
+    const url         = `${API}/projects/${projectId}/${filePath}`;
+    html = await fetchHtml(url);
+  } else if (uploadMatch) {
+    // ── SINGLE-FILE UPLOAD ──
+    if (path) {
+      // Single-upload domains don't have sub-paths
+      showNotFound(`${domain}/${path}`);
+      return;
+    }
+    html = await fetchHtml(cname);
+  } else {
+    // ── EXTERNAL CNAME — use proxy ──
+    const proxyBase = path ? `${cname.replace(/\/$/, "")}/${path}` : cname;
+    html = await fetchViaProxy(proxyBase);
+  }
+
+  if (html === null) { showNotFound(tab.url); return; }
+
+  // Rewrite relative links so in-page navigation works
+  html = rewriteLinks(html, domain, path);
+
+  tab.frameHtml = html;
+  loadHtmlInFrame(html);
   showPage("frame");
-
-  const tab = getActiveTab();
-  tab.title = domain;
+  tab.title   = extractTitle(html) || domain;
   tab.favicon = "🌐";
-  tab.page = "frame";
-
-  frame.onload = () => {
-    try {
-      const title = frame.contentDocument?.title;
-      if (title) {
-        tab.title = title;
-        renderTabs();
-      }
-    } catch {}
-  };
+  tab.page    = "frame";
   renderTabs();
 }
 
+// Helper: given base path from cname and requested path, produce a file path
+function resolveFilePath(base, requested) {
+  if (!requested) {
+    return base ? base.replace(/\/?$/, "/index.html").replace(/^\//, "") : "index.html";
+  }
+  // If requested has an extension, use as-is
+  if (/\.\w{2,5}$/.test(requested)) return requested;
+  // Otherwise append /index.html
+  return requested.replace(/\/?$/, "/index.html");
+}
+
+// Fetch HTML from a URL directly
+async function fetchHtml(url) {
+  try {
+    const r = await fetch(url);
+    if (!r.ok) return null;
+    return await r.text();
+  } catch { return null; }
+}
+
+// Fetch via backend proxy
+async function fetchViaProxy(url) {
+  try {
+    const r = await fetch(`${API}/proxy?url=${encodeURIComponent(url)}`);
+    if (!r.ok) return null;
+    return await r.text();
+  } catch { return null; }
+}
+
+// Load raw HTML into the iframe via blob URL
+function loadHtmlInFrame(html) {
+  const frame = document.getElementById("page-frame");
+  const blob  = new Blob([html], { type: "text/html" });
+  const burl  = URL.createObjectURL(blob);
+  frame.src   = burl;
+  // Revoke old blob after a moment
+  frame.onload = () => {
+    setTimeout(() => URL.revokeObjectURL(burl), 5000);
+    hideFrameOverlay();
+  };
+  showFrameOverlay(getActiveTab()?.url || "");
+}
+
+function showFrameOverlay(domain) {
+  document.getElementById("fo-domain").textContent = domain.split("/")[0];
+  document.getElementById("frame-overlay").classList.add("show");
+}
+function hideFrameOverlay() {
+  document.getElementById("frame-overlay").classList.remove("show");
+}
+
+// Intercept in-iframe link clicks by listening to messages
+// (iframes with blob URLs can postMessage)
+window.addEventListener("message", e => {
+  if (e.data && e.data.type === "inn-navigate") {
+    navigateTo(e.data.url);
+  }
+});
+
+// Rewrite <a href> and <form action> inside loaded HTML
+// so that relative paths become inn:// navigations via postMessage
+function rewriteLinks(html, domain, currentPath) {
+  const inject = `
+<script>
+(function(){
+  const DOMAIN = "${domain}";
+  document.addEventListener("click", function(e){
+    const a = e.target.closest("a[href]");
+    if (!a) return;
+    const href = a.getAttribute("href");
+    if (!href || href.startsWith("http") || href.startsWith("//") || href.startsWith("mailto:") || href.startsWith("#")) return;
+    e.preventDefault();
+    const resolved = href.startsWith("/") ? DOMAIN + href : DOMAIN + "/" + href;
+    window.parent.postMessage({ type: "inn-navigate", url: resolved }, "*");
+  });
+})();
+<\/script>`;
+  // Inject before </body>
+  return html.replace(/<\/body>/i, inject + "</body>");
+}
+
+function extractTitle(html) {
+  const m = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+  return m ? m[1].trim() : null;
+}
+
+// ═══════════════════════════════════════════
+// DOMAIN INFO / 404
+// ═══════════════════════════════════════════
 function showDomainInfo(data) {
   const tab = getActiveTab();
-  tab.title = data.domain;
-  tab.favicon = "ℹ️";
-  tab.page = "domaininfo";
+  tab.title = data.domain; tab.favicon = "ℹ️"; tab.page = "domaininfo";
 
   document.getElementById("dip-title").textContent = data.domain;
-
-  const card = document.getElementById("dip-card");
-  card.innerHTML = `
+  document.getElementById("dip-card").innerHTML = `
     <div class="dip-row"><span class="dip-key">Owner</span><span class="dip-val">${esc(data.owner)}</span></div>
     <div class="dip-row"><span class="dip-key">CNAME</span><span class="dip-val none">not set</span></div>
     <div class="dip-row"><span class="dip-key">MX</span><span class="dip-val ${data.mx ? "green" : "none"}">${data.mx ? esc(data.mx) : "not set"}</span></div>
     <div class="dip-row"><span class="dip-key">Since</span><span class="dip-val">${new Date(data.createdAt).toLocaleDateString()}</span></div>
   `;
-
   document.getElementById("dip-notice").innerHTML =
-    `This domain exists but has no CNAME record pointing to a page yet. ` +
-    `The owner <strong>${esc(data.owner)}</strong> can set one at ` +
-    `<a onclick="navigateTo('getaname.lbc')">getaname.lbc</a>.`;
+    `This domain has no CNAME pointing to a page. The owner <strong>${esc(data.owner)}</strong> can set one at <a onclick="navigateTo('getaname.lbc')">getaname.lbc</a>.`;
 
   showPage("domaininfo");
   renderTabs();
@@ -1270,39 +1097,34 @@ function showDomainInfo(data) {
 
 function showNotFound(domain) {
   const tab = getActiveTab();
-  tab.title = "Not Found";
-  tab.favicon = "⚠️";
-  tab.page = "notfound";
+  tab.title = "Not Found"; tab.favicon = "⚠️"; tab.page = "notfound";
   document.getElementById("nfp-domain").textContent = domain;
   showPage("notfound");
   renderTabs();
 }
 
+// ═══════════════════════════════════════════
+// PAGE SWITCHER
+// ═══════════════════════════════════════════
+function showPage(name, updateTab = true) {
+  document.getElementById("home-page").style.display        = name === "home"       ? "flex"  : "none";
+  document.getElementById("page-frame").style.display       = name === "frame"      ? "block" : "none";
+  document.getElementById("frame-overlay").style.display    = name === "frame"      ? ""      : "none";
+  document.getElementById("domain-info-page").style.display = name === "domaininfo" ? "flex"  : "none";
+  document.getElementById("not-found-page").style.display   = name === "notfound"   ? "flex"  : "none";
+
+  if (name !== "frame") hideFrameOverlay();
+  if (name === "home") setTimeout(() => document.getElementById("home-search-input").focus(), 80);
+}
+
 function showHome() {
   const tab = getActiveTab();
-  if (tab) {
-    tab.title = "New Tab";
-    tab.favicon = "🌐";
-    tab.page = "home";
-    tab.url = null;
-    renderTabs();
-  }
+  if (tab) { tab.title = "New Tab"; tab.favicon = "🌐"; tab.page = "home"; tab.url = null; tab.frameHtml = null; renderTabs(); }
   setAddrBar("");
   showPage("home");
   document.getElementById("home-results").style.display = "none";
   document.getElementById("home-search-input").value = "";
-  updateNavButtons();
-}
-
-function showPage(name, updateTab = true) {
-  document.getElementById("home-page").style.display = name === "home" ? "flex" : "none";
-  document.getElementById("page-frame").style.display = name === "frame" ? "block" : "none";
-  document.getElementById("domain-info-page").style.display = name === "domaininfo" ? "flex" : "none";
-  document.getElementById("not-found-page").style.display = name === "notfound" ? "flex" : "none";
-
-  if (name === "home") {
-    setTimeout(() => document.getElementById("home-search-input").focus(), 100);
-  }
+  updateNavBtns();
 }
 
 function goHome() {
@@ -1331,18 +1153,20 @@ function goForward() {
   else navigateNoHistory(url);
 }
 
-async function navigateNoHistory(domain) {
-  setAddrBar(domain);
+async function navigateNoHistory(rawUrl) {
+  const { domain, path } = parseUrl(rawUrl);
+  const fullAddr = path ? `${domain}/${path}` : domain;
+  setAddrBar(fullAddr);
   startLoading();
+  const tab = getActiveTab();
+  tab.url = fullAddr;
   try {
-    const data = await api("GET", `/resolve/${encodeURIComponent(domain)}`);
-    if (data.cname) loadFrame(data.cname, domain, data);
-    else showDomainInfo(data);
+    await resolveAndLoad(domain, path, tab);
   } catch (e) {
-    if (e.status === 404) showNotFound(domain);
+    if (e.status === 404) showNotFound(fullAddr);
   } finally {
     stopLoading();
-    updateNavButtons();
+    updateNavBtns();
   }
 }
 
@@ -1352,92 +1176,74 @@ function reloadTab() {
   navigateNoHistory(tab.url);
 }
 
-function updateNavButtons() {
+function updateNavBtns() {
   const tab = getActiveTab();
   document.getElementById("btn-back").disabled = !tab || tab.historyIndex <= 0;
-  document.getElementById("btn-fwd").disabled = !tab || tab.historyIndex >= tab.history.length - 1;
+  document.getElementById("btn-fwd").disabled  = !tab || tab.historyIndex >= tab.history.length - 1;
 }
 
-// ══════════════════════════════════════════
+// ═══════════════════════════════════════════
 // ADDRESS BAR
-// ══════════════════════════════════════════
+// ═══════════════════════════════════════════
 function setupAddressBar() {
   const input = document.getElementById("address-input");
-  let suggestTimer;
+  let timer;
 
   input.addEventListener("keydown", e => {
-    if (e.key === "Enter") {
-      const val = input.value.trim();
-      if (val) navigateTo(val);
-      else showHome();
-      hideSuggestions();
-    }
+    if (e.key === "Enter") { const v = input.value.trim(); v ? navigateTo(v) : showHome(); hideSuggestions(); }
     if (e.key === "Escape") { hideSuggestions(); input.blur(); }
   });
 
   input.addEventListener("input", () => {
-    clearTimeout(suggestTimer);
-    const val = input.value.trim();
-    if (val.length < 1) { hideSuggestions(); return; }
-    suggestTimer = setTimeout(() => fetchSuggestions(val), 220);
+    clearTimeout(timer);
+    const v = input.value.trim();
+    if (v.length < 1) { hideSuggestions(); return; }
+    timer = setTimeout(() => fetchSuggestions(v), 230);
   });
 
   input.addEventListener("focus", () => {
     input.select();
-    document.getElementById("addr-protocol").style.display = "none";
+    document.getElementById("addr-prefix").style.display = "none";
   });
   input.addEventListener("blur", () => {
-    setTimeout(hideSuggestions, 150);
-    if (!input.value.trim()) {
-      document.getElementById("addr-protocol").style.display = "block";
-    }
+    setTimeout(hideSuggestions, 160);
+    if (!input.value.trim()) document.getElementById("addr-prefix").style.display = "flex";
   });
 }
 
 async function fetchSuggestions(q) {
   try {
-    const data = await api("GET", `/search?q=${encodeURIComponent(q)}`);
-    renderSuggestions(q, data.slice(0, 6));
+    const data = await apiFetch("GET", `/search?q=${encodeURIComponent(q)}`);
+    renderSuggestions(q, data.slice(0, 7));
   } catch {}
 }
 
 function renderSuggestions(q, results) {
   const box = document.getElementById("suggestions");
-  if (results.length === 0) { hideSuggestions(); return; }
-
+  if (!results.length) { hideSuggestions(); return; }
   box.innerHTML = results.map(d => {
-    const highlighted = esc(d.domain).replace(
-      new RegExp(esc(q), "gi"),
-      m => `<em>${m}</em>`
-    );
-    return `
-      <div class="suggestion-item" onclick="navigateTo('${esc(d.domain)}')">
-        <span class="sug-icon">${d.cname ? "🌐" : "ℹ️"}</span>
-        <span class="sug-main">${highlighted}</span>
-        <span class="sug-sub">${d.cname ? "live" : "no page"}</span>
-      </div>
-    `;
+    const hi = esc(d.domain).replace(new RegExp(esc(q), "gi"), m => `<em>${m}</em>`);
+    return `<div class="sug-item" onclick="navigateTo('${esc(d.domain)}')">
+      <span class="sug-ico">${d.cname ? "🌐" : "ℹ️"}</span>
+      <span class="sug-main">${hi}</span>
+      <span class="sug-tag">${d.cname ? "live" : "no page"}</span>
+    </div>`;
   }).join("");
   box.classList.add("open");
 }
 
-function hideSuggestions() {
-  document.getElementById("suggestions").classList.remove("open");
-}
+function hideSuggestions() { document.getElementById("suggestions").classList.remove("open"); }
 
 function setAddrBar(val) {
-  const input = document.getElementById("address-input");
-  input.value = val;
-  const proto = document.getElementById("addr-protocol");
-  proto.style.display = val ? "none" : "block";
+  document.getElementById("address-input").value = val;
+  document.getElementById("addr-prefix").style.display = val ? "none" : "flex";
 }
 
-// ══════════════════════════════════════════
+// ═══════════════════════════════════════════
 // HOME SEARCH
-// ══════════════════════════════════════════
+// ═══════════════════════════════════════════
 function setupHomeSearch() {
-  const inp = document.getElementById("home-search-input");
-  inp.addEventListener("keydown", e => {
+  document.getElementById("home-search-input").addEventListener("keydown", e => {
     if (e.key === "Enter") homeSearch();
   });
 }
@@ -1446,60 +1252,58 @@ async function homeSearch() {
   const q = document.getElementById("home-search-input").value.trim();
   if (!q) return;
 
-  // If it looks like a domain, navigate
-  const isTld = [".lbc",".green",".party",".cc"].some(t => q.endsWith(t));
+  const TLDS = [".lbc", ".green", ".party", ".cc"];
+  const isTld = TLDS.some(t => q.includes(t));
   if (isTld) { navigateTo(q); return; }
 
-  // Otherwise search
-  const resultsEl = document.getElementById("home-results");
-  const portalEl = document.getElementById("portal-grid");
-  resultsEl.innerHTML = `<div style="color:var(--ink3);font-size:0.75rem;font-family:'DM Mono',monospace;padding:0.5rem 0"><span class="spinner"></span> Searching...</div>`;
-  resultsEl.style.display = "block";
-  portalEl.style.display = "none";
+  const rEl = document.getElementById("home-results");
+  const pEl = document.getElementById("portal-grid");
+  rEl.innerHTML = `<div style="color:var(--ink3);font-size:.73rem;font-family:'DM Mono',monospace;padding:.5rem 0"><span class="spin"></span> Searching...</div>`;
+  rEl.style.display = "block";
+  pEl.style.display = "none";
 
   try {
-    const data = await api("GET", `/search?q=${encodeURIComponent(q)}`);
+    const data = await apiFetch("GET", `/search?q=${encodeURIComponent(q)}`);
     renderHomeResults(q, data);
   } catch {
-    resultsEl.innerHTML = `<div style="color:var(--ink3);font-size:0.75rem;font-family:'DM Mono',monospace">Search failed.</div>`;
+    rEl.innerHTML = `<div style="color:var(--ink3);font-size:.73rem;font-family:'DM Mono',monospace">Search failed.</div>`;
   }
 }
 
 function renderHomeResults(q, results) {
   const el = document.getElementById("home-results");
 
-  if (results.length === 0) {
+  if (!results.length) {
     el.innerHTML = `
-      <div class="results-header">
-        <span class="results-label">Search results</span>
+      <div class="results-hdr">
+        <span class="results-label">Results</span>
         <span class="results-count">0 found</span>
       </div>
-      <div style="text-align:center;padding:2rem;color:var(--ink3);font-family:'DM Mono',monospace;font-size:0.75rem;line-height:1.8">
-        No domains found for "<strong style="color:var(--ink2)">${esc(q)}</strong>".<br>
+      <div style="text-align:center;padding:2rem;color:var(--ink3);font-family:'DM Mono',monospace;font-size:.73rem;line-height:1.9">
+        No domains for "<strong style="color:var(--ink2)">${esc(q)}</strong>".<br>
         <span style="cursor:pointer;color:var(--accent)" onclick="navigateTo('getaname.lbc')">Register it at getaname.lbc →</span>
-      </div>
-    `;
+      </div>`;
     return;
   }
 
   el.innerHTML = `
-    <div class="results-header">
-      <span class="results-label">Search results</span>
+    <div class="results-hdr">
+      <span class="results-label">Results</span>
       <span class="results-count">${results.length} found</span>
     </div>
     ${results.map(d => `
-      <div class="search-result-card" onclick="navigateTo('${esc(d.domain)}')">
-        <div class="src-left">
-          <div class="src-domain">${esc(d.domain)}</div>
-          <div class="src-meta">
+      <div class="result-card" onclick="navigateTo('${esc(d.domain)}')">
+        <div class="rc-left">
+          <div class="rc-domain">${esc(d.domain)}</div>
+          <div class="rc-meta">
             <span class="owner">${esc(d.owner)}</span>
-            ${d.cname ? `<span class="has-cname"> · has page</span>` : ""}
-            ${d.mx ? ` · has mail` : ""}
+            ${d.cname ? `<span class="live"> · has page</span>` : ""}
+            ${d.mx    ? ` · has mail` : ""}
           </div>
         </div>
-        <div class="src-right">
+        <div class="rc-right">
           ${d.cname ? `<span class="badge badge-live">live</span>` : `<span class="badge badge-dns">dns only</span>`}
-          <button class="btn-visit-card" onclick="event.stopPropagation();navigateTo('${esc(d.domain)}')">Visit →</button>
+          <button class="btn-visit" onclick="event.stopPropagation();navigateTo('${esc(d.domain)}')">Visit →</button>
         </div>
       </div>
     `).join("")}
@@ -1508,51 +1312,42 @@ function renderHomeResults(q, results) {
 
 function homeTld(tld) {
   const inp = document.getElementById("home-search-input");
-  let val = inp.value.trim();
-  [".lbc",".green",".party",".cc"].forEach(t => {
-    if (val.endsWith(t)) val = val.slice(0, -t.length);
-  });
-  inp.value = val + tld;
+  let v = inp.value.trim();
+  [".lbc", ".green", ".party", ".cc"].forEach(t => { if (v.endsWith(t)) v = v.slice(0, -t.length); });
+  inp.value = v + tld;
   inp.focus();
 }
 
-// ══════════════════════════════════════════
+// ═══════════════════════════════════════════
 // LOADING BAR
-// ══════════════════════════════════════════
-let loadingTimer;
+// ═══════════════════════════════════════════
+let _lt;
 function startLoading() {
-  const bar = document.getElementById("loading-bar");
-  bar.className = "";
-  bar.style.width = "0%";
-  bar.style.opacity = "1";
-  bar.style.transition = "width 0.8s ease";
-  setTimeout(() => bar.style.width = "70%", 20);
+  const b = document.getElementById("loading-bar");
+  b.className = ""; b.style.width = "0%"; b.style.opacity = "1";
+  b.style.transition = "width .9s ease";
+  clearTimeout(_lt);
+  setTimeout(() => b.style.width = "72%", 20);
 }
 function stopLoading() {
-  const bar = document.getElementById("loading-bar");
-  bar.style.width = "100%";
-  setTimeout(() => { bar.className = "done"; }, 200);
-  setTimeout(() => { bar.style.width = "0%"; bar.style.opacity = "1"; bar.className = ""; }, 700);
+  const b = document.getElementById("loading-bar");
+  b.style.width = "100%";
+  _lt = setTimeout(() => { b.className = "finish"; }, 180);
+  setTimeout(() => { b.style.width = "0%"; b.style.opacity = "1"; b.className = ""; }, 700);
 }
 
-// ══════════════════════════════════════════
+// ═══════════════════════════════════════════
 // AUTH
-// ══════════════════════════════════════════
-function openAuth() {
-  document.getElementById("modal-overlay").classList.add("open");
-  setTimeout(() => document.getElementById("m-user").focus(), 80);
-}
-function closeAuth() {
-  document.getElementById("modal-overlay").classList.remove("open");
-  document.getElementById("modal-error").textContent = "";
-}
+// ═══════════════════════════════════════════
+function openAuth()  { document.getElementById("modal-overlay").classList.add("open"); setTimeout(() => document.getElementById("m-user").focus(), 80); }
+function closeAuth() { document.getElementById("modal-overlay").classList.remove("open"); document.getElementById("modal-error").textContent = ""; }
 function toggleAuthMode() {
   authMode = authMode === "login" ? "register" : "login";
   const L = authMode === "login";
   document.getElementById("modal-title").textContent = L ? "Sign In" : "Create Account";
-  document.getElementById("modal-sub").textContent = L ? "Access your Innernet account." : "Join the Inner Net.";
+  document.getElementById("modal-sub").textContent   = L ? "Access your Innernet account." : "Join the Inner Net.";
   document.getElementById("modal-submit").textContent = L ? "Sign In" : "Create Account";
-  document.getElementById("modal-switch").innerHTML = L
+  document.getElementById("modal-switch").innerHTML  = L
     ? `No account? <a onclick="toggleAuthMode()">Create one</a>`
     : `Have one? <a onclick="toggleAuthMode()">Sign in</a>`;
   document.getElementById("modal-error").textContent = "";
@@ -1563,12 +1358,12 @@ async function submitAuth() {
   const errEl = document.getElementById("modal-error");
   if (!user || !pass) { errEl.textContent = "Fill all fields."; return; }
   const btn = document.getElementById("modal-submit");
-  btn.innerHTML = '<span class="spinner"></span>';
+  btn.innerHTML = '<span class="spin"></span>';
   btn.disabled = true;
   errEl.textContent = "";
   try {
-    const endpoint = authMode === "login" ? "/auth/login" : "/auth/register";
-    const res = await api("POST", endpoint, { username: user, password: pass });
+    const ep  = authMode === "login" ? "/auth/login" : "/auth/register";
+    const res = await apiFetch("POST", ep, { username: user, password: pass });
     token = res.token; username = res.username;
     localStorage.setItem("inn_token", token);
     localStorage.setItem("inn_username", username);
@@ -1586,7 +1381,7 @@ function logout() {
   token = null; username = null;
   localStorage.removeItem("inn_token");
   localStorage.removeItem("inn_username");
-  document.getElementById("user-pill").style.display = "none";
+  document.getElementById("user-pill").style.display   = "none";
   document.getElementById("sign-in-btn").style.display = "block";
 }
 
@@ -1595,36 +1390,34 @@ document.getElementById("modal-overlay").addEventListener("click", e => {
   if (e.target === document.getElementById("modal-overlay")) closeAuth();
 });
 
-// ══════════════════════════════════════════
-// API
-// ══════════════════════════════════════════
-async function api(method, path, body) {
+// ═══════════════════════════════════════════
+// API HELPER
+// ═══════════════════════════════════════════
+async function apiFetch(method, path, body) {
   const opts = { method, headers: { "Content-Type": "application/json" } };
   if (token) opts.headers["Authorization"] = "Bearer " + token;
-  if (body) opts.body = JSON.stringify(body);
-  const res = await fetch(CONFIG.api + path, opts);
+  if (body)  opts.body = JSON.stringify(body);
+  const res  = await fetch(API + path, opts);
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    const e = new Error(data.error || res.statusText);
-    e.status = res.status; throw e;
-  }
+  if (!res.ok) { const e = new Error(data.error || res.statusText); e.status = res.status; throw e; }
   return data;
 }
 
-// ══════════════════════════════════════════
-// TOAST & UTILS
-// ══════════════════════════════════════════
-let toastTimer;
+// ═══════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════
+let _tt;
 function toast(msg) {
   const el = document.getElementById("toast");
-  el.textContent = msg;
-  el.className = "show";
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.className = "", 3000);
+  el.textContent = msg; el.className = "show";
+  clearTimeout(_tt);
+  _tt = setTimeout(() => el.className = "", 3200);
 }
 
 function esc(s) {
-  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  return String(s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 </script>
 </body>
