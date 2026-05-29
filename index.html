@@ -3,550 +3,1628 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pages</title>
+<title>Innernet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f7f5f0;
+  --bg2: #eeeae2;
+  --bg3: #e5e0d5;
+  --ink: #1c1a16;
+  --ink2: #6b6558;
+  --ink3: #a09880;
+  --ink4: #c8bfaa;
+  --accent: #c7522a;
+  --accent2: #e06840;
+  --blue: #2a5fc7;
+  --green: #2e7d4f;
+  --border: #ddd9cf;
+  --border2: #ccc8bc;
+  --card: #ffffff;
+  --shadow-sm: 0 1px 3px rgba(28,26,22,0.08);
+  --shadow: 0 4px 16px rgba(28,26,22,0.1);
+}
 
-  /* ── Error view ── */
-  body.error-view {
-    font-family: 'Courier New', monospace;
-    background: #0e0e0e;
-    color: #e0e0e0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 2rem;
-  }
-  .error-box { max-width: 480px; width: 100%; border: 1px solid #2a2a2a; padding: 2rem 2.5rem; }
-  .error-box .code { font-size: 4rem; font-weight: bold; color: #fff; line-height: 1; margin-bottom: 0.4rem; }
-  .error-box .label { font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: #555; margin-bottom: 1.5rem; }
-  .error-box .message { font-size: 0.88rem; color: #999; line-height: 1.65; }
-  .error-box .detail { margin-top: 1rem; font-size: 0.72rem; color: #444; word-break: break-all; line-height: 1.5; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* ── Home view ── */
-  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400&display=swap');
+html, body {
+  height: 100%;
+  font-family: 'Geist', 'DM Mono', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14px;
+  overflow: hidden;
+}
 
-  body.home-view {
-    font-family: 'IBM Plex Mono', 'Courier New', monospace;
-    background: #080808;
-    color: #c8c8c8;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    overflow: hidden;
-  }
+/* ════════════════════════════════════
+   BROWSER CHROME
+════════════════════════════════════ */
+#browser {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
 
-  body.home-view::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 39px,
-        rgba(255,255,255,0.018) 39px,
-        rgba(255,255,255,0.018) 40px
-      ),
-      repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 39px,
-        rgba(255,255,255,0.018) 39px,
-        rgba(255,255,255,0.018) 40px
-      );
-    pointer-events: none;
-    z-index: 0;
-  }
+/* ── TITLE BAR ── */
+#title-bar {
+  height: 38px;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  gap: 0.5rem;
+  -webkit-app-region: drag;
+  user-select: none;
+  flex-shrink: 0;
+}
 
-  .home-wrap {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 520px;
-    animation: fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) both;
-  }
+.traffic-lights {
+  display: flex;
+  gap: 6px;
+  margin-right: 0.5rem;
+}
+.tl {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: filter 0.15s;
+}
+.tl:hover { filter: brightness(0.85); }
+.tl-red { background: #ff5f57; }
+.tl-yellow { background: #ffbd2e; }
+.tl-green { background: #28ca41; }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(18px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+.tab-strip {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  overflow: hidden;
+}
 
-  /* Header */
-  .home-header {
-    margin-bottom: 2.8rem;
-  }
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0 0.8rem;
+  height: 26px;
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  font-size: 0.68rem;
+  color: var(--ink2);
+  cursor: pointer;
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: 'Geist', sans-serif;
+  letter-spacing: 0.01em;
+  transition: background 0.1s;
+  position: relative;
+}
+.tab.active {
+  background: var(--bg);
+  color: var(--ink);
+  border-color: var(--border);
+  z-index: 1;
+}
+.tab:not(.active):hover { background: var(--bg2); }
+.tab-favicon { font-size: 0.7rem; flex-shrink: 0; }
+.tab-title { overflow: hidden; text-overflow: ellipsis; }
+.tab-close {
+  margin-left: auto;
+  flex-shrink: 0;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.6rem;
+  color: var(--ink3);
+  transition: all 0.12s;
+}
+.tab-close:hover { background: var(--border2); color: var(--ink); }
 
-  .home-logo {
-    display: flex;
-    align-items: baseline;
-    gap: 0.6rem;
-    margin-bottom: 0.5rem;
-  }
+.btn-new-tab {
+  width: 26px; height: 26px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  color: var(--ink3);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.12s;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.btn-new-tab:hover { background: var(--bg2); border-color: var(--border); color: var(--ink); }
 
-  .home-logo-mark {
-    font-size: 0.65rem;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: #3a3a3a;
-    font-weight: 400;
-    padding: 0.18rem 0.45rem;
-    border: 1px solid #1e1e1e;
-  }
+/* ── NAV BAR ── */
+#nav-bar {
+  height: 48px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 0.8rem;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
 
-  .home-title {
-    font-size: 1.65rem;
-    font-weight: 600;
-    color: #f0f0f0;
-    letter-spacing: -0.02em;
-    line-height: 1;
-  }
+.nav-btn {
+  width: 30px; height: 30px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: var(--ink3);
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.12s;
+  flex-shrink: 0;
+}
+.nav-btn:hover { background: var(--border); color: var(--ink); }
+.nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.nav-btn:disabled:hover { background: none; }
 
-  .home-subtitle {
-    font-size: 0.72rem;
-    color: #3a3a3a;
-    letter-spacing: 0.06em;
-    margin-top: 0.6rem;
-    font-weight: 300;
-  }
+/* Address bar */
+#address-bar-wrap {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
 
-  /* Form */
-  .home-form {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    border: 1px solid #1c1c1c;
-  }
+.addr-protocol {
+  position: absolute;
+  left: 0.75rem;
+  font-size: 0.65rem;
+  color: var(--green);
+  letter-spacing: 0.04em;
+  font-family: 'DM Mono', monospace;
+  pointer-events: none;
+  font-weight: 500;
+}
 
-  .field-row {
-    display: flex;
-    align-items: stretch;
-    border-bottom: 1px solid #1c1c1c;
-    position: relative;
-    transition: background 0.15s;
-  }
-  .field-row:last-of-type { border-bottom: none; }
-  .field-row:focus-within { background: #0f0f0f; }
+#address-input {
+  width: 100%;
+  height: 32px;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 0 1rem 0 3.2rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--ink);
+  outline: none;
+  transition: all 0.15s;
+  caret-color: var(--accent);
+  letter-spacing: 0.01em;
+}
+#address-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(199,82,42,0.1);
+  border-radius: 8px;
+}
+#address-input::placeholder { color: var(--ink4); }
+#address-input:focus::placeholder { color: var(--ink3); }
 
-  .field-label {
-    display: flex;
-    align-items: center;
-    padding: 0 1rem;
-    min-width: 90px;
-    font-size: 0.62rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: #2e2e2e;
-    border-right: 1px solid #1c1c1c;
-    user-select: none;
-    transition: color 0.15s;
-    font-weight: 500;
-  }
-  .field-row:focus-within .field-label { color: #555; }
+/* Suggestions */
+#suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0; right: 0;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  z-index: 300;
+  display: none;
+  overflow: hidden;
+  max-height: 260px;
+  overflow-y: auto;
+}
+#suggestions.open { display: block; }
 
-  .field-optional {
-    font-size: 0.5rem;
-    letter-spacing: 0.1em;
-    color: #252525;
-    display: block;
-    margin-top: 2px;
-    font-weight: 300;
-  }
-  .field-row:focus-within .field-optional { color: #3a3a3a; }
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.55rem 0.9rem;
+  cursor: pointer;
+  transition: background 0.1s;
+  font-size: 0.78rem;
+}
+.suggestion-item:hover, .suggestion-item.focused { background: var(--bg); }
+.sug-icon { font-size: 0.8rem; flex-shrink: 0; color: var(--ink3); }
+.sug-main { color: var(--ink); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sug-main em { color: var(--accent); font-style: normal; font-weight: 600; }
+.sug-sub { font-size: 0.65rem; color: var(--ink3); flex-shrink: 0; }
 
-  .field-input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    outline: none;
-    padding: 0.9rem 1rem;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.82rem;
-    color: #e0e0e0;
-    caret-color: #7fff7f;
-    letter-spacing: 0.01em;
-  }
-  .field-input::placeholder {
-    color: #222;
-    font-weight: 300;
-  }
-  .field-input:focus::placeholder { color: #2e2e2e; }
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
 
-  /* Preview bar */
-  .home-preview {
-    margin-top: 1px;
-    padding: 0.6rem 1rem;
-    font-size: 0.66rem;
-    color: #282828;
-    letter-spacing: 0.04em;
-    min-height: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    transition: color 0.2s;
-    border: 1px solid #1c1c1c;
-    border-top: none;
-  }
-  .home-preview.active { color: #404040; }
-  .home-preview .preview-arrow { color: #1e1e1e; }
-  .home-preview.active .preview-arrow { color: #3a3a3a; }
-  .home-preview .preview-url { color: #4a8a4a; font-weight: 400; }
+#user-pill {
+  display: none;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 0.2rem 0.7rem 0.2rem 0.4rem;
+  font-size: 0.68rem;
+  color: var(--ink2);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+#user-pill:hover { border-color: var(--border2); }
+.user-avatar {
+  width: 18px; height: 18px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.55rem;
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-family: 'Geist', sans-serif;
+}
+#lucks-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: #b8902a;
+}
 
-  /* Submit button */
-  .home-submit {
-    margin-top: 1.4rem;
-    width: 100%;
-    padding: 0.85rem;
-    background: #111;
-    border: 1px solid #252525;
-    color: #888;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.72rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-weight: 400;
-    position: relative;
-    overflow: hidden;
-  }
-  .home-submit::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.015) 50%, transparent 100%);
-    transform: translateX(-100%);
-    transition: transform 0.4s;
-  }
-  .home-submit:hover::before { transform: translateX(100%); }
-  .home-submit:hover { border-color: #3a3a3a; color: #bbb; background: #131313; }
-  .home-submit:active { background: #0a0a0a; }
-  .home-submit:disabled { opacity: 0.3; cursor: not-allowed; }
+#sign-in-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.3rem 0.8rem;
+  font-family: 'Geist', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+#sign-in-btn:hover { background: var(--accent2); }
 
-  /* Footer note */
-  .home-note {
-    margin-top: 2rem;
-    font-size: 0.6rem;
-    color: #202020;
-    letter-spacing: 0.1em;
-    text-align: center;
-    line-height: 1.8;
-  }
-  .home-note span { color: #2a2a2a; }
+/* ════════════════════════════════════
+   CONTENT AREA
+════════════════════════════════════ */
+#content-area {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Iframe for loaded pages */
+#page-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: none;
+  background: #fff;
+}
+
+/* ════════════════════════════════════
+   HOME PAGE
+════════════════════════════════════ */
+#home-page {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.home-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 5vh 1.5rem 3rem;
+  max-width: 680px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Hero wordmark */
+.home-wordmark {
+  margin-bottom: 2.5rem;
+  text-align: center;
+  animation: fadeDown 0.5s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.wordmark-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  line-height: 0.95;
+  display: flex;
+  align-items: baseline;
+  gap: 0.1em;
+}
+.wordmark-title em {
+  font-style: italic;
+  color: var(--accent);
+}
+.wordmark-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--ink3);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-top: 0.6rem;
+}
+
+/* Home search */
+.home-search-wrap {
+  width: 100%;
+  margin-bottom: 2.5rem;
+  animation: fadeUp 0.5s 0.1s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.home-search-box {
+  display: flex;
+  align-items: center;
+  background: var(--card);
+  border: 1.5px solid var(--border2);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.home-search-box:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(199,82,42,0.1), var(--shadow-sm);
+}
+
+.home-search-icon {
+  padding: 0 0.9rem;
+  color: var(--ink3);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+#home-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.9rem;
+  color: var(--ink);
+  padding: 0.9rem 0;
+  caret-color: var(--accent);
+  letter-spacing: 0.01em;
+}
+#home-search-input::placeholder { color: var(--ink4); }
+
+.home-search-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 0 1.3rem;
+  height: 100%;
+  min-height: 48px;
+  font-family: 'Geist', sans-serif;
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.home-search-btn:hover { background: var(--accent2); }
+
+/* TLD quick filters */
+.tld-row {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.7rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.tld-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  padding: 0.18rem 0.55rem;
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  color: var(--ink3);
+  cursor: pointer;
+  transition: all 0.12s;
+  letter-spacing: 0.04em;
+}
+.tld-tag:hover { border-color: var(--accent); color: var(--accent); background: rgba(199,82,42,0.04); }
+
+/* Search results on home */
+#home-results {
+  width: 100%;
+  display: none;
+  animation: fadeUp 0.3s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+.results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+}
+.results-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  font-family: 'DM Mono', monospace;
+}
+.results-count {
+  font-size: 0.65rem;
+  color: var(--ink3);
+  font-family: 'DM Mono', monospace;
+}
+
+.search-result-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  cursor: pointer;
+  transition: all 0.12s;
+  box-shadow: var(--shadow-sm);
+}
+.search-result-card:hover {
+  border-color: var(--border2);
+  box-shadow: var(--shadow);
+  transform: translateY(-1px);
+}
+
+.src-left { flex: 1; min-width: 0; }
+.src-domain {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.src-meta {
+  font-size: 0.62rem;
+  color: var(--ink3);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.04em;
+}
+.src-meta .owner { color: var(--ink2); }
+.src-meta .has-cname { color: var(--green); }
+
+.src-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.badge {
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-family: 'DM Mono', monospace;
+}
+.badge-live { background: rgba(46,125,79,0.1); color: var(--green); border: 1px solid rgba(46,125,79,0.2); }
+.badge-dns { background: rgba(42,95,199,0.1); color: var(--blue); border: 1px solid rgba(42,95,199,0.2); }
+
+.btn-visit-card {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.3rem 0.7rem;
+  font-family: 'Geist', sans-serif;
+  font-weight: 500;
+  font-size: 0.68rem;
+  cursor: pointer;
+  transition: background 0.12s;
+  white-space: nowrap;
+}
+.btn-visit-card:hover { background: var(--accent2); }
+
+/* Domain info card (when no CNAME) */
+.domain-info-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem 1.4rem;
+  width: 100%;
+  box-shadow: var(--shadow-sm);
+}
+.dic-domain {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.8rem;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  margin-bottom: 1rem;
+}
+.dic-row {
+  display: flex;
+  gap: 0.8rem;
+  font-size: 0.75rem;
+  margin-bottom: 0.4rem;
+  align-items: baseline;
+}
+.dic-key {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  min-width: 52px;
+  flex-shrink: 0;
+}
+.dic-val {
+  color: var(--ink);
+  font-family: 'DM Mono', monospace;
+  word-break: break-all;
+}
+.dic-val.none { color: var(--ink3); font-style: italic; }
+.dic-val.green { color: var(--green); }
+.dic-notice {
+  margin-top: 1rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--bg);
+  border-radius: 6px;
+  font-size: 0.68rem;
+  color: var(--ink2);
+  font-family: 'DM Mono', monospace;
+  line-height: 1.6;
+  border: 1px solid var(--border);
+}
+
+/* ── PORTAL GRID ── */
+.portal-grid {
+  width: 100%;
+  animation: fadeUp 0.5s 0.2s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+.portal-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  font-family: 'DM Mono', monospace;
+  margin-bottom: 0.8rem;
+}
+
+.portal-apps {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.portal-app {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.portal-app:hover {
+  border-color: var(--border2);
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+
+.pa-icon { font-size: 1.4rem; line-height: 1; }
+.pa-name {
+  font-family: 'Geist', sans-serif;
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.pa-domain {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--ink3);
+  letter-spacing: 0.04em;
+}
+.pa-desc {
+  font-size: 0.65rem;
+  color: var(--ink2);
+  line-height: 1.4;
+}
+
+/* ════════════════════════════════════
+   DOMAIN INFO PAGE (in content area)
+════════════════════════════════════ */
+#domain-info-page {
+  display: none;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background: var(--bg);
+  align-items: center;
+  justify-content: center;
+}
+.dip-wrap {
+  max-width: 520px;
+  width: 100%;
+  padding: 3rem 1.5rem;
+}
+.dip-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 0.5rem;
+}
+.dip-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 2.5rem;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  margin-bottom: 1.2rem;
+  line-height: 1;
+}
+.dip-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1rem;
+}
+.dip-row {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  gap: 0.8rem;
+  font-size: 0.78rem;
+}
+.dip-row:last-child { border-bottom: none; }
+.dip-key {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  min-width: 56px;
+  flex-shrink: 0;
+}
+.dip-val { color: var(--ink); font-family: 'DM Mono', monospace; word-break: break-all; }
+.dip-val.none { color: var(--ink3); font-style: italic; font-family: 'Geist',sans-serif; font-size: 0.75rem; }
+.dip-val.green { color: var(--green); }
+.dip-notice {
+  padding: 0.8rem 1rem;
+  background: rgba(199,82,42,0.04);
+  border: 1px solid rgba(199,82,42,0.15);
+  border-radius: 8px;
+  font-size: 0.7rem;
+  color: var(--ink2);
+  font-family: 'DM Mono', monospace;
+  line-height: 1.7;
+}
+.dip-notice a {
+  color: var(--accent);
+  text-decoration: none;
+  cursor: pointer;
+}
+.dip-notice a:hover { text-decoration: underline; }
+
+/* ════════════════════════════════════
+   404 PAGE
+════════════════════════════════════ */
+#not-found-page {
+  display: none;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.6rem;
+  background: var(--bg);
+}
+.nfp-code {
+  font-family: 'Instrument Serif', serif;
+  font-size: 6rem;
+  letter-spacing: -0.06em;
+  color: var(--ink4);
+  line-height: 1;
+}
+.nfp-msg {
+  font-size: 0.8rem;
+  color: var(--ink3);
+  letter-spacing: 0.06em;
+  font-family: 'DM Mono', monospace;
+}
+.nfp-domain {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--ink2);
+  background: var(--bg2);
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+/* ════════════════════════════════════
+   AUTH MODAL
+════════════════════════════════════ */
+#modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(28,26,22,0.5);
+  z-index: 500;
+  display: none; align-items: center; justify-content: center;
+  backdrop-filter: blur(4px);
+}
+#modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  box-shadow: var(--shadow), 0 20px 60px rgba(28,26,22,0.15);
+  padding: 2rem;
+  width: 100%; max-width: 340px;
+  position: relative;
+  animation: modalIn 0.2s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.96) translateY(-8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.modal-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.5rem;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.2rem;
+}
+.modal-sub { font-size: 0.72rem; color: var(--ink2); margin-bottom: 1.3rem; line-height: 1.5; }
+.modal-field { margin-bottom: 0.8rem; }
+.modal-field label {
+  display: block; font-size: 0.6rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink3); margin-bottom: 0.3rem;
+  font-family: 'DM Mono', monospace;
+}
+.modal-field input {
+  width: 100%; background: var(--bg);
+  border: 1px solid var(--border2); border-radius: 7px;
+  color: var(--ink); font-family: 'DM Mono', monospace;
+  font-size: 0.82rem; padding: 0.55rem 0.8rem;
+  outline: none; transition: border-color 0.15s;
+  caret-color: var(--accent);
+}
+.modal-field input:focus { border-color: var(--accent); }
+.modal-submit {
+  width: 100%; background: var(--accent); color: #fff;
+  border: none; border-radius: 8px; padding: 0.7rem;
+  font-family: 'Geist', sans-serif; font-weight: 600;
+  font-size: 0.85rem; cursor: pointer;
+  transition: background 0.15s; margin-top: 0.4rem;
+}
+.modal-submit:hover { background: var(--accent2); }
+.modal-error { font-size: 0.68rem; color: var(--accent); margin-top: 0.4rem; min-height: 1rem; }
+.modal-switch { text-align: center; margin-top: 0.9rem; font-size: 0.7rem; color: var(--ink2); }
+.modal-switch a { color: var(--accent); text-decoration: none; cursor: pointer; }
+.modal-close {
+  position: absolute; top: 0.8rem; right: 1rem;
+  background: none; border: none; cursor: pointer;
+  font-size: 1.1rem; color: var(--ink3); line-height: 1; border-radius: 50%;
+  width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
+}
+.modal-close:hover { background: var(--bg); color: var(--ink); }
+
+/* ── LOADING BAR ── */
+#loading-bar {
+  position: fixed; top: 0; left: 0;
+  height: 2px; width: 0%;
+  background: var(--accent);
+  z-index: 1000;
+  transition: width 0.3s ease;
+  pointer-events: none;
+}
+#loading-bar.done { width: 100%; opacity: 0; transition: width 0.2s, opacity 0.3s 0.2s; }
+
+/* ── TOAST ── */
+#toast {
+  position: fixed; bottom: 1.2rem; right: 1.2rem;
+  background: var(--ink); color: var(--bg);
+  padding: 0.6rem 1rem; border-radius: 8px;
+  font-size: 0.72rem; letter-spacing: 0.02em;
+  z-index: 999; opacity: 0; transform: translateY(8px);
+  transition: all 0.25s; pointer-events: none;
+  max-width: 260px; line-height: 1.4;
+  box-shadow: var(--shadow);
+  font-family: 'Geist', sans-serif;
+}
+#toast.show { opacity: 1; transform: translateY(0); }
+
+/* ── SPINNER ── */
+.spinner {
+  display: inline-block; width: 9px; height: 9px;
+  border: 1.5px solid currentColor; border-top-color: transparent;
+  border-radius: 50%; animation: spin 0.6s linear infinite;
+  margin-right: 5px; vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 600px) {
+  .tab { max-width: 120px; }
+  .portal-apps { grid-template-columns: repeat(2, 1fr); }
+  .home-inner { padding: 3vh 1rem 2rem; }
+  .wordmark-title { font-size: 3rem; }
+}
 </style>
 </head>
 <body>
-<script>
-/* ================================================================
-   PAGES — Gitea/Forgejo static hosting via Cloudflare Pages
-   ================================================================ */
 
-const CONFIG = {
-  domain:   "luciano.qzz.io",
-  instance: "https://git.luciano.qzz.io",
-  token:    "no",
-  mode:     "slash",   // "sub" | "slash"
-};
+<div id="loading-bar"></div>
 
-/* ================================================================
-   MOTOR
-   ================================================================ */
+<!-- BROWSER -->
+<div id="browser">
 
-(async () => {
-  const host      = location.hostname;
-  const pathname  = location.pathname;
-  const cfgDomain = CONFIG.domain.replace(/^https?:\/\//, "").replace(/\/$/, "");
+  <!-- TITLE BAR -->
+  <div id="title-bar">
+    <div class="traffic-lights">
+      <div class="tl tl-red"></div>
+      <div class="tl tl-yellow"></div>
+      <div class="tl tl-green"></div>
+    </div>
+    <div class="tab-strip" id="tab-strip">
+      <!-- tabs injected here -->
+    </div>
+    <button class="btn-new-tab" onclick="newTab()" title="New tab">+</button>
+  </div>
 
-  // ── Root: mostrar landing page ────────────────────────────────
-  const isRoot = (CONFIG.mode === "sub" && host === cfgDomain)
-              || (CONFIG.mode === "slash" && host === cfgDomain && (pathname === "/" || pathname === ""));
+  <!-- NAV BAR -->
+  <div id="nav-bar">
+    <button class="nav-btn" id="btn-back" onclick="goBack()" title="Back" disabled>←</button>
+    <button class="nav-btn" id="btn-fwd" onclick="goForward()" title="Forward" disabled>→</button>
+    <button class="nav-btn" id="btn-reload" onclick="reloadTab()" title="Reload">↺</button>
+    <button class="nav-btn" onclick="goHome()" title="Home">⌂</button>
 
-  if (isRoot) {
-    return showHome(cfgDomain);
-  }
+    <div id="address-bar-wrap">
+      <span class="addr-protocol" id="addr-protocol">inn://</span>
+      <input type="text" id="address-input"
+        placeholder="Search or type a domain (e.g. luciano.lbc)"
+        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <div id="suggestions"></div>
+    </div>
 
-  // ── 1. Parsear usuario, repo, rama y ruta ─────────────────────
-
-  let user, repo, branch, filePath;
-
-  if (CONFIG.mode === "sub") {
-    if (!host.endsWith(cfgDomain)) return err(400, "Dominio no reconocido", host);
-
-    user = host.slice(0, host.length - cfgDomain.length - 1);
-
-    const parts = pathname.replace(/^\//, "").split("/").filter(Boolean);
-
-    if (parts.length === 0) {
-      repo = user; branch = "pages"; filePath = "index.html";
-    } else if (parts[0].startsWith("@")) {
-      repo = user; branch = parts.shift().slice(1);
-      filePath = parts.join("/") || "index.html";
-    } else {
-      repo = parts.shift();
-      branch = (parts[0] && parts[0].startsWith("@")) ? parts.shift().slice(1) : "pages";
-      filePath = parts.join("/") || "index.html";
-    }
-
-  } else {
-    if (host !== cfgDomain) return err(400, "Dominio no reconocido", host);
-
-    const parts = pathname.replace(/^\//, "").split("/").filter(Boolean);
-
-    if (!parts[0]) return err(404, "No se especificó un usuario", pathname);
-    user = parts.shift();
-
-    if (!parts[0] || parts[0].startsWith("@")) {
-      repo = user;
-    } else {
-      repo = parts.shift();
-    }
-
-    branch = (parts[0] && parts[0].startsWith("@")) ? parts.shift().slice(1) : "pages";
-    filePath = parts.join("/") || "index.html";
-  }
-
-  if (filePath.endsWith("/") || filePath === "") filePath += "index.html";
-
-  // ── 2. Verificar repo y obtener archivo via proxy ─────────────
-
-  const apiBase = CONFIG.instance.replace(/\/$/, "");
-
-  const repoRes = await safeFetch(proxy(`${apiBase}/api/v1/repos/${enc(user)}/${enc(repo)}`));
-  if (!repoRes) return err(502, "No se pudo conectar a la instancia", apiBase);
-  if (repoRes.status === 404) return err(404, "Repositorio no encontrado", `${user}/${repo}`);
-  if (repoRes.status === 401 || repoRes.status === 403) return err(403, "Acceso denegado", `${user}/${repo}`);
-  if (!repoRes.ok) return err(repoRes.status, "Error al acceder al repositorio");
-
-  const rawUrl  = `${apiBase}/${enc(user)}/${enc(repo)}/raw/branch/${enc(branch)}/${filePath}`;
-  const fileRes = await safeFetch(proxy(rawUrl));
-  if (!fileRes) return err(502, "No se pudo cargar la página", rawUrl);
-  if (fileRes.status === 404) return err(404, "Página no encontrada", `${repo}@${branch}/${filePath}`);
-  if (!fileRes.ok) return err(fileRes.status, "No se pudo cargar la página", rawUrl);
-
-  // ── 3. Servir el contenido ────────────────────────────────────
-
-  const contentType = fileRes.headers.get("content-type") || guessType(filePath);
-  const blob        = await fileRes.blob();
-
-  if (isText(contentType, filePath)) {
-    const text = await blob.text();
-
-    if (contentType.includes("text/html") || /\.html?$/.test(filePath)) {
-      const dir      = filePath.includes("/") ? filePath.slice(0, filePath.lastIndexOf("/") + 1) : "";
-      const baseHref = `${apiBase}/${enc(user)}/${enc(repo)}/raw/branch/${enc(branch)}/${dir}`;
-
-      const interceptor = `<script>
-(function(){
-  var BASE  = ${JSON.stringify(apiBase)};
-  var TOKEN = ${JSON.stringify(CONFIG.token)};
-  var PFULL = ${JSON.stringify(baseHref)};
-
-  function toProxy(url) {
-    try {
-      var abs = /^https?:\/\//i.test(url)
-        ? url
-        : new URL(url, PFULL).toString();
-      if (!abs.startsWith(BASE)) return url;
-      var p = new URLSearchParams({ url: abs });
-      if (TOKEN && TOKEN.toLowerCase() !== "no") p.set("token", TOKEN);
-      return "/_proxy?" + p.toString();
-    } catch(e) { return url; }
-  }
-
-  var _oF = window.fetch;
-  window.fetch = function(input, init) {
-    if (typeof input === "string") input = toProxy(input);
-    else if (input instanceof Request) input = new Request(toProxy(input.url), input);
-    return _oF.call(this, input, init);
-  };
-
-  var _oO = XMLHttpRequest.prototype.open;
-  XMLHttpRequest.prototype.open = function() {
-    var a = Array.prototype.slice.call(arguments);
-    if (typeof a[1] === "string") a[1] = toProxy(a[1]);
-    return _oO.apply(this, a);
-  };
-})();
-<\/script>`;
-
-      const withBase = text.replace(/(<head[^>]*>)/i,
-        `$1\n<base href="${baseHref}">\n${interceptor}`);
-
-      document.open();
-      document.write(withBase);
-      document.close();
-
-    } else {
-      document.open();
-      document.write(`<pre style="font:0.9rem 'Courier New',monospace;white-space:pre-wrap;padding:1.5rem">${esc(text)}</pre>`);
-      document.close();
-    }
-
-  } else {
-    location.replace(URL.createObjectURL(blob));
-  }
-
-})();
-
-// ── Landing page ──────────────────────────────────────────────────
-
-function showHome(cfgDomain) {
-  document.body.className = "home-view";
-  document.body.innerHTML = `
-    <div class="home-wrap">
-      <div class="home-header">
-        <div class="home-logo">
-          <span class="home-logo-mark">static</span>
-          <span class="home-title">Pages</span>
-        </div>
-        <div class="home-subtitle">${esc(cfgDomain)}</div>
+    <div class="nav-right">
+      <div id="user-pill" onclick="openAuth()">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <span id="user-name-pill">—</span>
+        <span id="lucks-count">0 ⚡</span>
       </div>
+      <button id="sign-in-btn" onclick="openAuth()">Sign In</button>
+    </div>
+  </div>
 
-      <div class="home-form" id="homeForm">
-        <div class="field-row">
-          <label class="field-label" for="inp-user">User</label>
-          <input class="field-input" id="inp-user" type="text" placeholder="username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <!-- CONTENT -->
+  <div id="content-area">
+
+    <!-- Home page -->
+    <div id="home-page">
+      <div class="home-inner">
+
+        <div class="home-wordmark">
+          <div class="wordmark-title">Inner<em>net</em></div>
+          <div class="wordmark-sub">// the web inside the web</div>
         </div>
-        <div class="field-row">
-          <label class="field-label" for="inp-repo">Repo</label>
-          <input class="field-input" id="inp-repo" type="text" placeholder="repository" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+
+        <div class="home-search-wrap">
+          <div class="home-search-box">
+            <span class="home-search-icon">⌕</span>
+            <input type="text" id="home-search-input"
+              placeholder="Search domains or type one to visit..."
+              autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <button class="home-search-btn" onclick="homeSearch()">Go</button>
+          </div>
+          <div class="tld-row">
+            <span class="tld-tag" onclick="homeTld('.lbc')">.lbc</span>
+            <span class="tld-tag" onclick="homeTld('.green')">.green</span>
+            <span class="tld-tag" onclick="homeTld('.party')">.party</span>
+            <span class="tld-tag" onclick="homeTld('.cc')">.cc</span>
+          </div>
         </div>
-        <div class="field-row" style="border-bottom:none">
-          <label class="field-label" for="inp-branch">
-            Branch
-            <span class="field-optional">optional</span>
-          </label>
-          <input class="field-input" id="inp-branch" type="text" placeholder="pages" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+
+        <div id="home-results"></div>
+
+        <div class="portal-grid" id="portal-grid">
+          <div class="portal-label">// innernet apps</div>
+          <div class="portal-apps">
+            <div class="portal-app" onclick="navigateTo('getaname.lbc')">
+              <div class="pa-icon">🏷</div>
+              <div class="pa-name">getaname</div>
+              <div class="pa-domain">getaname.lbc</div>
+              <div class="pa-desc">Register & manage your domains</div>
+            </div>
+            <div class="portal-app" onclick="navigateTo('host.lbc')">
+              <div class="pa-icon">📄</div>
+              <div class="pa-name">host</div>
+              <div class="pa-domain">host.lbc</div>
+              <div class="pa-desc">Upload & host HTML pages</div>
+            </div>
+            <div class="portal-app" onclick="navigateTo('mail.party')">
+              <div class="pa-icon">✉️</div>
+              <div class="pa-name">mail</div>
+              <div class="pa-domain">mail.party</div>
+              <div class="pa-desc">Innernet email accounts</div>
+            </div>
+            <div class="portal-app" onclick="navigateTo('bankly.lbc')">
+              <div class="pa-icon">⚡</div>
+              <div class="pa-name">bankly</div>
+              <div class="pa-domain">bankly.lbc</div>
+              <div class="pa-desc">Your LUCKS balance & history</div>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="home-preview" id="homePreview">
-        <span class="preview-arrow">→</span>
-        <span id="previewUrl">—</span>
-      </div>
-
-      <button class="home-submit" id="homeSubmit" disabled>Go →</button>
-
-      <div class="home-note">
-        branch defaults to <span>pages</span> when left empty<br>
-        powered by Gitea / Forgejo
       </div>
     </div>
+
+    <!-- Iframe for live pages -->
+    <iframe id="page-frame" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
+
+    <!-- Domain info (no CNAME) -->
+    <div id="domain-info-page">
+      <div class="dip-wrap">
+        <div class="dip-eyebrow">// domain info</div>
+        <div class="dip-title" id="dip-title">—</div>
+        <div class="dip-card" id="dip-card"></div>
+        <div class="dip-notice" id="dip-notice"></div>
+      </div>
+    </div>
+
+    <!-- 404 -->
+    <div id="not-found-page">
+      <div class="nfp-code">404</div>
+      <div class="nfp-msg">domain not found on the inner net</div>
+      <div class="nfp-domain" id="nfp-domain">—</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div id="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAuth()">×</button>
+    <div class="modal-title" id="modal-title">Sign In</div>
+    <div class="modal-sub" id="modal-sub">Access your Innernet account.</div>
+    <div class="modal-field">
+      <label>Username</label>
+      <input type="text" id="m-user" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="username">
+    </div>
+    <div class="modal-field">
+      <label>Password</label>
+      <input type="password" id="m-pass" placeholder="••••••••">
+    </div>
+    <div class="modal-error" id="modal-error"></div>
+    <button class="modal-submit" id="modal-submit" onclick="submitAuth()">Sign In</button>
+    <div class="modal-switch" id="modal-switch">
+      No account? <a onclick="toggleAuthMode()">Create one</a>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════
+const CONFIG = {
+  api: "https://own-net.vercel.app",  // ← change this
+  apps: {
+    "getaname.lbc": null,   // null = served by this browser as portal link
+    "host.lbc": null,
+    "mail.party": null,
+    "bankly.lbc": null,
+    "innernet.lbc": "home",
+  }
+};
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let token = localStorage.getItem("inn_token") || null;
+let username = localStorage.getItem("inn_username") || null;
+let authMode = "login";
+
+// Tab system
+let tabs = [];
+let activeTabId = null;
+let tabCounter = 0;
+
+// Per-tab history
+// tab.history = [url, url, ...]
+// tab.historyIndex = int
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+window.addEventListener("DOMContentLoaded", async () => {
+  setupAddressBar();
+  setupHomeSearch();
+
+  // Handle /d/DOMAIN routing
+  const path = location.pathname;
+  const domainMatch = path.match(/^\/d\/(.+)$/);
+
+  newTab(domainMatch ? domainMatch[1] : null);
+
+  if (token) await initUser();
+});
+
+async function initUser() {
+  try {
+    const res = await api("GET", "/me");
+    username = res.username;
+    const pill = document.getElementById("user-pill");
+    const signIn = document.getElementById("sign-in-btn");
+    document.getElementById("user-avatar").textContent = username[0].toUpperCase();
+    document.getElementById("user-name-pill").textContent = username;
+    document.getElementById("lucks-count").textContent = res.lucks + " ⚡";
+    pill.style.display = "flex";
+    signIn.style.display = "none";
+  } catch { logout(); }
+}
+
+// ══════════════════════════════════════════
+// TAB SYSTEM
+// ══════════════════════════════════════════
+function newTab(url = null) {
+  const id = ++tabCounter;
+  const tab = {
+    id,
+    title: "New Tab",
+    favicon: "🌐",
+    url: null,
+    history: [],
+    historyIndex: -1,
+    page: "home"  // "home" | "frame" | "domaininfo" | "notfound"
+  };
+  tabs.push(tab);
+  setActiveTab(id);
+  renderTabs();
+
+  if (url) {
+    navigateTo(url);
+  } else {
+    showHome();
+  }
+}
+
+function setActiveTab(id) {
+  activeTabId = id;
+  renderTabs();
+  const tab = getTab(id);
+  if (tab) restoreTabView(tab);
+}
+
+function getTab(id) { return tabs.find(t => t.id === id); }
+function getActiveTab() { return getTab(activeTabId); }
+
+function closeTab(id, e) {
+  e && e.stopPropagation();
+  const idx = tabs.findIndex(t => t.id === id);
+  tabs.splice(idx, 1);
+  if (tabs.length === 0) {
+    newTab();
+    return;
+  }
+  if (activeTabId === id) {
+    const newActive = tabs[Math.min(idx, tabs.length - 1)];
+    setActiveTab(newActive.id);
+  }
+  renderTabs();
+}
+
+function renderTabs() {
+  const strip = document.getElementById("tab-strip");
+  strip.innerHTML = tabs.map(tab => `
+    <div class="tab ${tab.id === activeTabId ? "active" : ""}" onclick="setActiveTab(${tab.id})">
+      <span class="tab-favicon">${esc(tab.favicon)}</span>
+      <span class="tab-title">${esc(tab.title)}</span>
+      <span class="tab-close" onclick="closeTab(${tab.id}, event)">×</span>
+    </div>
+  `).join("");
+}
+
+function restoreTabView(tab) {
+  setAddrBar(tab.url || "");
+  showPage(tab.page, false);
+  updateNavButtons();
+}
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+async function navigateTo(rawUrl) {
+  const domain = rawUrl.trim().replace(/^inn:\/\//i, "").replace(/\/+$/, "").toLowerCase();
+  if (!domain) { showHome(); return; }
+
+  // Update address bar
+  setAddrBar(domain);
+  hideSuggestions();
+
+  const tab = getActiveTab();
+
+  // Push to history
+  tab.history = tab.history.slice(0, tab.historyIndex + 1);
+  tab.history.push(domain);
+  tab.historyIndex = tab.history.length - 1;
+  tab.url = domain;
+  updateNavButtons();
+
+  // Loading bar
+  startLoading();
+
+  try {
+    const data = await api("GET", `/resolve/${encodeURIComponent(domain)}`);
+
+    if (data.cname) {
+      // Has CNAME — try to load in iframe
+      loadFrame(data.cname, domain, data);
+    } else {
+      // No CNAME — show domain info
+      showDomainInfo(data);
+    }
+  } catch (e) {
+    if (e.status === 404) {
+      showNotFound(domain);
+    } else {
+      toast("Navigation error: " + (e.message || "unknown"));
+      showNotFound(domain);
+    }
+  } finally {
+    stopLoading();
+  }
+}
+
+function loadFrame(cname, domain, domainData) {
+  const frame = document.getElementById("page-frame");
+  frame.src = cname;
+  showPage("frame");
+
+  const tab = getActiveTab();
+  tab.title = domain;
+  tab.favicon = "🌐";
+  tab.page = "frame";
+
+  frame.onload = () => {
+    try {
+      const title = frame.contentDocument?.title;
+      if (title) {
+        tab.title = title;
+        renderTabs();
+      }
+    } catch {}
+  };
+  renderTabs();
+}
+
+function showDomainInfo(data) {
+  const tab = getActiveTab();
+  tab.title = data.domain;
+  tab.favicon = "ℹ️";
+  tab.page = "domaininfo";
+
+  document.getElementById("dip-title").textContent = data.domain;
+
+  const card = document.getElementById("dip-card");
+  card.innerHTML = `
+    <div class="dip-row"><span class="dip-key">Owner</span><span class="dip-val">${esc(data.owner)}</span></div>
+    <div class="dip-row"><span class="dip-key">CNAME</span><span class="dip-val none">not set</span></div>
+    <div class="dip-row"><span class="dip-key">MX</span><span class="dip-val ${data.mx ? "green" : "none"}">${data.mx ? esc(data.mx) : "not set"}</span></div>
+    <div class="dip-row"><span class="dip-key">Since</span><span class="dip-val">${new Date(data.createdAt).toLocaleDateString()}</span></div>
   `;
 
-  const inpUser   = document.getElementById('inp-user');
-  const inpRepo   = document.getElementById('inp-repo');
-  const inpBranch = document.getElementById('inp-branch');
-  const preview   = document.getElementById('homePreview');
-  const previewUrl= document.getElementById('previewUrl');
-  const submit    = document.getElementById('homeSubmit');
+  document.getElementById("dip-notice").innerHTML =
+    `This domain exists but has no CNAME record pointing to a page yet. ` +
+    `The owner <strong>${esc(data.owner)}</strong> can set one at ` +
+    `<a onclick="navigateTo('getaname.lbc')">getaname.lbc</a>.`;
 
-  function buildUrl() {
-    const user   = inpUser.value.trim();
-    const repo   = inpRepo.value.trim();
-    const branch = inpBranch.value.trim();
-    if (!user) return null;
+  showPage("domaininfo");
+  renderTabs();
+}
 
-    const proto = location.protocol + "//";
+function showNotFound(domain) {
+  const tab = getActiveTab();
+  tab.title = "Not Found";
+  tab.favicon = "⚠️";
+  tab.page = "notfound";
+  document.getElementById("nfp-domain").textContent = domain;
+  showPage("notfound");
+  renderTabs();
+}
 
-    if (CONFIG.mode === "sub") {
-      // user.domain/repo/@branch  OR  user.domain (if repo === user)
-      const repoSeg = (repo && repo !== user) ? `/${repo}` : "";
-      const branchSeg = branch ? `/@${branch}` : "";
-      return `${proto}${user}.${cfgDomain}${repoSeg}${branchSeg}/`;
-    } else {
-      // domain/user/repo/@branch
-      const repoSeg = repo ? `/${repo}` : "";
-      const branchSeg = branch ? `/@${branch}` : "";
-      return `${proto}${cfgDomain}/${user}${repoSeg}${branchSeg}/`;
+function showHome() {
+  const tab = getActiveTab();
+  if (tab) {
+    tab.title = "New Tab";
+    tab.favicon = "🌐";
+    tab.page = "home";
+    tab.url = null;
+    renderTabs();
+  }
+  setAddrBar("");
+  showPage("home");
+  document.getElementById("home-results").style.display = "none";
+  document.getElementById("home-search-input").value = "";
+  updateNavButtons();
+}
+
+function showPage(name, updateTab = true) {
+  document.getElementById("home-page").style.display = name === "home" ? "flex" : "none";
+  document.getElementById("page-frame").style.display = name === "frame" ? "block" : "none";
+  document.getElementById("domain-info-page").style.display = name === "domaininfo" ? "flex" : "none";
+  document.getElementById("not-found-page").style.display = name === "notfound" ? "flex" : "none";
+
+  if (name === "home") {
+    setTimeout(() => document.getElementById("home-search-input").focus(), 100);
+  }
+}
+
+function goHome() {
+  const tab = getActiveTab();
+  tab.history = tab.history.slice(0, tab.historyIndex + 1);
+  tab.history.push(null);
+  tab.historyIndex = tab.history.length - 1;
+  showHome();
+}
+
+function goBack() {
+  const tab = getActiveTab();
+  if (tab.historyIndex <= 0) return;
+  tab.historyIndex--;
+  const url = tab.history[tab.historyIndex];
+  if (!url) { showHome(); setAddrBar(""); }
+  else navigateNoHistory(url);
+}
+
+function goForward() {
+  const tab = getActiveTab();
+  if (tab.historyIndex >= tab.history.length - 1) return;
+  tab.historyIndex++;
+  const url = tab.history[tab.historyIndex];
+  if (!url) { showHome(); setAddrBar(""); }
+  else navigateNoHistory(url);
+}
+
+async function navigateNoHistory(domain) {
+  setAddrBar(domain);
+  startLoading();
+  try {
+    const data = await api("GET", `/resolve/${encodeURIComponent(domain)}`);
+    if (data.cname) loadFrame(data.cname, domain, data);
+    else showDomainInfo(data);
+  } catch (e) {
+    if (e.status === 404) showNotFound(domain);
+  } finally {
+    stopLoading();
+    updateNavButtons();
+  }
+}
+
+function reloadTab() {
+  const tab = getActiveTab();
+  if (!tab || !tab.url) return;
+  navigateNoHistory(tab.url);
+}
+
+function updateNavButtons() {
+  const tab = getActiveTab();
+  document.getElementById("btn-back").disabled = !tab || tab.historyIndex <= 0;
+  document.getElementById("btn-fwd").disabled = !tab || tab.historyIndex >= tab.history.length - 1;
+}
+
+// ══════════════════════════════════════════
+// ADDRESS BAR
+// ══════════════════════════════════════════
+function setupAddressBar() {
+  const input = document.getElementById("address-input");
+  let suggestTimer;
+
+  input.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      const val = input.value.trim();
+      if (val) navigateTo(val);
+      else showHome();
+      hideSuggestions();
     }
+    if (e.key === "Escape") { hideSuggestions(); input.blur(); }
+  });
+
+  input.addEventListener("input", () => {
+    clearTimeout(suggestTimer);
+    const val = input.value.trim();
+    if (val.length < 1) { hideSuggestions(); return; }
+    suggestTimer = setTimeout(() => fetchSuggestions(val), 220);
+  });
+
+  input.addEventListener("focus", () => {
+    input.select();
+    document.getElementById("addr-protocol").style.display = "none";
+  });
+  input.addEventListener("blur", () => {
+    setTimeout(hideSuggestions, 150);
+    if (!input.value.trim()) {
+      document.getElementById("addr-protocol").style.display = "block";
+    }
+  });
+}
+
+async function fetchSuggestions(q) {
+  try {
+    const data = await api("GET", `/search?q=${encodeURIComponent(q)}`);
+    renderSuggestions(q, data.slice(0, 6));
+  } catch {}
+}
+
+function renderSuggestions(q, results) {
+  const box = document.getElementById("suggestions");
+  if (results.length === 0) { hideSuggestions(); return; }
+
+  box.innerHTML = results.map(d => {
+    const highlighted = esc(d.domain).replace(
+      new RegExp(esc(q), "gi"),
+      m => `<em>${m}</em>`
+    );
+    return `
+      <div class="suggestion-item" onclick="navigateTo('${esc(d.domain)}')">
+        <span class="sug-icon">${d.cname ? "🌐" : "ℹ️"}</span>
+        <span class="sug-main">${highlighted}</span>
+        <span class="sug-sub">${d.cname ? "live" : "no page"}</span>
+      </div>
+    `;
+  }).join("");
+  box.classList.add("open");
+}
+
+function hideSuggestions() {
+  document.getElementById("suggestions").classList.remove("open");
+}
+
+function setAddrBar(val) {
+  const input = document.getElementById("address-input");
+  input.value = val;
+  const proto = document.getElementById("addr-protocol");
+  proto.style.display = val ? "none" : "block";
+}
+
+// ══════════════════════════════════════════
+// HOME SEARCH
+// ══════════════════════════════════════════
+function setupHomeSearch() {
+  const inp = document.getElementById("home-search-input");
+  inp.addEventListener("keydown", e => {
+    if (e.key === "Enter") homeSearch();
+  });
+}
+
+async function homeSearch() {
+  const q = document.getElementById("home-search-input").value.trim();
+  if (!q) return;
+
+  // If it looks like a domain, navigate
+  const isTld = [".lbc",".green",".party",".cc"].some(t => q.endsWith(t));
+  if (isTld) { navigateTo(q); return; }
+
+  // Otherwise search
+  const resultsEl = document.getElementById("home-results");
+  const portalEl = document.getElementById("portal-grid");
+  resultsEl.innerHTML = `<div style="color:var(--ink3);font-size:0.75rem;font-family:'DM Mono',monospace;padding:0.5rem 0"><span class="spinner"></span> Searching...</div>`;
+  resultsEl.style.display = "block";
+  portalEl.style.display = "none";
+
+  try {
+    const data = await api("GET", `/search?q=${encodeURIComponent(q)}`);
+    renderHomeResults(q, data);
+  } catch {
+    resultsEl.innerHTML = `<div style="color:var(--ink3);font-size:0.75rem;font-family:'DM Mono',monospace">Search failed.</div>`;
+  }
+}
+
+function renderHomeResults(q, results) {
+  const el = document.getElementById("home-results");
+
+  if (results.length === 0) {
+    el.innerHTML = `
+      <div class="results-header">
+        <span class="results-label">Search results</span>
+        <span class="results-count">0 found</span>
+      </div>
+      <div style="text-align:center;padding:2rem;color:var(--ink3);font-family:'DM Mono',monospace;font-size:0.75rem;line-height:1.8">
+        No domains found for "<strong style="color:var(--ink2)">${esc(q)}</strong>".<br>
+        <span style="cursor:pointer;color:var(--accent)" onclick="navigateTo('getaname.lbc')">Register it at getaname.lbc →</span>
+      </div>
+    `;
+    return;
   }
 
-  function update() {
-    const url = buildUrl();
-    if (url) {
-      previewUrl.textContent = url;
-      previewUrl.className = "preview-url";
-      preview.className = "home-preview active";
-      submit.disabled = false;
-    } else {
-      previewUrl.textContent = "—";
-      previewUrl.className = "";
-      preview.className = "home-preview";
-      submit.disabled = true;
-    }
+  el.innerHTML = `
+    <div class="results-header">
+      <span class="results-label">Search results</span>
+      <span class="results-count">${results.length} found</span>
+    </div>
+    ${results.map(d => `
+      <div class="search-result-card" onclick="navigateTo('${esc(d.domain)}')">
+        <div class="src-left">
+          <div class="src-domain">${esc(d.domain)}</div>
+          <div class="src-meta">
+            <span class="owner">${esc(d.owner)}</span>
+            ${d.cname ? `<span class="has-cname"> · has page</span>` : ""}
+            ${d.mx ? ` · has mail` : ""}
+          </div>
+        </div>
+        <div class="src-right">
+          ${d.cname ? `<span class="badge badge-live">live</span>` : `<span class="badge badge-dns">dns only</span>`}
+          <button class="btn-visit-card" onclick="event.stopPropagation();navigateTo('${esc(d.domain)}')">Visit →</button>
+        </div>
+      </div>
+    `).join("")}
+  `;
+}
+
+function homeTld(tld) {
+  const inp = document.getElementById("home-search-input");
+  let val = inp.value.trim();
+  [".lbc",".green",".party",".cc"].forEach(t => {
+    if (val.endsWith(t)) val = val.slice(0, -t.length);
+  });
+  inp.value = val + tld;
+  inp.focus();
+}
+
+// ══════════════════════════════════════════
+// LOADING BAR
+// ══════════════════════════════════════════
+let loadingTimer;
+function startLoading() {
+  const bar = document.getElementById("loading-bar");
+  bar.className = "";
+  bar.style.width = "0%";
+  bar.style.opacity = "1";
+  bar.style.transition = "width 0.8s ease";
+  setTimeout(() => bar.style.width = "70%", 20);
+}
+function stopLoading() {
+  const bar = document.getElementById("loading-bar");
+  bar.style.width = "100%";
+  setTimeout(() => { bar.className = "done"; }, 200);
+  setTimeout(() => { bar.style.width = "0%"; bar.style.opacity = "1"; bar.className = ""; }, 700);
+}
+
+// ══════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════
+function openAuth() {
+  document.getElementById("modal-overlay").classList.add("open");
+  setTimeout(() => document.getElementById("m-user").focus(), 80);
+}
+function closeAuth() {
+  document.getElementById("modal-overlay").classList.remove("open");
+  document.getElementById("modal-error").textContent = "";
+}
+function toggleAuthMode() {
+  authMode = authMode === "login" ? "register" : "login";
+  const L = authMode === "login";
+  document.getElementById("modal-title").textContent = L ? "Sign In" : "Create Account";
+  document.getElementById("modal-sub").textContent = L ? "Access your Innernet account." : "Join the Inner Net.";
+  document.getElementById("modal-submit").textContent = L ? "Sign In" : "Create Account";
+  document.getElementById("modal-switch").innerHTML = L
+    ? `No account? <a onclick="toggleAuthMode()">Create one</a>`
+    : `Have one? <a onclick="toggleAuthMode()">Sign in</a>`;
+  document.getElementById("modal-error").textContent = "";
+}
+async function submitAuth() {
+  const user = document.getElementById("m-user").value.trim();
+  const pass = document.getElementById("m-pass").value;
+  const errEl = document.getElementById("modal-error");
+  if (!user || !pass) { errEl.textContent = "Fill all fields."; return; }
+  const btn = document.getElementById("modal-submit");
+  btn.innerHTML = '<span class="spinner"></span>';
+  btn.disabled = true;
+  errEl.textContent = "";
+  try {
+    const endpoint = authMode === "login" ? "/auth/login" : "/auth/register";
+    const res = await api("POST", endpoint, { username: user, password: pass });
+    token = res.token; username = res.username;
+    localStorage.setItem("inn_token", token);
+    localStorage.setItem("inn_username", username);
+    closeAuth();
+    await initUser();
+    toast("Welcome, " + username + "!");
+  } catch (e) {
+    errEl.textContent = e.message || "Auth failed.";
+  } finally {
+    btn.textContent = authMode === "login" ? "Sign In" : "Create Account";
+    btn.disabled = false;
   }
+}
+function logout() {
+  token = null; username = null;
+  localStorage.removeItem("inn_token");
+  localStorage.removeItem("inn_username");
+  document.getElementById("user-pill").style.display = "none";
+  document.getElementById("sign-in-btn").style.display = "block";
+}
 
-  function go() {
-    const url = buildUrl();
-    if (url) location.href = url;
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeAuth(); });
+document.getElementById("modal-overlay").addEventListener("click", e => {
+  if (e.target === document.getElementById("modal-overlay")) closeAuth();
+});
+
+// ══════════════════════════════════════════
+// API
+// ══════════════════════════════════════════
+async function api(method, path, body) {
+  const opts = { method, headers: { "Content-Type": "application/json" } };
+  if (token) opts.headers["Authorization"] = "Bearer " + token;
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(CONFIG.api + path, opts);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const e = new Error(data.error || res.statusText);
+    e.status = res.status; throw e;
   }
-
-  [inpUser, inpRepo, inpBranch].forEach(el => el.addEventListener('input', update));
-
-  [inpUser, inpRepo, inpBranch].forEach(el => el.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      const url = buildUrl();
-      if (url) go();
-    }
-  }));
-
-  submit.addEventListener('click', go);
-
-  // Auto-focus
-  inpUser.focus();
+  return data;
 }
 
-// ── Utilidades ────────────────────────────────────────────────────
-
-function proxy(targetUrl) {
-  const p = new URLSearchParams({ url: targetUrl });
-  if (CONFIG.token && CONFIG.token.toLowerCase() !== "no") p.set("token", CONFIG.token);
-  return `/_proxy?${p.toString()}`;
-}
-
-async function safeFetch(url) {
-  try { return await fetch(url); } catch(e) { return null; }
-}
-
-function enc(s) { return encodeURIComponent(s); }
-
-function guessType(path) {
-  const ext = path.split(".").pop().toLowerCase();
-  return ({
-    html:"text/html", htm:"text/html", css:"text/css",
-    js:"application/javascript", json:"application/json",
-    txt:"text/plain", md:"text/plain", svg:"image/svg+xml",
-    png:"image/png", jpg:"image/jpeg", jpeg:"image/jpeg",
-    gif:"image/gif", webp:"image/webp", ico:"image/x-icon",
-    mp4:"video/mp4", webm:"video/webm", mp3:"audio/mpeg",
-    ogg:"audio/ogg", pdf:"application/pdf",
-    woff:"font/woff", woff2:"font/woff2", ttf:"font/ttf",
-  })[ext] || "application/octet-stream";
-}
-
-function isText(ct, path) {
-  return ct.startsWith("text/") || ct.includes("javascript") ||
-         ct.includes("json")    || ct.includes("svg") || /\.md$/.test(path);
+// ══════════════════════════════════════════
+// TOAST & UTILS
+// ══════════════════════════════════════════
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.className = "show";
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.className = "", 3000);
 }
 
 function esc(s) {
-  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-}
-
-function err(code, message, detail) {
-  const labels = { 400:"Bad Request", 401:"Unauthorized", 403:"Forbidden", 404:"Not Found", 502:"Bad Gateway" };
-  document.body.className = "error-view";
-  document.body.innerHTML = `
-    <div class="error-box">
-      <div class="code">${code}</div>
-      <div class="label">${labels[code] || "Error"}</div>
-      <div class="message">${esc(message)}</div>
-      ${detail ? `<div class="detail">${esc(String(detail))}</div>` : ""}
-    </div>`;
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 </script>
 </body>
