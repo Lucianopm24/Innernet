@@ -1423,7 +1423,7 @@ async function confirmAddFile() {
   if (!path) { document.getElementById("af-error").textContent = "Enter a path."; return; }
   // Create empty file
   try {
-    await api("POST", `/projects/${currentProject.id}/files`, { path, html: "" });
+    await api("POST", `/projects/${currentProject.id}/files`, { path, html: " " });
     const res = await api("GET", `/projects/${currentProject.id}/files`);
     projFiles = res.files || [];
     renderFileTree();
