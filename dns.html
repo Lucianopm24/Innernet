@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>getaname.lbc — Domain Registrar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f0e8;
+  --bg2: #ede8e0;
+  --ink: #1a1612;
+  --ink2: #6b6560;
+  --ink3: #a09890;
+  --accent: #c8401a;
+  --accent2: #e85c2e;
+  --green: #2a7a3b;
+  --border: #d4cfc8;
+  --card: #ffffff;
+  --shadow: 0 2px 0 #1a1612;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Space Mono', monospace;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ── TOPBAR ── */
+#topbar {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 0 2rem;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 3px solid var(--accent);
+}
+
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: -0.03em;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.logo-tld {
+  color: var(--accent2);
+}
+.logo-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  font-weight: 400;
+  color: #666;
+  letter-spacing: 0.1em;
+  margin-top: 2px;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+#lucks-badge {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: #aaa;
+  display: none;
+}
+#lucks-badge span {
+  color: #ffd700;
+  font-weight: 700;
+}
+
+#auth-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 0.35rem 0.9rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background 0.15s;
+}
+#auth-btn:hover { background: var(--accent2); }
+
+/* ── MAIN LAYOUT ── */
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+/* ── HERO ── */
+.hero {
+  margin-bottom: 3rem;
+}
+
+.hero-eyebrow {
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 0.6rem;
+}
+
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  margin-bottom: 0.8rem;
+}
+.hero-title em {
+  font-style: normal;
+  color: var(--accent);
+}
+
+.hero-sub {
+  color: var(--ink2);
+  font-size: 0.82rem;
+  max-width: 480px;
+  line-height: 1.7;
+}
+
+/* ── SEARCH BAR ── */
+.search-wrap {
+  margin-bottom: 2.5rem;
+  position: relative;
+}
+
+.search-row {
+  display: flex;
+  border: 2px solid var(--ink);
+  box-shadow: var(--shadow);
+  background: var(--card);
+}
+
+#search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 0.9rem 1.1rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.95rem;
+  background: transparent;
+  color: var(--ink);
+  caret-color: var(--accent);
+}
+#search-input::placeholder { color: var(--ink3); }
+
+#search-btn {
+  background: var(--ink);
+  color: var(--bg);
+  border: none;
+  padding: 0 1.4rem;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+#search-btn:hover { background: var(--accent); }
+
+/* TLD pills */
+.tld-pills {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.7rem;
+  flex-wrap: wrap;
+}
+.tld-pill {
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--ink2);
+  cursor: pointer;
+  transition: all 0.12s;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.tld-pill:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: #fff;
+}
+
+/* ── SEARCH RESULTS ── */
+#search-results {
+  margin-bottom: 2rem;
+  display: none;
+}
+
+.results-title {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.result-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  margin-bottom: 0.3rem;
+  transition: border-color 0.15s;
+}
+.result-item:hover { border-color: var(--ink); }
+
+.result-domain {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.result-meta {
+  font-size: 0.62rem;
+  color: var(--ink3);
+  letter-spacing: 0.06em;
+  margin-top: 2px;
+}
+.result-meta .owner { color: var(--ink2); }
+
+.result-right {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.tag-taken {
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--ink2);
+  padding: 0.18rem 0.5rem;
+}
+
+.tag-available {
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--green);
+  padding: 0.18rem 0.5rem;
+}
+
+.btn-register {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 0.35rem 0.8rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background 0.15s;
+}
+.btn-register:hover { background: var(--accent2); }
+
+/* ── AVAILABLE EXACT ── */
+#exact-result {
+  display: none;
+  background: var(--card);
+  border: 2px solid var(--ink);
+  box-shadow: var(--shadow);
+  padding: 1.5rem 1.4rem;
+  margin-bottom: 2rem;
+}
+
+.exact-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.exact-domain {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.6rem;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  line-height: 1;
+}
+.exact-price {
+  font-size: 0.7rem;
+  color: var(--ink3);
+  margin-top: 0.3rem;
+  letter-spacing: 0.08em;
+}
+.exact-price span { color: #ffd700; font-weight: 700; }
+
+/* ── MY DOMAINS ── */
+#my-domains-section {
+  display: none;
+}
+
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.section-count {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 400;
+  color: var(--ink3);
+  letter-spacing: 0.06em;
+}
+
+.domain-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  margin-bottom: 0.6rem;
+  overflow: hidden;
+}
+
+.domain-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.1rem;
+  cursor: pointer;
+  transition: background 0.12s;
+  user-select: none;
+}
+.domain-card-head:hover { background: var(--bg); }
+
+.dc-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+}
+.dc-date {
+  font-size: 0.6rem;
+  color: var(--ink3);
+  margin-top: 2px;
+  letter-spacing: 0.06em;
+}
+.dc-toggle {
+  font-size: 0.65rem;
+  color: var(--ink3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: transform 0.2s;
+}
+.dc-toggle.open { transform: rotate(180deg); }
+
+.domain-card-body {
+  display: none;
+  padding: 0 1.1rem 1.1rem;
+  border-top: 1px solid var(--border);
+}
+.domain-card-body.open { display: block; }
+
+.dns-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+.dns-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  min-width: 44px;
+  font-weight: 700;
+}
+
+.dns-input {
+  flex: 1;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  padding: 0.45rem 0.7rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.dns-input:focus { border-color: var(--ink); }
+.dns-input::placeholder { color: var(--ink3); }
+
+.btn-save {
+  background: var(--ink);
+  color: var(--bg);
+  border: none;
+  padding: 0.42rem 0.8rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.btn-save:hover { background: var(--accent); }
+
+.dns-current {
+  font-size: 0.68rem;
+  color: var(--ink2);
+  margin-top: 0.3rem;
+  margin-left: 50px;
+  font-family: 'Space Mono', monospace;
+}
+.dns-current a {
+  color: var(--green);
+  text-decoration: none;
+}
+.dns-current a:hover { text-decoration: underline; }
+
+/* ── AUTH MODAL ── */
+#modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26,22,18,0.7);
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+}
+#modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--card);
+  border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  padding: 2rem 2.2rem;
+  width: 100%;
+  max-width: 360px;
+  position: relative;
+  animation: slideIn 0.2s cubic-bezier(0.16,1,0.3,1);
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: -0.04em;
+  margin-bottom: 0.3rem;
+}
+.modal-sub {
+  font-size: 0.72rem;
+  color: var(--ink2);
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.modal-field {
+  margin-bottom: 0.9rem;
+}
+.modal-field label {
+  display: block;
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 0.3rem;
+  font-weight: 700;
+}
+.modal-field input {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  padding: 0.6rem 0.8rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.modal-field input:focus { border-color: var(--ink); }
+
+.modal-submit {
+  width: 100%;
+  background: var(--ink);
+  color: var(--bg);
+  border: none;
+  padding: 0.75rem;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-top: 0.5rem;
+}
+.modal-submit:hover { background: var(--accent); }
+
+.modal-switch {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.7rem;
+  color: var(--ink2);
+}
+.modal-switch a {
+  color: var(--accent);
+  text-decoration: none;
+  cursor: pointer;
+}
+.modal-switch a:hover { text-decoration: underline; }
+
+.modal-error {
+  font-size: 0.7rem;
+  color: var(--accent);
+  margin-top: 0.5rem;
+  min-height: 1rem;
+  letter-spacing: 0.04em;
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.8rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--ink3);
+  line-height: 1;
+}
+.modal-close:hover { color: var(--ink); }
+
+/* ── TOAST ── */
+#toast {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: var(--ink);
+  color: var(--bg);
+  padding: 0.7rem 1.2rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  z-index: 999;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: all 0.25s;
+  pointer-events: none;
+  border-left: 3px solid var(--accent);
+  max-width: 300px;
+}
+#toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+#toast.success { border-left-color: var(--green); }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--ink3);
+}
+.empty-state .big { font-size: 2.5rem; margin-bottom: 0.5rem; }
+.empty-state p { font-size: 0.75rem; letter-spacing: 0.06em; line-height: 1.7; }
+
+/* ── LOADING ── */
+.spinner {
+  display: inline-block;
+  width: 10px; height: 10px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── LOOKUP PANEL ── */
+#lookup-section {
+  margin-bottom: 2.5rem;
+}
+.lookup-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 1.2rem 1.4rem;
+}
+.lookup-domain-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  margin-bottom: 0.8rem;
+}
+.lookup-row {
+  display: flex;
+  gap: 0.6rem;
+  font-size: 0.72rem;
+  margin-top: 0.4rem;
+  align-items: baseline;
+}
+.lookup-key {
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  min-width: 60px;
+  font-size: 0.6rem;
+}
+.lookup-val {
+  color: var(--ink);
+  font-family: 'Space Mono', monospace;
+  word-break: break-all;
+}
+.lookup-val.none { color: var(--ink3); font-style: italic; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  main { padding: 2rem 1rem; }
+  #topbar { padding: 0 1rem; }
+  .hero-title { font-size: 2rem; }
+  .result-item { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
+  .dns-row { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="logo">
+    <div>
+      <div>getaname<span class="logo-tld">.lbc</span></div>
+      <div class="logo-tag">innernet domain registrar</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div id="lucks-badge">⚡ <span id="lucks-val">0</span> LUCKS</div>
+    <button id="auth-btn" onclick="openAuth()">Sign In</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">// innernet domain registrar</div>
+    <h1 class="hero-title">Your name on the<br><em>Inner Net.</em></h1>
+    <p class="hero-sub">Register <code>.green</code> <code>.party</code> <code>.lbc</code> <code>.cc</code> domains. Set CNAME and MX records. 100 LUCKS per domain.</p>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-wrap">
+    <div class="search-row">
+      <input type="text" id="search-input" placeholder="find your domain..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <button id="search-btn" onclick="doSearch()">Search</button>
+    </div>
+    <div class="tld-pills">
+      <span class="tld-pill" onclick="appendTld('.lbc')">.lbc</span>
+      <span class="tld-pill" onclick="appendTld('.green')">.green</span>
+      <span class="tld-pill" onclick="appendTld('.party')">.party</span>
+      <span class="tld-pill" onclick="appendTld('.cc')">.cc</span>
+    </div>
+  </div>
+
+  <!-- EXACT RESULT (available domain) -->
+  <div id="exact-result">
+    <div class="exact-head">
+      <div>
+        <div class="exact-domain" id="exact-name">—</div>
+        <div class="exact-price">100 <span>LUCKS</span> / one-time</div>
+      </div>
+      <button class="btn-register" id="exact-btn" onclick="registerExact()">Register →</button>
+    </div>
+  </div>
+
+  <!-- LOOKUP RESULT -->
+  <div id="lookup-section" style="display:none">
+    <div class="results-title">Domain Info</div>
+    <div class="lookup-panel" id="lookup-panel"></div>
+  </div>
+
+  <!-- SEARCH RESULTS -->
+  <div id="search-results">
+    <div class="results-title">Search Results</div>
+    <div id="results-list"></div>
+  </div>
+
+  <!-- MY DOMAINS -->
+  <div id="my-domains-section">
+    <div class="section-title">
+      My Domains
+      <span class="section-count" id="domains-count">0 registered</span>
+    </div>
+    <div id="domains-list"></div>
+  </div>
+
+</main>
+
+<!-- AUTH MODAL -->
+<div id="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAuth()">×</button>
+    <div class="modal-title" id="modal-title">Sign In</div>
+    <div class="modal-sub" id="modal-sub">Access your domains and LUCKS balance.</div>
+    <div class="modal-field">
+      <label>Username</label>
+      <input type="text" id="m-user" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="username">
+    </div>
+    <div class="modal-field">
+      <label>Password</label>
+      <input type="password" id="m-pass" placeholder="••••••••">
+    </div>
+    <div class="modal-error" id="modal-error"></div>
+    <button class="modal-submit" id="modal-submit" onclick="submitAuth()">Sign In</button>
+    <div class="modal-switch" id="modal-switch">
+      No account? <a onclick="toggleAuthMode()">Create one</a>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────
+const CONFIG = {
+  api: "https://own-net.vercel.app",   // ← change this
+  domainPrice: 100,
+};
+
+// ── STATE ──────────────────────────────────────────────────────
+let token = localStorage.getItem("gn_token") || null;
+let username = localStorage.getItem("gn_username") || null;
+let authMode = "login"; // "login" | "register"
+let myDomains = [];
+let pendingRegisterDomain = null;
+
+// ── INIT ───────────────────────────────────────────────────────
+window.addEventListener("DOMContentLoaded", async () => {
+  if (token) await initUser();
+  document.getElementById("search-input").addEventListener("keydown", e => {
+    if (e.key === "Enter") doSearch();
+  });
+});
+
+async function initUser() {
+  try {
+    const res = await api("GET", "/me");
+    username = res.username;
+    document.getElementById("lucks-val").textContent = res.lucks;
+    document.getElementById("lucks-badge").style.display = "block";
+    document.getElementById("auth-btn").textContent = `${username} ↓`;
+    document.getElementById("my-domains-section").style.display = "block";
+    loadMyDomains();
+  } catch {
+    logout();
+  }
+}
+
+// ── SEARCH ─────────────────────────────────────────────────────
+async function doSearch() {
+  const q = document.getElementById("search-input").value.trim();
+  if (!q) return;
+
+  const exactEl = document.getElementById("exact-result");
+  const lookupEl = document.getElementById("lookup-section");
+  const resultsEl = document.getElementById("search-results");
+  exactEl.style.display = "none";
+  lookupEl.style.display = "none";
+  resultsEl.style.display = "none";
+
+  const isExact = [".lbc", ".green", ".party", ".cc"].some(t => q.endsWith(t));
+
+  if (isExact) {
+    // Try to look it up
+    try {
+      const data = await api("GET", `/domains/${encodeURIComponent(q)}`);
+      // Domain exists — show lookup
+      showLookup(data);
+    } catch (e) {
+      if (e.status === 404) {
+        // Available!
+        document.getElementById("exact-name").textContent = q;
+        exactEl.style.display = "block";
+        pendingRegisterDomain = q;
+      } else {
+        toast("Error looking up domain", false);
+      }
+    }
+  } else {
+    // Search
+    try {
+      const btn = document.getElementById("search-btn");
+      btn.innerHTML = '<span class="spinner"></span>';
+      const data = await api("GET", `/search?q=${encodeURIComponent(q)}`);
+      btn.textContent = "Search";
+      renderSearchResults(data, q);
+    } catch {
+      document.getElementById("search-btn").textContent = "Search";
+      toast("Search failed", false);
+    }
+  }
+}
+
+function showLookup(data) {
+  const panel = document.getElementById("lookup-panel");
+  panel.innerHTML = `
+    <div class="lookup-domain-name">${esc(data.domain)}</div>
+    <div class="lookup-row"><span class="lookup-key">Owner</span><span class="lookup-val">${esc(data.owner)}</span></div>
+    <div class="lookup-row"><span class="lookup-key">CNAME</span><span class="lookup-val ${data.cname ? "" : "none"}">${data.cname ? esc(data.cname) : "not set"}</span></div>
+    <div class="lookup-row"><span class="lookup-key">MX</span><span class="lookup-val ${data.mx ? "" : "none"}">${data.mx ? esc(data.mx) : "not set"}</span></div>
+    <div class="lookup-row"><span class="lookup-key">Since</span><span class="lookup-val">${new Date(data.createdAt).toLocaleDateString()}</span></div>
+  `;
+  document.getElementById("lookup-section").style.display = "block";
+}
+
+function renderSearchResults(results, q) {
+  const list = document.getElementById("results-list");
+  const wrap = document.getElementById("search-results");
+
+  if (results.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="big">🔍</div><p>No domains found for <strong>${esc(q)}</strong>.<br>Try a specific name with a TLD to register it.</p></div>`;
+    wrap.style.display = "block";
+    return;
+  }
+
+  list.innerHTML = results.map(d => `
+    <div class="result-item">
+      <div>
+        <div class="result-domain">${esc(d.domain)}</div>
+        <div class="result-meta">owner: <span class="owner">${esc(d.owner)}</span>${d.cname ? ` · cname: ${esc(d.cname)}` : ""}</div>
+      </div>
+      <div class="result-right">
+        <span class="tag-taken">Taken</span>
+        <button class="btn-register" onclick="doSearch_lookup('${esc(d.domain)}')">Info</button>
+      </div>
+    </div>
+  `).join("");
+
+  wrap.style.display = "block";
+}
+
+async function doSearch_lookup(domain) {
+  document.getElementById("search-input").value = domain;
+  await doSearch();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// ── REGISTER ──────────────────────────────────────────────────
+async function registerExact() {
+  if (!token) { openAuth(); return; }
+  const domain = pendingRegisterDomain;
+  if (!domain) return;
+
+  const btn = document.getElementById("exact-btn");
+  btn.innerHTML = '<span class="spinner"></span> Registering...';
+  btn.disabled = true;
+
+  try {
+    await api("POST", "/domains/register", { domain });
+    toast(`${domain} registered!`, true);
+    document.getElementById("exact-result").style.display = "none";
+    pendingRegisterDomain = null;
+    await refreshLucks();
+    await loadMyDomains();
+  } catch (e) {
+    toast(e.message || "Registration failed", false);
+  } finally {
+    btn.textContent = "Register →";
+    btn.disabled = false;
+  }
+}
+
+// ── MY DOMAINS ────────────────────────────────────────────────
+async function loadMyDomains() {
+  const list = document.getElementById("domains-list");
+  list.innerHTML = `<div style="color:var(--ink3);font-size:0.75rem;padding:1rem 0"><span class="spinner"></span> Loading...</div>`;
+
+  try {
+    // No direct endpoint — search by owner using empty query and filter
+    const data = await api("GET", `/search?q=`);
+    myDomains = data.filter(d => d.owner === username);
+    document.getElementById("domains-count").textContent = `${myDomains.length} registered`;
+
+    if (myDomains.length === 0) {
+      list.innerHTML = `<div class="empty-state"><div class="big">🏷</div><p>You haven't registered any domains yet.<br>Search above to find your name.</p></div>`;
+      return;
+    }
+
+    list.innerHTML = myDomains.map((d, i) => `
+      <div class="domain-card" id="dc-${i}">
+        <div class="domain-card-head" onclick="toggleDC(${i})">
+          <div>
+            <div class="dc-name">${esc(d.domain)}</div>
+            <div class="dc-date">Registered ${new Date(d.createdAt).toLocaleDateString()}</div>
+          </div>
+          <span class="dc-toggle" id="dc-toggle-${i}">▼</span>
+        </div>
+        <div class="domain-card-body" id="dc-body-${i}">
+          <div class="dns-row">
+            <span class="dns-label">CNAME</span>
+            <input class="dns-input" id="cname-${i}" placeholder="repo URL or target" value="${d.cname || ""}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <button class="btn-save" onclick="saveCNAME(${i}, '${esc(d.domain)}')">Save</button>
+          </div>
+          ${d.cname ? `<div class="dns-current">→ <a href="#" onclick="return false">${esc(d.cname)}</a></div>` : ""}
+          <div class="dns-row">
+            <span class="dns-label">MX</span>
+            <input class="dns-input" id="mx-${i}" placeholder="mail server" value="${d.mx || ""}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <button class="btn-save" onclick="saveMX(${i}, '${esc(d.domain)}')">Save</button>
+          </div>
+          ${d.mx ? `<div class="dns-current">→ ${esc(d.mx)}</div>` : ""}
+        </div>
+      </div>
+    `).join("");
+
+  } catch (e) {
+    list.innerHTML = `<div class="empty-state"><p>Failed to load domains.</p></div>`;
+  }
+}
+
+function toggleDC(i) {
+  const body = document.getElementById(`dc-body-${i}`);
+  const tog = document.getElementById(`dc-toggle-${i}`);
+  body.classList.toggle("open");
+  tog.classList.toggle("open");
+}
+
+async function saveCNAME(i, domain) {
+  const val = document.getElementById(`cname-${i}`).value.trim();
+  try {
+    await api("POST", "/domains/cname", { domain, cname: val });
+    toast(`CNAME updated for ${domain}`, true);
+    await loadMyDomains();
+  } catch (e) {
+    toast(e.message || "Failed to update CNAME", false);
+  }
+}
+
+async function saveMX(i, domain) {
+  const val = document.getElementById(`mx-${i}`).value.trim();
+  try {
+    await api("POST", "/domains/mx", { domain, mx: val });
+    toast(`MX updated for ${domain}`, true);
+    await loadMyDomains();
+  } catch (e) {
+    toast(e.message || "Failed to update MX", false);
+  }
+}
+
+async function refreshLucks() {
+  try {
+    const res = await api("GET", "/me");
+    document.getElementById("lucks-val").textContent = res.lucks;
+  } catch {}
+}
+
+// ── AUTH ──────────────────────────────────────────────────────
+function openAuth() {
+  document.getElementById("modal-overlay").classList.add("open");
+  setTimeout(() => document.getElementById("m-user").focus(), 100);
+}
+
+function closeAuth() {
+  document.getElementById("modal-overlay").classList.remove("open");
+  document.getElementById("modal-error").textContent = "";
+}
+
+function toggleAuthMode() {
+  authMode = authMode === "login" ? "register" : "login";
+  const isLogin = authMode === "login";
+  document.getElementById("modal-title").textContent = isLogin ? "Sign In" : "Create Account";
+  document.getElementById("modal-sub").textContent = isLogin
+    ? "Access your domains and LUCKS balance."
+    : "Join the Inner Net. Start with 0 LUCKS.";
+  document.getElementById("modal-submit").textContent = isLogin ? "Sign In" : "Create Account";
+  document.getElementById("modal-switch").innerHTML = isLogin
+    ? `No account? <a onclick="toggleAuthMode()">Create one</a>`
+    : `Already have one? <a onclick="toggleAuthMode()">Sign in</a>`;
+  document.getElementById("modal-error").textContent = "";
+}
+
+async function submitAuth() {
+  const user = document.getElementById("m-user").value.trim();
+  const pass = document.getElementById("m-pass").value;
+  const errEl = document.getElementById("modal-error");
+
+  if (!user || !pass) { errEl.textContent = "Fill in all fields."; return; }
+
+  const btn = document.getElementById("modal-submit");
+  btn.innerHTML = '<span class="spinner"></span>';
+  btn.disabled = true;
+  errEl.textContent = "";
+
+  try {
+    const endpoint = authMode === "login" ? "/auth/login" : "/auth/register";
+    const res = await api("POST", endpoint, { username: user, password: pass });
+    token = res.token;
+    username = res.username;
+    localStorage.setItem("gn_token", token);
+    localStorage.setItem("gn_username", username);
+    closeAuth();
+    await initUser();
+    toast(`Welcome, ${username}!`, true);
+  } catch (e) {
+    errEl.textContent = e.message || "Authentication failed.";
+  } finally {
+    btn.textContent = authMode === "login" ? "Sign In" : "Create Account";
+    btn.disabled = false;
+  }
+}
+
+function logout() {
+  token = null;
+  username = null;
+  localStorage.removeItem("gn_token");
+  localStorage.removeItem("gn_username");
+  document.getElementById("lucks-badge").style.display = "none";
+  document.getElementById("auth-btn").textContent = "Sign In";
+  document.getElementById("my-domains-section").style.display = "none";
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeAuth();
+});
+document.getElementById("modal-overlay").addEventListener("click", e => {
+  if (e.target === document.getElementById("modal-overlay")) closeAuth();
+});
+
+// ── APPEND TLD ────────────────────────────────────────────────
+function appendTld(tld) {
+  const inp = document.getElementById("search-input");
+  let val = inp.value.trim();
+  // Remove existing tld if any
+  [".lbc",".green",".party",".cc"].forEach(t => {
+    if (val.endsWith(t)) val = val.slice(0, -t.length);
+  });
+  inp.value = val + tld;
+  inp.focus();
+}
+
+// ── API HELPER ────────────────────────────────────────────────
+async function api(method, path, body) {
+  const opts = {
+    method,
+    headers: { "Content-Type": "application/json" },
+  };
+  if (token) opts.headers["Authorization"] = `Bearer ${token}`;
+  if (body) opts.body = JSON.stringify(body);
+
+  const res = await fetch(CONFIG.api + path, opts);
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
+    const err = new Error(data.error || res.statusText);
+    err.status = res.status;
+    throw err;
+  }
+  return data;
+}
+
+// ── TOAST ────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg, ok = true) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.className = "show" + (ok ? " success" : "");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.className = "", 3000);
+}
+
+// ── UTILS ────────────────────────────────────────────────────
+function esc(s) {
+  return String(s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+</script>
+</body>
+</html>
