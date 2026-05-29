@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>host.lbc — HTML Hosting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0e14;
+  --bg2: #111420;
+  --bg3: #161a28;
+  --panel: #1a1f2e;
+  --border: #252b3d;
+  --border2: #2e3650;
+  --ink: #e8ecf5;
+  --ink2: #8891aa;
+  --ink3: #454e66;
+  --accent: #4f7fff;
+  --accent2: #6b95ff;
+  --green: #3ecf6e;
+  --yellow: #f5c542;
+  --red: #ff5a5a;
+  --glow: 0 0 20px rgba(79,127,255,0.15);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Fragment Mono', monospace;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ── TOPBAR ── */
+#topbar {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.logo-tld { color: var(--accent2); }
+.logo-dot {
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 8px var(--accent);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+#lucks-badge {
+  display: none;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: var(--ink3);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 0.2rem 0.6rem;
+}
+#lucks-badge span { color: var(--yellow); }
+
+#auth-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 0.3rem 0.85rem;
+  font-family: 'Fragment Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+  text-transform: uppercase;
+}
+#auth-btn:hover {
+  background: var(--accent2);
+  box-shadow: var(--glow);
+}
+
+/* ── LAYOUT ── */
+.app {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  grid-template-rows: auto 1fr;
+  height: calc(100vh - 50px);
+  gap: 0;
+}
+
+/* ── LEFT PANEL ── */
+.editor-panel {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.editor-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tab-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--ink3);
+  font-family: 'Fragment Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.7rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tab-btn.active {
+  border-color: var(--border2);
+  color: var(--ink2);
+  background: var(--bg3);
+}
+.tab-btn:hover:not(.active) { color: var(--ink2); }
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fname-input {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--ink2);
+  font-family: 'Fragment Mono', monospace;
+  font-size: 0.7rem;
+  padding: 0.25rem 0.6rem;
+  outline: none;
+  width: 160px;
+  transition: border-color 0.15s;
+}
+.fname-input:focus { border-color: var(--accent); color: var(--ink); }
+
+.btn-upload {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 0.3rem 1rem;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-upload:hover {
+  background: var(--accent2);
+  box-shadow: var(--glow);
+}
+.btn-upload:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── EDITOR ── */
+#editor-wrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+#code-editor {
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  color: #a8b5d8;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: 'Fragment Mono', monospace;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  padding: 1.2rem 1.4rem;
+  tab-size: 2;
+  caret-color: var(--accent2);
+  letter-spacing: 0.01em;
+}
+#code-editor::selection { background: rgba(79,127,255,0.2); }
+
+/* Drop overlay */
+#drop-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(12,14,20,0.92);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.8rem;
+  border: 2px dashed var(--accent);
+  z-index: 10;
+}
+#drop-overlay.active { display: flex; }
+.drop-icon { font-size: 2.5rem; }
+.drop-text {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+  color: var(--accent2);
+}
+.drop-sub { font-size: 0.7rem; color: var(--ink3); letter-spacing: 0.06em; }
+
+/* Preview tab */
+#preview-wrap {
+  flex: 1;
+  display: none;
+  overflow: hidden;
+}
+#preview-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #fff;
+}
+
+/* ── RIGHT PANEL ── */
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background: var(--bg2);
+}
+
+.side-section {
+  padding: 1.2rem 1.1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.side-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 0.9rem;
+  font-weight: 400;
+}
+
+/* Upload result */
+#upload-result {
+  display: none;
+}
+
+.result-url-box {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  padding: 0.7rem 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.result-url {
+  flex: 1;
+  font-size: 0.68rem;
+  color: var(--green);
+  word-break: break-all;
+  line-height: 1.5;
+}
+
+.btn-copy {
+  background: none;
+  border: 1px solid var(--border2);
+  color: var(--ink2);
+  font-family: 'Fragment Mono', monospace;
+  font-size: 0.6rem;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-copy:hover { border-color: var(--accent); color: var(--accent); }
+
+.btn-visit {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: rgba(62,207,110,0.1);
+  border: 1px solid rgba(62,207,110,0.3);
+  color: var(--green);
+  font-family: 'Fragment Mono', monospace;
+  font-size: 0.68rem;
+  padding: 0.5rem;
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: all 0.15s;
+  cursor: pointer;
+}
+.btn-visit:hover {
+  background: rgba(62,207,110,0.18);
+  border-color: var(--green);
+}
+
+/* Domain linking */
+#domain-link-section { display: none; }
+
+.domain-select-wrap {
+  margin-bottom: 0.8rem;
+}
+
+.domain-select {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--ink);
+  font-family: 'Fragment Mono', monospace;
+  font-size: 0.75rem;
+  padding: 0.55rem 0.7rem;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.domain-select:focus { border-color: var(--accent); }
+.domain-select option { background: var(--bg2); }
+
+.cname-preview {
+  font-size: 0.65rem;
+  color: var(--ink3);
+  margin-bottom: 0.8rem;
+  padding: 0.5rem 0.7rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  line-height: 1.7;
+  display: none;
+}
+.cname-preview .key { color: var(--ink2); }
+.cname-preview .val { color: var(--accent2); word-break: break-all; }
+
+.btn-link {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--ink2);
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(79,127,255,0.05);
+}
+.btn-link:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.link-success {
+  display: none;
+  font-size: 0.68rem;
+  color: var(--green);
+  padding: 0.5rem 0.7rem;
+  border: 1px solid rgba(62,207,110,0.3);
+  background: rgba(62,207,110,0.06);
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+}
+
+/* My uploads */
+#my-uploads-section { display: none; }
+
+.upload-item {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 0.7rem 0.8rem;
+  margin-bottom: 0.4rem;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.upload-item:hover { border-color: var(--border2); }
+
+.upload-item-name {
+  font-size: 0.72rem;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+.upload-item-id {
+  font-size: 0.58rem;
+  color: var(--ink3);
+  margin-top: 2px;
+  letter-spacing: 0.04em;
+}
+
+.upload-item-actions {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.btn-sm {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--ink3);
+  font-family: 'Fragment Mono', monospace;
+  font-size: 0.58rem;
+  padding: 0.15rem 0.4rem;
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: all 0.12s;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn-sm:hover { border-color: var(--accent); color: var(--accent); }
+.btn-sm.green:hover { border-color: var(--green); color: var(--green); }
+
+.no-uploads {
+  font-size: 0.7rem;
+  color: var(--ink3);
+  text-align: center;
+  padding: 1.5rem 0;
+  letter-spacing: 0.06em;
+  line-height: 1.8;
+}
+
+/* ── AUTH MODAL ── */
+#modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(12,14,20,0.85);
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+#modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--panel);
+  border: 1px solid var(--border2);
+  box-shadow: 0 0 40px rgba(79,127,255,0.1), 0 20px 60px rgba(0,0,0,0.5);
+  padding: 2rem 2rem;
+  width: 100%;
+  max-width: 340px;
+  position: relative;
+  animation: modalIn 0.2s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.97) translateY(-8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: -0.04em;
+  margin-bottom: 0.25rem;
+}
+.modal-sub {
+  font-size: 0.7rem;
+  color: var(--ink2);
+  margin-bottom: 1.4rem;
+  line-height: 1.5;
+}
+
+.modal-field { margin-bottom: 0.8rem; }
+.modal-field label {
+  display: block;
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 0.3rem;
+}
+.modal-field input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--ink);
+  font-family: 'Fragment Mono', monospace;
+  font-size: 0.8rem;
+  padding: 0.55rem 0.8rem;
+  outline: none;
+  transition: border-color 0.15s;
+  caret-color: var(--accent);
+}
+.modal-field input:focus { border-color: var(--accent); }
+
+.modal-submit {
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 0.7rem;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-top: 0.4rem;
+}
+.modal-submit:hover { background: var(--accent2); box-shadow: var(--glow); }
+
+.modal-error {
+  font-size: 0.68rem;
+  color: var(--red);
+  margin-top: 0.4rem;
+  min-height: 1rem;
+}
+
+.modal-switch {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.68rem;
+  color: var(--ink2);
+}
+.modal-switch a { color: var(--accent2); text-decoration: none; cursor: pointer; }
+
+.modal-close {
+  position: absolute;
+  top: 0.75rem; right: 0.9rem;
+  background: none; border: none;
+  color: var(--ink3); cursor: pointer;
+  font-size: 1.1rem; line-height: 1;
+}
+.modal-close:hover { color: var(--ink); }
+
+/* ── TOAST ── */
+#toast {
+  position: fixed;
+  bottom: 1.5rem; right: 1.5rem;
+  background: var(--panel);
+  border: 1px solid var(--border2);
+  border-left: 3px solid var(--accent);
+  color: var(--ink);
+  padding: 0.65rem 1.1rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  z-index: 999;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: all 0.25s;
+  pointer-events: none;
+  max-width: 280px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+}
+#toast.show { opacity: 1; transform: translateY(0); }
+#toast.success { border-left-color: var(--green); }
+#toast.error { border-left-color: var(--red); }
+
+/* ── SPINNER ── */
+.spinner {
+  display: inline-block;
+  width: 9px; height: 9px;
+  border: 1.5px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+    height: auto;
+    min-height: calc(100vh - 50px);
+  }
+  .editor-panel { min-height: 50vh; }
+  .side-panel { border-top: 1px solid var(--border); }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="logo">
+    <span class="logo-dot"></span>
+    host<span class="logo-tld">.lbc</span>
+  </div>
+  <div class="topbar-right">
+    <div id="lucks-badge">⚡ <span id="lucks-val">0</span> LUCKS</div>
+    <button id="auth-btn" onclick="openAuth()">Sign In</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app">
+
+  <!-- LEFT: EDITOR -->
+  <div class="editor-panel">
+    <div class="editor-toolbar">
+      <div class="toolbar-left">
+        <button class="tab-btn active" id="tab-code" onclick="switchTab('code')">Code</button>
+        <button class="tab-btn" id="tab-preview" onclick="switchTab('preview')">Preview</button>
+      </div>
+      <div class="toolbar-right">
+        <input class="fname-input" id="file-name" type="text" value="index.html" placeholder="filename.html" spellcheck="false">
+        <button class="btn-upload" id="upload-btn" onclick="doUpload()">↑ Upload</button>
+      </div>
+    </div>
+    <div id="editor-wrap">
+      <textarea id="code-editor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="<!-- Paste or type your HTML here, or drag & drop a .html file -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Page</title>
+</head>
+<body>
+  <h1>Hello, Inner Net!</h1>
+</body>
+</html>"></textarea>
+      <div id="drop-overlay">
+        <div class="drop-icon">📄</div>
+        <div class="drop-text">Drop your HTML file</div>
+        <div class="drop-sub">releases to load</div>
+      </div>
+    </div>
+    <div id="preview-wrap">
+      <iframe id="preview-frame" sandbox="allow-scripts"></iframe>
+    </div>
+  </div>
+
+  <!-- RIGHT: SIDE PANEL -->
+  <div class="side-panel">
+
+    <!-- Upload result -->
+    <div class="side-section">
+      <div class="side-label">// upload result</div>
+      <div id="upload-result">
+        <div class="result-url-box">
+          <span class="result-url" id="result-url-text">—</span>
+          <button class="btn-copy" onclick="copyUrl()">Copy</button>
+        </div>
+        <a class="btn-visit" id="result-visit-btn" href="#" target="_blank">Open Page ↗</a>
+      </div>
+      <div id="upload-placeholder" style="font-size:0.68rem;color:var(--ink3);letter-spacing:0.06em;line-height:1.8">
+        Write your HTML in the editor and hit <strong style="color:var(--ink2)">Upload</strong> to get a public URL.
+        <br><br>
+        Drag & drop a <code style="color:var(--accent2)">.html</code> file to load it instantly.
+      </div>
+    </div>
+
+    <!-- Domain linking -->
+    <div class="side-section" id="domain-link-section">
+      <div class="side-label">// link a domain</div>
+      <div class="domain-select-wrap">
+        <select class="domain-select" id="domain-select" onchange="onDomainSelect()">
+          <option value="">— select your domain —</option>
+        </select>
+      </div>
+      <div class="cname-preview" id="cname-preview">
+        <div><span class="key">DOMAIN</span> &nbsp;<span class="val" id="cp-domain">—</span></div>
+        <div style="margin-top:4px"><span class="key">CNAME →</span> <span class="val" id="cp-cname">—</span></div>
+      </div>
+      <button class="btn-link" id="link-btn" onclick="doLinkDomain()" disabled>Link Domain →</button>
+      <div class="link-success" id="link-success">
+        ✓ Domain linked! The CNAME record has been set.<br>
+        Your page is now accessible at<br>
+        <span id="link-domain-result" style="color:var(--accent2)">—</span>
+      </div>
+    </div>
+
+    <!-- My Uploads -->
+    <div class="side-section" id="my-uploads-section">
+      <div class="side-label" style="display:flex;justify-content:space-between;align-items:center">
+        <span>// my uploads</span>
+        <button onclick="loadMyUploads()" style="background:none;border:none;color:var(--ink3);cursor:pointer;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;font-family:'Fragment Mono',monospace">↺ Refresh</button>
+      </div>
+      <div id="uploads-list">
+        <div class="no-uploads">No uploads yet.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div id="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAuth()">×</button>
+    <div class="modal-title" id="modal-title">Sign In</div>
+    <div class="modal-sub" id="modal-sub">Upload and manage your HTML pages.</div>
+    <div class="modal-field">
+      <label>Username</label>
+      <input type="text" id="m-user" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="username">
+    </div>
+    <div class="modal-field">
+      <label>Password</label>
+      <input type="password" id="m-pass" placeholder="••••••••">
+    </div>
+    <div class="modal-error" id="modal-error"></div>
+    <button class="modal-submit" id="modal-submit" onclick="submitAuth()">Sign In</button>
+    <div class="modal-switch" id="modal-switch">
+      No account? <a onclick="toggleAuthMode()">Create one</a>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────
+const CONFIG = {
+  api: "https://own-net.vercel.app",  // ← change this
+};
+
+// ── STATE ─────────────────────────────────────────────────────
+let token = localStorage.getItem("hl_token") || null;
+let username = localStorage.getItem("hl_username") || null;
+let authMode = "login";
+let currentUploadUrl = null;
+let currentUploadId = null;
+let myDomains = [];
+
+// ── INIT ──────────────────────────────────────────────────────
+window.addEventListener("DOMContentLoaded", async () => {
+  setupEditor();
+  setupDrop();
+  if (token) await initUser();
+});
+
+async function initUser() {
+  try {
+    const res = await api("GET", "/me");
+    username = res.username;
+    document.getElementById("lucks-val").textContent = res.lucks;
+    document.getElementById("lucks-badge").style.display = "block";
+    document.getElementById("auth-btn").textContent = username + " ↓";
+    document.getElementById("my-uploads-section").style.display = "block";
+    loadMyUploads();
+    loadMyDomains();
+  } catch { logout(); }
+}
+
+// ── EDITOR SETUP ──────────────────────────────────────────────
+function setupEditor() {
+  const ed = document.getElementById("code-editor");
+  ed.addEventListener("keydown", e => {
+    if (e.key === "Tab") {
+      e.preventDefault();
+      const s = ed.selectionStart, end = ed.selectionEnd;
+      ed.value = ed.value.substring(0,s) + "  " + ed.value.substring(end);
+      ed.selectionStart = ed.selectionEnd = s + 2;
+    }
+  });
+}
+
+// ── TAB SWITCH ────────────────────────────────────────────────
+function switchTab(tab) {
+  const edWrap = document.getElementById("editor-wrap");
+  const pvWrap = document.getElementById("preview-wrap");
+  document.getElementById("tab-code").classList.toggle("active", tab === "code");
+  document.getElementById("tab-preview").classList.toggle("active", tab === "preview");
+
+  if (tab === "preview") {
+    const html = document.getElementById("code-editor").value;
+    const frame = document.getElementById("preview-frame");
+    frame.srcdoc = html;
+    edWrap.style.display = "none";
+    pvWrap.style.display = "block";
+  } else {
+    pvWrap.style.display = "none";
+    edWrap.style.display = "block";
+  }
+}
+
+// ── DRAG & DROP ───────────────────────────────────────────────
+function setupDrop() {
+  const wrap = document.getElementById("editor-wrap");
+  const overlay = document.getElementById("drop-overlay");
+
+  wrap.addEventListener("dragover", e => {
+    e.preventDefault();
+    overlay.classList.add("active");
+  });
+  wrap.addEventListener("dragleave", e => {
+    if (!wrap.contains(e.relatedTarget)) overlay.classList.remove("active");
+  });
+  wrap.addEventListener("drop", e => {
+    e.preventDefault();
+    overlay.classList.remove("active");
+    const file = e.dataTransfer.files[0];
+    if (!file) return;
+    if (!file.name.match(/\.html?$/i)) {
+      toast("Only .html files supported", false);
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = ev => {
+      document.getElementById("code-editor").value = ev.target.result;
+      document.getElementById("file-name").value = file.name;
+      toast("File loaded: " + file.name, true);
+    };
+    reader.readAsText(file);
+  });
+}
+
+// ── UPLOAD ────────────────────────────────────────────────────
+async function doUpload() {
+  if (!token) { openAuth(); return; }
+
+  const html = document.getElementById("code-editor").value.trim();
+  if (!html) { toast("Editor is empty", false); return; }
+
+  const name = document.getElementById("file-name").value.trim() || "index.html";
+  const btn = document.getElementById("upload-btn");
+  btn.innerHTML = '<span class="spinner"></span>Uploading...';
+  btn.disabled = true;
+
+  try {
+    const res = await api("POST", "/upload", { html, name });
+    currentUploadId = res.id;
+    currentUploadUrl = CONFIG.api + res.url;
+
+    // Show result
+    document.getElementById("result-url-text").textContent = currentUploadUrl;
+    document.getElementById("result-visit-btn").href = currentUploadUrl;
+    document.getElementById("upload-result").style.display = "block";
+    document.getElementById("upload-placeholder").style.display = "none";
+
+    // Show domain linking
+    document.getElementById("domain-link-section").style.display = "block";
+    document.getElementById("link-success").style.display = "none";
+    document.getElementById("link-btn").disabled = true;
+    document.getElementById("domain-select").value = "";
+    document.getElementById("cname-preview").style.display = "none";
+    populateDomainSelect();
+
+    toast("Uploaded! " + res.id.slice(0,8) + "...", true);
+    loadMyUploads();
+  } catch (e) {
+    toast(e.message || "Upload failed", false);
+  } finally {
+    btn.textContent = "↑ Upload";
+    btn.disabled = false;
+  }
+}
+
+// ── DOMAIN LINKING ────────────────────────────────────────────
+async function loadMyDomains() {
+  try {
+    const data = await api("GET", `/search?q=`);
+    myDomains = data.filter(d => d.owner === username);
+  } catch {}
+}
+
+function populateDomainSelect() {
+  const sel = document.getElementById("domain-select");
+  // Keep first option
+  while (sel.options.length > 1) sel.remove(1);
+
+  if (myDomains.length === 0) {
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = "— no domains registered —";
+    opt.disabled = true;
+    sel.add(opt);
+    return;
+  }
+
+  myDomains.forEach(d => {
+    const opt = document.createElement("option");
+    opt.value = d.domain;
+    opt.textContent = d.domain + (d.cname ? " (has CNAME)" : "");
+    sel.add(opt);
+  });
+}
+
+function onDomainSelect() {
+  const sel = document.getElementById("domain-select");
+  const domain = sel.value;
+  const preview = document.getElementById("cname-preview");
+  const btn = document.getElementById("link-btn");
+  const successEl = document.getElementById("link-success");
+
+  successEl.style.display = "none";
+
+  if (!domain || !currentUploadUrl) {
+    preview.style.display = "none";
+    btn.disabled = true;
+    return;
+  }
+
+  document.getElementById("cp-domain").textContent = domain;
+  document.getElementById("cp-cname").textContent = currentUploadUrl;
+  preview.style.display = "block";
+  btn.disabled = false;
+  btn.textContent = "Link Domain →";
+}
+
+async function doLinkDomain() {
+  const domain = document.getElementById("domain-select").value;
+  if (!domain || !currentUploadUrl) return;
+
+  const btn = document.getElementById("link-btn");
+  btn.innerHTML = '<span class="spinner"></span>Linking...';
+  btn.disabled = true;
+
+  try {
+    await api("POST", "/domains/cname", { domain, cname: currentUploadUrl });
+
+    const successEl = document.getElementById("link-success");
+    document.getElementById("link-domain-result").textContent = domain;
+    successEl.style.display = "block";
+    btn.textContent = "✓ Linked";
+
+    toast(`${domain} → linked!`, true);
+    await loadMyDomains();
+  } catch (e) {
+    toast(e.message || "Failed to link domain", false);
+    btn.textContent = "Link Domain →";
+    btn.disabled = false;
+  }
+}
+
+// ── MY UPLOADS ────────────────────────────────────────────────
+async function loadMyUploads() {
+  // Backend doesn't have a list-uploads endpoint, so we track in localStorage
+  const list = document.getElementById("uploads-list");
+
+  let uploads = getStoredUploads();
+
+  if (uploads.length === 0) {
+    list.innerHTML = `<div class="no-uploads">No uploads yet.<br>Your uploads will appear here.</div>`;
+    return;
+  }
+
+  list.innerHTML = uploads.reverse().slice(0, 20).map(u => `
+    <div class="upload-item">
+      <div>
+        <div class="upload-item-name">${esc(u.name)}</div>
+        <div class="upload-item-id">${u.id.slice(0,8)}… · ${new Date(u.ts).toLocaleDateString()}</div>
+      </div>
+      <div class="upload-item-actions">
+        <a class="btn-sm green" href="${esc(CONFIG.api + '/upload/' + u.id)}" target="_blank">Open</a>
+        <button class="btn-sm" onclick="loadUploadInEditor('${u.id}', '${esc(u.name)}')">Load</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function getStoredUploads() {
+  try {
+    return JSON.parse(localStorage.getItem("hl_uploads_" + username) || "[]");
+  } catch { return []; }
+}
+
+function storeUpload(id, name) {
+  if (!username) return;
+  const uploads = getStoredUploads();
+  uploads.push({ id, name, ts: Date.now() });
+  localStorage.setItem("hl_uploads_" + username, JSON.stringify(uploads.slice(-50)));
+}
+
+async function loadUploadInEditor(id, name) {
+  try {
+    const res = await fetch(CONFIG.api + "/upload/" + id);
+    const html = await res.text();
+    document.getElementById("code-editor").value = html;
+    document.getElementById("file-name").value = name;
+    switchTab("code");
+    toast("Loaded into editor", true);
+  } catch {
+    toast("Failed to load", false);
+  }
+}
+
+// Patch doUpload to also store
+const _origUpload = doUpload;
+// We patch inline instead:
+
+// ── AUTH ──────────────────────────────────────────────────────
+function openAuth() {
+  document.getElementById("modal-overlay").classList.add("open");
+  setTimeout(() => document.getElementById("m-user").focus(), 80);
+}
+function closeAuth() {
+  document.getElementById("modal-overlay").classList.remove("open");
+  document.getElementById("modal-error").textContent = "";
+}
+function toggleAuthMode() {
+  authMode = authMode === "login" ? "register" : "login";
+  const L = authMode === "login";
+  document.getElementById("modal-title").textContent = L ? "Sign In" : "Create Account";
+  document.getElementById("modal-sub").textContent = L ? "Upload and manage your HTML pages." : "Join the Inner Net.";
+  document.getElementById("modal-submit").textContent = L ? "Sign In" : "Create Account";
+  document.getElementById("modal-switch").innerHTML = L
+    ? `No account? <a onclick="toggleAuthMode()">Create one</a>`
+    : `Have one? <a onclick="toggleAuthMode()">Sign in</a>`;
+  document.getElementById("modal-error").textContent = "";
+}
+async function submitAuth() {
+  const user = document.getElementById("m-user").value.trim();
+  const pass = document.getElementById("m-pass").value;
+  const errEl = document.getElementById("modal-error");
+  if (!user || !pass) { errEl.textContent = "Fill all fields."; return; }
+  const btn = document.getElementById("modal-submit");
+  btn.innerHTML = '<span class="spinner"></span>';
+  btn.disabled = true;
+  errEl.textContent = "";
+  try {
+    const endpoint = authMode === "login" ? "/auth/login" : "/auth/register";
+    const res = await api("POST", endpoint, { username: user, password: pass });
+    token = res.token;
+    username = res.username;
+    localStorage.setItem("hl_token", token);
+    localStorage.setItem("hl_username", username);
+    closeAuth();
+    await initUser();
+    toast("Welcome, " + username + "!", true);
+  } catch (e) {
+    errEl.textContent = e.message || "Auth failed.";
+  } finally {
+    btn.textContent = authMode === "login" ? "Sign In" : "Create Account";
+    btn.disabled = false;
+  }
+}
+function logout() {
+  token = null; username = null;
+  localStorage.removeItem("hl_token");
+  localStorage.removeItem("hl_username");
+  document.getElementById("lucks-badge").style.display = "none";
+  document.getElementById("auth-btn").textContent = "Sign In";
+  document.getElementById("my-uploads-section").style.display = "none";
+}
+
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeAuth(); });
+document.getElementById("modal-overlay").addEventListener("click", e => {
+  if (e.target === document.getElementById("modal-overlay")) closeAuth();
+});
+
+// ── API ───────────────────────────────────────────────────────
+async function api(method, path, body) {
+  const opts = { method, headers: { "Content-Type": "application/json" } };
+  if (token) opts.headers["Authorization"] = "Bearer " + token;
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(CONFIG.api + path, opts);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const e = new Error(data.error || res.statusText);
+    e.status = res.status;
+    throw e;
+  }
+  // Track uploads
+  if (path === "/upload" && data.id) storeUpload(data.id, body.name || "index.html");
+  return data;
+}
+
+// ── COPY URL ─────────────────────────────────────────────────
+function copyUrl() {
+  if (!currentUploadUrl) return;
+  navigator.clipboard.writeText(currentUploadUrl).then(() => toast("URL copied!", true));
+}
+
+// ── TOAST ────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg, ok = true) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.className = "show " + (ok ? "success" : "error");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.className = "", 3200);
+}
+
+// ── UTILS ────────────────────────────────────────────────────
+function esc(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+</script>
+</body>
+</html>
