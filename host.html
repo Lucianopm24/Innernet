@@ -24,9 +24,7 @@
   --red: #ff5a5a;
   --glow: 0 0 20px rgba(79,127,255,0.15);
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
   font-family: 'Fragment Mono', monospace;
   background: var(--bg);
@@ -49,7 +47,6 @@ body {
   top: 0;
   z-index: 100;
 }
-
 .logo {
   font-family: 'Bricolage Grotesque', sans-serif;
   font-weight: 800;
@@ -69,17 +66,8 @@ body {
   box-shadow: 0 0 8px var(--accent);
   animation: pulse 2s ease-in-out infinite;
 }
-@keyframes pulse {
-  0%,100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+.topbar-right { display:flex; align-items:center; gap:0.8rem; }
 #lucks-badge {
   display: none;
   font-size: 0.68rem;
@@ -90,7 +78,6 @@ body {
   padding: 0.2rem 0.6rem;
 }
 #lucks-badge span { color: var(--yellow); }
-
 #auth-btn {
   background: var(--accent);
   color: #fff;
@@ -103,18 +90,42 @@ body {
   transition: background 0.15s, box-shadow 0.15s;
   text-transform: uppercase;
 }
-#auth-btn:hover {
-  background: var(--accent2);
-  box-shadow: var(--glow);
+#auth-btn:hover { background: var(--accent2); box-shadow: var(--glow); }
+
+/* ── MODE TABS (Uploads / Projects) ── */
+#mode-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
 }
+.mode-tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--ink3);
+  font-family: 'Fragment Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.55rem 1rem 0.5rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: -1px;
+}
+.mode-tab.active {
+  color: var(--accent2);
+  border-bottom-color: var(--accent);
+}
+.mode-tab:hover:not(.active) { color: var(--ink2); }
 
 /* ── LAYOUT ── */
 .app {
   display: grid;
   grid-template-columns: 1fr 340px;
-  grid-template-rows: auto 1fr;
-  height: calc(100vh - 50px);
-  gap: 0;
+  height: calc(100vh - 90px);
 }
 
 /* ── LEFT PANEL ── */
@@ -124,7 +135,6 @@ body {
   border-right: 1px solid var(--border);
   overflow: hidden;
 }
-
 .editor-toolbar {
   display: flex;
   align-items: center;
@@ -135,13 +145,7 @@ body {
   gap: 0.6rem;
   flex-wrap: wrap;
 }
-
-.toolbar-left {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
+.toolbar-left { display:flex; align-items:center; gap:0.5rem; }
 .tab-btn {
   background: none;
   border: 1px solid transparent;
@@ -154,19 +158,9 @@ body {
   cursor: pointer;
   transition: all 0.15s;
 }
-.tab-btn.active {
-  border-color: var(--border2);
-  color: var(--ink2);
-  background: var(--bg3);
-}
-.tab-btn:hover:not(.active) { color: var(--ink2); }
-
-.toolbar-right {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
+.tab-btn.active { border-color:var(--border2); color:var(--ink2); background:var(--bg3); }
+.tab-btn:hover:not(.active) { color:var(--ink2); }
+.toolbar-right { display:flex; align-items:center; gap:0.5rem; }
 .fname-input {
   background: var(--bg3);
   border: 1px solid var(--border);
@@ -178,9 +172,8 @@ body {
   width: 160px;
   transition: border-color 0.15s;
 }
-.fname-input:focus { border-color: var(--accent); color: var(--ink); }
-
-.btn-upload {
+.fname-input:focus { border-color:var(--accent); color:var(--ink); }
+.btn-primary {
   background: var(--accent);
   color: #fff;
   border: none;
@@ -194,72 +187,205 @@ body {
   transition: all 0.15s;
   white-space: nowrap;
 }
-.btn-upload:hover {
-  background: var(--accent2);
-  box-shadow: var(--glow);
-}
-.btn-upload:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-primary:hover { background:var(--accent2); box-shadow:var(--glow); }
+.btn-primary:disabled { opacity:0.4; cursor:not-allowed; }
 
 /* ── EDITOR ── */
-#editor-wrap {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-}
-
+#editor-wrap { flex:1; position:relative; overflow:hidden; }
 #code-editor {
-  width: 100%;
-  height: 100%;
+  width: 100%; height: 100%;
   background: var(--bg);
   color: #a8b5d8;
-  border: none;
-  outline: none;
-  resize: none;
+  border: none; outline: none; resize: none;
   font-family: 'Fragment Mono', monospace;
-  font-size: 0.8rem;
-  line-height: 1.7;
+  font-size: 0.8rem; line-height: 1.7;
   padding: 1.2rem 1.4rem;
   tab-size: 2;
   caret-color: var(--accent2);
   letter-spacing: 0.01em;
 }
-#code-editor::selection { background: rgba(79,127,255,0.2); }
-
-/* Drop overlay */
+#code-editor::selection { background:rgba(79,127,255,0.2); }
 #drop-overlay {
-  position: absolute;
-  inset: 0;
+  position: absolute; inset: 0;
   background: rgba(12,14,20,0.92);
+  display: none; align-items:center; justify-content:center;
+  flex-direction:column; gap:0.8rem;
+  border: 2px dashed var(--accent); z-index:10;
+}
+#drop-overlay.active { display:flex; }
+.drop-icon { font-size:2.5rem; }
+.drop-text { font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:1.1rem; letter-spacing:-0.02em; color:var(--accent2); }
+.drop-sub { font-size:0.7rem; color:var(--ink3); letter-spacing:0.06em; }
+#preview-wrap { flex:1; display:none; overflow:hidden; }
+#preview-frame { width:100%; height:100%; border:none; background:#fff; }
+
+/* ── PROJECT PANEL (left, when in projects mode) ── */
+#project-panel {
   display: none;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+.project-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  gap: 0.6rem;
+}
+.project-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+.select-styled {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--ink);
+  font-family: 'Fragment Mono', monospace;
+  font-size: 0.72rem;
+  padding: 0.28rem 0.65rem;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  flex: 1;
+  max-width: 240px;
+  transition: border-color 0.15s;
+}
+.select-styled:focus { border-color:var(--accent); }
+.select-styled option { background:var(--bg2); }
+.btn-ghost {
+  background: none;
+  border: 1px solid var(--border2);
+  color: var(--ink2);
+  font-family: 'Fragment Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.28rem 0.65rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-ghost:hover { border-color:var(--accent); color:var(--accent); }
+
+/* Project split: file tree + editor */
+#project-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+#file-tree {
+  width: 180px;
+  min-width: 180px;
+  border-right: 1px solid var(--border);
+  background: var(--bg2);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.file-tree-header {
+  padding: 0.6rem 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.file-tree-label {
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+.btn-add-file {
+  background: none;
+  border: none;
+  color: var(--ink3);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  transition: color 0.1s;
+  padding: 0;
+}
+.btn-add-file:hover { color: var(--accent2); }
+.file-item {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.68rem;
+  color: var(--ink2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  transition: background 0.1s;
+  border-left: 2px solid transparent;
+}
+.file-item:hover { background: var(--bg3); }
+.file-item.active { background: var(--bg3); border-left-color: var(--accent); color: var(--ink); }
+.file-item-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.btn-del-file {
+  background: none; border: none;
+  color: var(--ink3); cursor: pointer;
+  font-size: 0.7rem; padding: 0;
+  opacity: 0; transition: opacity 0.1s, color 0.1s;
+}
+.file-item:hover .btn-del-file { opacity: 1; }
+.btn-del-file:hover { color: var(--red); }
+.file-tree-empty {
+  font-size: 0.65rem;
+  color: var(--ink3);
+  text-align: center;
+  padding: 1.5rem 0.8rem;
+  line-height: 1.8;
+}
+#project-editor-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.proj-file-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 0.9rem;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  gap: 0.5rem;
+}
+.proj-file-name {
+  font-size: 0.7rem;
+  color: var(--ink2);
+  letter-spacing: 0.04em;
+}
+.proj-file-name span { color: var(--accent2); }
+#proj-code-editor {
+  flex: 1;
+  width: 100%; height: 100%;
+  background: var(--bg);
+  color: #a8b5d8;
+  border: none; outline: none; resize: none;
+  font-family: 'Fragment Mono', monospace;
+  font-size: 0.8rem; line-height: 1.7;
+  padding: 1.2rem 1.4rem;
+  tab-size: 2;
+  caret-color: var(--accent2);
+}
+.no-file-selected {
+  flex: 1;
+  display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  gap: 0.8rem;
-  border: 2px dashed var(--accent);
-  z-index: 10;
-}
-#drop-overlay.active { display: flex; }
-.drop-icon { font-size: 2.5rem; }
-.drop-text {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-weight: 700;
-  font-size: 1.1rem;
-  letter-spacing: -0.02em;
-  color: var(--accent2);
-}
-.drop-sub { font-size: 0.7rem; color: var(--ink3); letter-spacing: 0.06em; }
-
-/* Preview tab */
-#preview-wrap {
-  flex: 1;
-  display: none;
-  overflow: hidden;
-}
-#preview-frame {
-  width: 100%;
-  height: 100%;
-  border: none;
-  background: #fff;
+  gap: 0.5rem;
+  color: var(--ink3);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  line-height: 1.8;
+  text-align: center;
 }
 
 /* ── RIGHT PANEL ── */
@@ -269,26 +395,32 @@ body {
   overflow-y: auto;
   background: var(--bg2);
 }
-
 .side-section {
-  padding: 1.2rem 1.1rem;
+  padding: 1.1rem 1.1rem;
   border-bottom: 1px solid var(--border);
 }
-
 .side-label {
   font-size: 0.58rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--ink3);
   margin-bottom: 0.9rem;
-  font-weight: 400;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
+.side-label-btn {
+  background: none; border: none;
+  color: var(--ink3); cursor: pointer;
+  font-size: 0.65rem; letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: 'Fragment Mono', monospace;
+  transition: color 0.1s;
+}
+.side-label-btn:hover { color: var(--ink2); }
 
 /* Upload result */
-#upload-result {
-  display: none;
-}
-
+#upload-result { display:none; }
 .result-url-box {
   background: var(--bg3);
   border: 1px solid var(--border2);
@@ -298,15 +430,7 @@ body {
   gap: 0.5rem;
   margin-bottom: 0.8rem;
 }
-
-.result-url {
-  flex: 1;
-  font-size: 0.68rem;
-  color: var(--green);
-  word-break: break-all;
-  line-height: 1.5;
-}
-
+.result-url { flex:1; font-size:0.68rem; color:var(--green); word-break:break-all; line-height:1.5; }
 .btn-copy {
   background: none;
   border: 1px solid var(--border2);
@@ -320,12 +444,9 @@ body {
   transition: all 0.15s;
   white-space: nowrap;
 }
-.btn-copy:hover { border-color: var(--accent); color: var(--accent); }
-
+.btn-copy:hover { border-color:var(--accent); color:var(--accent); }
 .btn-visit {
-  display: block;
-  width: 100%;
-  text-align: center;
+  display: block; width: 100%; text-align: center;
   background: rgba(62,207,110,0.1);
   border: 1px solid rgba(62,207,110,0.3);
   color: var(--green);
@@ -338,48 +459,80 @@ body {
   transition: all 0.15s;
   cursor: pointer;
 }
-.btn-visit:hover {
-  background: rgba(62,207,110,0.18);
-  border-color: var(--green);
-}
+.btn-visit:hover { background:rgba(62,207,110,0.18); border-color:var(--green); }
 
-/* Domain linking */
-#domain-link-section { display: none; }
-
-.domain-select-wrap {
+/* Project result */
+#project-result { display:none; }
+.proj-url-box {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  padding: 0.55rem 0.8rem;
+  font-size: 0.65rem;
+  color: var(--green);
+  word-break: break-all;
+  line-height: 1.6;
   margin-bottom: 0.8rem;
 }
 
-.domain-select {
+/* Domain section shared */
+.domain-assign-section { display:none; }
+.field-row { margin-bottom: 0.65rem; }
+.field-label {
+  font-size: 0.55rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 0.25rem;
+}
+.select-full {
   width: 100%;
   background: var(--bg3);
   border: 1px solid var(--border);
   color: var(--ink);
   font-family: 'Fragment Mono', monospace;
-  font-size: 0.75rem;
-  padding: 0.55rem 0.7rem;
+  font-size: 0.72rem;
+  padding: 0.45rem 0.65rem;
   outline: none;
   appearance: none;
   cursor: pointer;
   transition: border-color 0.15s;
 }
-.domain-select:focus { border-color: var(--accent); }
-.domain-select option { background: var(--bg2); }
-
-.cname-preview {
-  font-size: 0.65rem;
-  color: var(--ink3);
-  margin-bottom: 0.8rem;
-  padding: 0.5rem 0.7rem;
-  background: var(--bg);
+.select-full:focus { border-color:var(--accent); }
+.select-full option { background:var(--bg2); }
+.input-full {
+  width: 100%;
+  background: var(--bg3);
   border: 1px solid var(--border);
-  line-height: 1.7;
-  display: none;
+  color: var(--ink);
+  font-family: 'Fragment Mono', monospace;
+  font-size: 0.72rem;
+  padding: 0.45rem 0.65rem;
+  outline: none;
+  transition: border-color 0.15s;
 }
-.cname-preview .key { color: var(--ink2); }
-.cname-preview .val { color: var(--accent2); word-break: break-all; }
-
-.btn-link {
+.input-full:focus { border-color:var(--accent); }
+.assign-type-row {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.65rem;
+}
+.type-btn {
+  flex: 1;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--ink3);
+  font-family: 'Fragment Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.4rem;
+  cursor: pointer;
+  transition: all 0.12s;
+  text-align: center;
+}
+.type-btn.active { border-color:var(--accent); color:var(--accent2); background:rgba(79,127,255,0.06); }
+.subdomain-row { display:none; margin-bottom:0.65rem; }
+.btn-assign {
   width: 100%;
   background: var(--bg3);
   border: 1px solid var(--border2);
@@ -393,61 +546,38 @@ body {
   cursor: pointer;
   transition: all 0.15s;
 }
-.btn-link:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: rgba(79,127,255,0.05);
-}
-.btn-link:disabled { opacity: 0.3; cursor: not-allowed; }
-
-.link-success {
+.btn-assign:hover { border-color:var(--accent); color:var(--accent); background:rgba(79,127,255,0.05); }
+.btn-assign:disabled { opacity:0.3; cursor:not-allowed; }
+.assign-success {
   display: none;
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   color: var(--green);
   padding: 0.5rem 0.7rem;
   border: 1px solid rgba(62,207,110,0.3);
   background: rgba(62,207,110,0.06);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   line-height: 1.6;
+  margin-top: 0.6rem;
 }
 
-/* My uploads */
-#my-uploads-section { display: none; }
-
+/* My uploads list */
+#my-uploads-section { display:none; }
+#my-projects-side { display:none; }
 .upload-item {
   background: var(--bg3);
   border: 1px solid var(--border);
-  padding: 0.7rem 0.8rem;
-  margin-bottom: 0.4rem;
-  cursor: pointer;
-  transition: border-color 0.15s;
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 0.35rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
+  transition: border-color 0.12s;
 }
-.upload-item:hover { border-color: var(--border2); }
-
-.upload-item-name {
-  font-size: 0.72rem;
-  color: var(--ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 160px;
-}
-.upload-item-id {
-  font-size: 0.58rem;
-  color: var(--ink3);
-  margin-top: 2px;
-  letter-spacing: 0.04em;
-}
-
-.upload-item-actions {
-  display: flex;
-  gap: 0.3rem;
-}
-
+.upload-item:hover { border-color:var(--border2); }
+.upload-item-name { font-size:0.72rem; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:140px; }
+.upload-item-id { font-size:0.58rem; color:var(--ink3); margin-top:2px; letter-spacing:0.04em; }
+.upload-item-actions { display:flex; gap:0.3rem; }
 .btn-sm {
   background: none;
   border: 1px solid var(--border);
@@ -462,10 +592,9 @@ body {
   text-decoration: none;
   display: inline-block;
 }
-.btn-sm:hover { border-color: var(--accent); color: var(--accent); }
-.btn-sm.green:hover { border-color: var(--green); color: var(--green); }
-
-.no-uploads {
+.btn-sm:hover { border-color:var(--accent); color:var(--accent); }
+.btn-sm.green:hover { border-color:var(--green); color:var(--green); }
+.no-items {
   font-size: 0.7rem;
   color: var(--ink3);
   text-align: center;
@@ -474,10 +603,21 @@ body {
   line-height: 1.8;
 }
 
+/* ── NEW PROJECT MODAL ── */
+#new-project-modal {
+  position: fixed; inset: 0;
+  background: rgba(12,14,20,0.85);
+  z-index: 300;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+#new-project-modal.open { display:flex; }
+
 /* ── AUTH MODAL ── */
 #modal-overlay {
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   background: rgba(12,14,20,0.85);
   z-index: 200;
   display: none;
@@ -485,147 +625,70 @@ body {
   justify-content: center;
   backdrop-filter: blur(4px);
 }
-#modal-overlay.open { display: flex; }
-
+#modal-overlay.open { display:flex; }
 .modal {
   background: var(--panel);
   border: 1px solid var(--border2);
   box-shadow: 0 0 40px rgba(79,127,255,0.1), 0 20px 60px rgba(0,0,0,0.5);
-  padding: 2rem 2rem;
+  padding: 2rem;
   width: 100%;
   max-width: 340px;
   position: relative;
   animation: modalIn 0.2s cubic-bezier(0.16,1,0.3,1);
 }
-@keyframes modalIn {
-  from { opacity: 0; transform: scale(0.97) translateY(-8px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-.modal-title {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-weight: 800;
-  font-size: 1.2rem;
-  letter-spacing: -0.04em;
-  margin-bottom: 0.25rem;
-}
-.modal-sub {
-  font-size: 0.7rem;
-  color: var(--ink2);
-  margin-bottom: 1.4rem;
-  line-height: 1.5;
-}
-
-.modal-field { margin-bottom: 0.8rem; }
-.modal-field label {
-  display: block;
-  font-size: 0.58rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ink3);
-  margin-bottom: 0.3rem;
-}
+@keyframes modalIn { from{opacity:0;transform:scale(0.97) translateY(-8px)} to{opacity:1;transform:scale(1) translateY(0)} }
+.modal-title { font-family:'Bricolage Grotesque',sans-serif; font-weight:800; font-size:1.2rem; letter-spacing:-0.04em; margin-bottom:0.25rem; }
+.modal-sub { font-size:0.7rem; color:var(--ink2); margin-bottom:1.4rem; line-height:1.5; }
+.modal-field { margin-bottom:0.8rem; }
+.modal-field label { display:block; font-size:0.58rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--ink3); margin-bottom:0.3rem; }
 .modal-field input {
-  width: 100%;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  color: var(--ink);
-  font-family: 'Fragment Mono', monospace;
-  font-size: 0.8rem;
-  padding: 0.55rem 0.8rem;
-  outline: none;
-  transition: border-color 0.15s;
-  caret-color: var(--accent);
+  width:100%; background:var(--bg); border:1px solid var(--border);
+  color:var(--ink); font-family:'Fragment Mono',monospace; font-size:0.8rem;
+  padding:0.55rem 0.8rem; outline:none; transition:border-color 0.15s; caret-color:var(--accent);
 }
-.modal-field input:focus { border-color: var(--accent); }
-
+.modal-field input:focus { border-color:var(--accent); }
 .modal-submit {
-  width: 100%;
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  padding: 0.7rem;
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-weight: 700;
-  font-size: 0.82rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.15s;
-  margin-top: 0.4rem;
+  width:100%; background:var(--accent); color:#fff; border:none;
+  padding:0.7rem; font-family:'Bricolage Grotesque',sans-serif; font-weight:700;
+  font-size:0.82rem; letter-spacing:0.04em; text-transform:uppercase;
+  cursor:pointer; transition:all 0.15s; margin-top:0.4rem;
 }
-.modal-submit:hover { background: var(--accent2); box-shadow: var(--glow); }
-
-.modal-error {
-  font-size: 0.68rem;
-  color: var(--red);
-  margin-top: 0.4rem;
-  min-height: 1rem;
-}
-
-.modal-switch {
-  text-align: center;
-  margin-top: 1rem;
-  font-size: 0.68rem;
-  color: var(--ink2);
-}
-.modal-switch a { color: var(--accent2); text-decoration: none; cursor: pointer; }
-
-.modal-close {
-  position: absolute;
-  top: 0.75rem; right: 0.9rem;
-  background: none; border: none;
-  color: var(--ink3); cursor: pointer;
-  font-size: 1.1rem; line-height: 1;
-}
-.modal-close:hover { color: var(--ink); }
+.modal-submit:hover { background:var(--accent2); box-shadow:var(--glow); }
+.modal-error { font-size:0.68rem; color:var(--red); margin-top:0.4rem; min-height:1rem; }
+.modal-switch { text-align:center; margin-top:1rem; font-size:0.68rem; color:var(--ink2); }
+.modal-switch a { color:var(--accent2); text-decoration:none; cursor:pointer; }
+.modal-close { position:absolute; top:0.75rem; right:0.9rem; background:none; border:none; color:var(--ink3); cursor:pointer; font-size:1.1rem; line-height:1; }
+.modal-close:hover { color:var(--ink); }
 
 /* ── TOAST ── */
 #toast {
-  position: fixed;
-  bottom: 1.5rem; right: 1.5rem;
-  background: var(--panel);
-  border: 1px solid var(--border2);
-  border-left: 3px solid var(--accent);
-  color: var(--ink);
-  padding: 0.65rem 1.1rem;
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
-  z-index: 999;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: all 0.25s;
-  pointer-events: none;
-  max-width: 280px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  position: fixed; bottom:1.5rem; right:1.5rem;
+  background:var(--panel); border:1px solid var(--border2);
+  border-left:3px solid var(--accent); color:var(--ink);
+  padding:0.65rem 1.1rem; font-size:0.72rem; letter-spacing:0.04em;
+  z-index:999; opacity:0; transform:translateY(8px);
+  transition:all 0.25s; pointer-events:none; max-width:280px;
+  box-shadow:0 8px 30px rgba(0,0,0,0.4);
 }
-#toast.show { opacity: 1; transform: translateY(0); }
-#toast.success { border-left-color: var(--green); }
-#toast.error { border-left-color: var(--red); }
+#toast.show { opacity:1; transform:translateY(0); }
+#toast.success { border-left-color:var(--green); }
+#toast.error { border-left-color:var(--red); }
 
 /* ── SPINNER ── */
 .spinner {
-  display: inline-block;
-  width: 9px; height: 9px;
-  border: 1.5px solid currentColor;
-  border-top-color: transparent;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-  margin-right: 5px;
-  vertical-align: middle;
+  display:inline-block; width:9px; height:9px;
+  border:1.5px solid currentColor; border-top-color:transparent;
+  border-radius:50%; animation:spin 0.6s linear infinite;
+  margin-right:5px; vertical-align:middle;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin { to{transform:rotate(360deg)} }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
-  .app {
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr auto;
-    height: auto;
-    min-height: calc(100vh - 50px);
-  }
-  .editor-panel { min-height: 50vh; }
-  .side-panel { border-top: 1px solid var(--border); }
+  .app { grid-template-columns:1fr; grid-template-rows:1fr auto; height:auto; min-height:calc(100vh - 90px); }
+  .editor-panel { min-height:50vh; }
+  .side-panel { border-top:1px solid var(--border); }
+  #file-tree { width:140px; min-width:140px; }
 }
 </style>
 </head>
@@ -643,29 +706,34 @@ body {
   </div>
 </div>
 
+<!-- MODE TABS -->
+<div id="mode-tabs">
+  <button class="mode-tab active" id="mtab-uploads" onclick="switchMode('uploads')">↑ Uploads</button>
+  <button class="mode-tab" id="mtab-projects" onclick="switchMode('projects')">⬡ Projects</button>
+</div>
+
 <!-- APP -->
 <div class="app">
 
-  <!-- LEFT: EDITOR -->
-  <div class="editor-panel">
+  <!-- LEFT: EDITOR (uploads mode) -->
+  <div class="editor-panel" id="uploads-left">
     <div class="editor-toolbar">
       <div class="toolbar-left">
-        <button class="tab-btn active" id="tab-code" onclick="switchTab('code')">Code</button>
-        <button class="tab-btn" id="tab-preview" onclick="switchTab('preview')">Preview</button>
+        <button class="tab-btn active" id="tab-code" onclick="switchEditorTab('code')">Code</button>
+        <button class="tab-btn" id="tab-preview" onclick="switchEditorTab('preview')">Preview</button>
       </div>
       <div class="toolbar-right">
         <input class="fname-input" id="file-name" type="text" value="index.html" placeholder="filename.html" spellcheck="false">
-        <button class="btn-upload" id="upload-btn" onclick="doUpload()">↑ Upload</button>
+        <button class="btn-primary" id="upload-btn" onclick="doUpload()">↑ Upload</button>
       </div>
     </div>
     <div id="editor-wrap">
-      <textarea id="code-editor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="<!-- Paste or type your HTML here, or drag & drop a .html file -->
+      <textarea id="code-editor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"
+        placeholder="<!-- Paste or type your HTML here, or drag & drop a .html file -->
 
 <!DOCTYPE html>
 <html>
-<head>
-  <title>My Page</title>
-</head>
+<head><title>My Page</title></head>
 <body>
   <h1>Hello, Inner Net!</h1>
 </body>
@@ -673,7 +741,7 @@ body {
       <div id="drop-overlay">
         <div class="drop-icon">📄</div>
         <div class="drop-text">Drop your HTML file</div>
-        <div class="drop-sub">releases to load</div>
+        <div class="drop-sub">release to load</div>
       </div>
     </div>
     <div id="preview-wrap">
@@ -681,57 +749,234 @@ body {
     </div>
   </div>
 
+  <!-- LEFT: PROJECT PANEL (projects mode) -->
+  <div id="project-panel">
+    <div class="project-toolbar">
+      <div class="project-selector">
+        <select class="select-styled" id="project-select" onchange="onProjectSelect()">
+          <option value="">— select project —</option>
+        </select>
+        <button class="btn-ghost" onclick="openNewProject()">+ New</button>
+      </div>
+      <div style="display:flex;gap:0.4rem">
+        <button class="tab-btn" id="ptab-code" onclick="switchProjTab('code')" style="display:none">Code</button>
+        <button class="tab-btn" id="ptab-preview" onclick="switchProjTab('preview')" style="display:none">Preview</button>
+      </div>
+    </div>
+    <div id="project-body">
+      <!-- File tree -->
+      <div id="file-tree">
+        <div class="file-tree-header">
+          <span class="file-tree-label">Files</span>
+          <button class="btn-add-file" onclick="openAddFile()" title="Add file">+</button>
+        </div>
+        <div id="file-list">
+          <div class="file-tree-empty">Select or create<br>a project first.</div>
+        </div>
+      </div>
+      <!-- Editor area -->
+      <div id="project-editor-wrap">
+        <div class="no-file-selected" id="no-file-msg">
+          <div style="font-size:1.5rem;margin-bottom:0.5rem">⬡</div>
+          <div>Select a file to edit</div>
+          <div style="font-size:0.62rem;color:var(--ink3);margin-top:0.3rem">or add a new one with +</div>
+        </div>
+        <div id="proj-editor-active" style="display:none;flex-direction:column;height:100%">
+          <div class="proj-file-bar">
+            <div class="proj-file-name">editing: <span id="current-file-name">—</span></div>
+            <div style="display:flex;gap:0.4rem">
+              <button class="btn-ghost" onclick="saveProjFile()">↑ Save</button>
+            </div>
+          </div>
+          <textarea id="proj-code-editor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+        </div>
+        <div id="proj-preview-wrap" style="display:none;flex:1">
+          <iframe id="proj-preview-frame" sandbox="allow-scripts" style="width:100%;height:100%;border:none;background:#fff"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- RIGHT: SIDE PANEL -->
   <div class="side-panel">
 
-    <!-- Upload result -->
-    <div class="side-section">
-      <div class="side-label">// upload result</div>
-      <div id="upload-result">
-        <div class="result-url-box">
-          <span class="result-url" id="result-url-text">—</span>
-          <button class="btn-copy" onclick="copyUrl()">Copy</button>
+    <!-- ── UPLOADS MODE SIDE ── -->
+    <div id="uploads-side">
+
+      <!-- Upload result -->
+      <div class="side-section">
+        <div class="side-label">// upload result</div>
+        <div id="upload-result">
+          <div class="result-url-box">
+            <span class="result-url" id="result-url-text">—</span>
+            <button class="btn-copy" onclick="copyUrl()">Copy</button>
+          </div>
+          <a class="btn-visit" id="result-visit-btn" href="#" target="_blank">Open Page ↗</a>
         </div>
-        <a class="btn-visit" id="result-visit-btn" href="#" target="_blank">Open Page ↗</a>
+        <div id="upload-placeholder" style="font-size:0.68rem;color:var(--ink3);letter-spacing:0.06em;line-height:1.8">
+          Write your HTML and hit <strong style="color:var(--ink2)">Upload</strong> to get a public URL.<br><br>
+          Drag & drop a <code style="color:var(--accent2)">.html</code> file to load it instantly.
+        </div>
       </div>
-      <div id="upload-placeholder" style="font-size:0.68rem;color:var(--ink3);letter-spacing:0.06em;line-height:1.8">
-        Write your HTML in the editor and hit <strong style="color:var(--ink2)">Upload</strong> to get a public URL.
-        <br><br>
-        Drag & drop a <code style="color:var(--accent2)">.html</code> file to load it instantly.
+
+      <!-- Domain/subdomain assign for upload -->
+      <div class="side-section domain-assign-section" id="upload-assign-section">
+        <div class="side-label">// assign domain</div>
+        <div class="assign-type-row">
+          <button class="type-btn active" id="uassign-domain-btn" onclick="setUploadAssignType('domain')">Domain</button>
+          <button class="type-btn" id="uassign-sub-btn" onclick="setUploadAssignType('subdomain')">Subdomain</button>
+        </div>
+
+        <!-- Domain assign -->
+        <div id="uassign-domain-fields">
+          <div class="field-row">
+            <div class="field-label">Your domain</div>
+            <select class="select-full" id="uassign-domain-select" onchange="onUAssignDomainChange()">
+              <option value="">— select —</option>
+            </select>
+          </div>
+          <button class="btn-assign" id="uassign-domain-btn-go" onclick="doAssignUploadDomain()" disabled>Set CNAME →</button>
+          <div class="assign-success" id="uassign-domain-success"></div>
+        </div>
+
+        <!-- Subdomain assign -->
+        <div id="uassign-sub-fields" style="display:none">
+          <div class="field-row">
+            <div class="field-label">Parent domain</div>
+            <select class="select-full" id="uassign-sub-parent" onchange="onUAssignSubParentChange()">
+              <option value="">— select —</option>
+            </select>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Subdomain name</div>
+            <input class="input-full" id="uassign-sub-name" type="text" placeholder="e.g. blog" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="field-row" id="uassign-sub-existing-row" style="display:none">
+            <div class="field-label">Or pick existing</div>
+            <select class="select-full" id="uassign-sub-existing" onchange="onUAssignSubExistingChange()">
+              <option value="">— new subdomain —</option>
+            </select>
+          </div>
+          <button class="btn-assign" id="uassign-sub-btn-go" onclick="doAssignUploadSubdomain()" disabled>Set CNAME →</button>
+          <div class="assign-success" id="uassign-sub-success"></div>
+        </div>
       </div>
+
+      <!-- My uploads -->
+      <div class="side-section" id="my-uploads-section">
+        <div class="side-label">
+          // my uploads
+          <button class="side-label-btn" onclick="loadMyUploads()">↺</button>
+        </div>
+        <div id="uploads-list">
+          <div class="no-items">No uploads yet.</div>
+        </div>
+      </div>
+
     </div>
 
-    <!-- Domain linking -->
-    <div class="side-section" id="domain-link-section">
-      <div class="side-label">// link a domain</div>
-      <div class="domain-select-wrap">
-        <select class="domain-select" id="domain-select" onchange="onDomainSelect()">
-          <option value="">— select your domain —</option>
-        </select>
+    <!-- ── PROJECTS MODE SIDE ── -->
+    <div id="projects-side" style="display:none">
+
+      <!-- Project result / info -->
+      <div class="side-section">
+        <div class="side-label">// project url</div>
+        <div id="project-result">
+          <div class="proj-url-box" id="proj-url-text">—</div>
+          <a class="btn-visit" id="proj-visit-btn" href="#" target="_blank">Open Project ↗</a>
+        </div>
+        <div id="project-placeholder" style="font-size:0.68rem;color:var(--ink3);letter-spacing:0.06em;line-height:1.8">
+          Select or create a project.<br><br>
+          Projects support multiple files with custom paths.
+        </div>
       </div>
-      <div class="cname-preview" id="cname-preview">
-        <div><span class="key">DOMAIN</span> &nbsp;<span class="val" id="cp-domain">—</span></div>
-        <div style="margin-top:4px"><span class="key">CNAME →</span> <span class="val" id="cp-cname">—</span></div>
+
+      <!-- Domain/subdomain assign for project -->
+      <div class="side-section domain-assign-section" id="project-assign-section">
+        <div class="side-label">// assign domain</div>
+        <div class="assign-type-row">
+          <button class="type-btn active" id="passign-domain-btn" onclick="setProjAssignType('domain')">Domain</button>
+          <button class="type-btn" id="passign-sub-btn" onclick="setProjAssignType('subdomain')">Subdomain</button>
+        </div>
+
+        <!-- Domain assign -->
+        <div id="passign-domain-fields">
+          <div class="field-row">
+            <div class="field-label">Your domain</div>
+            <select class="select-full" id="passign-domain-select" onchange="onPAssignDomainChange()">
+              <option value="">— select —</option>
+            </select>
+          </div>
+          <button class="btn-assign" id="passign-domain-btn-go" onclick="doAssignProjDomain()" disabled>Set CNAME →</button>
+          <div class="assign-success" id="passign-domain-success"></div>
+        </div>
+
+        <!-- Subdomain assign -->
+        <div id="passign-sub-fields" style="display:none">
+          <div class="field-row">
+            <div class="field-label">Parent domain</div>
+            <select class="select-full" id="passign-sub-parent" onchange="onPAssignSubParentChange()">
+              <option value="">— select —</option>
+            </select>
+          </div>
+          <div class="field-row">
+            <div class="field-label">Subdomain name</div>
+            <input class="input-full" id="passign-sub-name" type="text" placeholder="e.g. docs" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="field-row" id="passign-sub-existing-row" style="display:none">
+            <div class="field-label">Or pick existing</div>
+            <select class="select-full" id="passign-sub-existing" onchange="onPAssignSubExistingChange()">
+              <option value="">— new subdomain —</option>
+            </select>
+          </div>
+          <button class="btn-assign" id="passign-sub-btn-go" onclick="doAssignProjSubdomain()" disabled>Set CNAME →</button>
+          <div class="assign-success" id="passign-sub-success"></div>
+        </div>
       </div>
-      <button class="btn-link" id="link-btn" onclick="doLinkDomain()" disabled>Link Domain →</button>
-      <div class="link-success" id="link-success">
-        ✓ Domain linked! The CNAME record has been set.<br>
-        Your page is now accessible at<br>
-        <span id="link-domain-result" style="color:var(--accent2)">—</span>
+
+      <!-- My projects list -->
+      <div class="side-section" id="my-projects-side">
+        <div class="side-label">
+          // my projects
+          <button class="side-label-btn" onclick="loadProjects()">↺</button>
+        </div>
+        <div id="projects-list">
+          <div class="no-items">No projects yet.</div>
+        </div>
       </div>
+
     </div>
 
-    <!-- My Uploads -->
-    <div class="side-section" id="my-uploads-section">
-      <div class="side-label" style="display:flex;justify-content:space-between;align-items:center">
-        <span>// my uploads</span>
-        <button onclick="loadMyUploads()" style="background:none;border:none;color:var(--ink3);cursor:pointer;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;font-family:'Fragment Mono',monospace">↺ Refresh</button>
-      </div>
-      <div id="uploads-list">
-        <div class="no-uploads">No uploads yet.</div>
-      </div>
-    </div>
+  </div>
+</div>
 
+<!-- NEW PROJECT MODAL -->
+<div id="new-project-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeNewProject()">×</button>
+    <div class="modal-title">New Project</div>
+    <div class="modal-sub">A project holds multiple files under one URL.</div>
+    <div class="modal-field">
+      <label>Project name</label>
+      <input type="text" id="np-name" placeholder="my-site" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="modal-error" id="np-error"></div>
+    <button class="modal-submit" onclick="createProject()">Create Project</button>
+  </div>
+</div>
+
+<!-- ADD FILE MODAL -->
+<div id="add-file-modal" style="position:fixed;inset:0;background:rgba(12,14,20,0.85);z-index:300;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAddFile()">×</button>
+    <div class="modal-title">Add File</div>
+    <div class="modal-sub">e.g. <code style="color:var(--accent2)">about.html</code> or <code style="color:var(--accent2)">css/style.css</code></div>
+    <div class="modal-field">
+      <label>File path</label>
+      <input type="text" id="af-path" placeholder="index.html" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="modal-error" id="af-error"></div>
+    <button class="modal-submit" onclick="confirmAddFile()">Add File</button>
   </div>
 </div>
 
@@ -762,22 +1007,34 @@ body {
 
 <script>
 // ── CONFIG ────────────────────────────────────────────────────
-const CONFIG = {
-  api: "https://own-net.vercel.app",  // ← change this
-};
+const CONFIG = { api: "https://own-net.vercel.app" };
 
 // ── STATE ─────────────────────────────────────────────────────
 let token = localStorage.getItem("hl_token") || null;
 let username = localStorage.getItem("hl_username") || null;
 let authMode = "login";
+let currentMode = "uploads"; // "uploads" | "projects"
+
+// Uploads state
 let currentUploadUrl = null;
 let currentUploadId = null;
+let uploadAssignType = "domain";
+
+// Projects state
+let myProjects = [];
+let currentProject = null;
+let currentFile = null;
+let projFiles = [];
+let projAssignType = "domain";
+
+// Shared
 let myDomains = [];
 
 // ── INIT ──────────────────────────────────────────────────────
 window.addEventListener("DOMContentLoaded", async () => {
   setupEditor();
   setupDrop();
+  setupProjEditor();
   if (token) await initUser();
 });
 
@@ -789,12 +1046,27 @@ async function initUser() {
     document.getElementById("lucks-badge").style.display = "block";
     document.getElementById("auth-btn").textContent = username + " ↓";
     document.getElementById("my-uploads-section").style.display = "block";
+    document.getElementById("my-projects-side").style.display = "block";
     loadMyUploads();
+    loadProjects();
     loadMyDomains();
   } catch { logout(); }
 }
 
-// ── EDITOR SETUP ──────────────────────────────────────────────
+// ── MODE SWITCH ───────────────────────────────────────────────
+function switchMode(mode) {
+  currentMode = mode;
+  document.getElementById("mtab-uploads").classList.toggle("active", mode === "uploads");
+  document.getElementById("mtab-projects").classList.toggle("active", mode === "projects");
+
+  document.getElementById("uploads-left").style.display = mode === "uploads" ? "flex" : "none";
+  document.getElementById("project-panel").style.display = mode === "projects" ? "flex" : "none";
+
+  document.getElementById("uploads-side").style.display = mode === "uploads" ? "block" : "none";
+  document.getElementById("projects-side").style.display = mode === "projects" ? "block" : "none";
+}
+
+// ── EDITOR (uploads) ──────────────────────────────────────────
 function setupEditor() {
   const ed = document.getElementById("code-editor");
   ed.addEventListener("keydown", e => {
@@ -806,23 +1078,41 @@ function setupEditor() {
     }
   });
 }
+function setupProjEditor() {
+  const ed = document.getElementById("proj-code-editor");
+  ed.addEventListener("keydown", e => {
+    if (e.key === "Tab") {
+      e.preventDefault();
+      const s = ed.selectionStart, end = ed.selectionEnd;
+      ed.value = ed.value.substring(0,s) + "  " + ed.value.substring(end);
+      ed.selectionStart = ed.selectionEnd = s + 2;
+    }
+  });
+}
 
-// ── TAB SWITCH ────────────────────────────────────────────────
-function switchTab(tab) {
+function switchEditorTab(tab) {
   const edWrap = document.getElementById("editor-wrap");
   const pvWrap = document.getElementById("preview-wrap");
   document.getElementById("tab-code").classList.toggle("active", tab === "code");
   document.getElementById("tab-preview").classList.toggle("active", tab === "preview");
-
   if (tab === "preview") {
-    const html = document.getElementById("code-editor").value;
-    const frame = document.getElementById("preview-frame");
-    frame.srcdoc = html;
-    edWrap.style.display = "none";
-    pvWrap.style.display = "block";
+    document.getElementById("preview-frame").srcdoc = document.getElementById("code-editor").value;
+    edWrap.style.display = "none"; pvWrap.style.display = "block";
   } else {
-    pvWrap.style.display = "none";
-    edWrap.style.display = "block";
+    pvWrap.style.display = "none"; edWrap.style.display = "block";
+  }
+}
+
+function switchProjTab(tab) {
+  const edActive = document.getElementById("proj-editor-active");
+  const pvWrap = document.getElementById("proj-preview-wrap");
+  document.getElementById("ptab-code").classList.toggle("active", tab === "code");
+  document.getElementById("ptab-preview").classList.toggle("active", tab === "preview");
+  if (tab === "preview") {
+    document.getElementById("proj-preview-frame").srcdoc = document.getElementById("proj-code-editor").value;
+    edActive.style.display = "none"; pvWrap.style.display = "flex";
+  } else {
+    pvWrap.style.display = "none"; edActive.style.display = "flex";
   }
 }
 
@@ -830,23 +1120,13 @@ function switchTab(tab) {
 function setupDrop() {
   const wrap = document.getElementById("editor-wrap");
   const overlay = document.getElementById("drop-overlay");
-
-  wrap.addEventListener("dragover", e => {
-    e.preventDefault();
-    overlay.classList.add("active");
-  });
-  wrap.addEventListener("dragleave", e => {
-    if (!wrap.contains(e.relatedTarget)) overlay.classList.remove("active");
-  });
+  wrap.addEventListener("dragover", e => { e.preventDefault(); overlay.classList.add("active"); });
+  wrap.addEventListener("dragleave", e => { if (!wrap.contains(e.relatedTarget)) overlay.classList.remove("active"); });
   wrap.addEventListener("drop", e => {
-    e.preventDefault();
-    overlay.classList.remove("active");
+    e.preventDefault(); overlay.classList.remove("active");
     const file = e.dataTransfer.files[0];
     if (!file) return;
-    if (!file.name.match(/\.html?$/i)) {
-      toast("Only .html files supported", false);
-      return;
-    }
+    if (!file.name.match(/\.html?$/i)) { toast("Only .html files supported", false); return; }
     const reader = new FileReader();
     reader.onload = ev => {
       document.getElementById("code-editor").value = ev.target.result;
@@ -860,45 +1140,302 @@ function setupDrop() {
 // ── UPLOAD ────────────────────────────────────────────────────
 async function doUpload() {
   if (!token) { openAuth(); return; }
-
   const html = document.getElementById("code-editor").value.trim();
   if (!html) { toast("Editor is empty", false); return; }
-
   const name = document.getElementById("file-name").value.trim() || "index.html";
   const btn = document.getElementById("upload-btn");
   btn.innerHTML = '<span class="spinner"></span>Uploading...';
   btn.disabled = true;
-
   try {
     const res = await api("POST", "/upload", { html, name });
     currentUploadId = res.id;
     currentUploadUrl = CONFIG.api + res.url;
-
-    // Show result
     document.getElementById("result-url-text").textContent = currentUploadUrl;
     document.getElementById("result-visit-btn").href = currentUploadUrl;
     document.getElementById("upload-result").style.display = "block";
     document.getElementById("upload-placeholder").style.display = "none";
 
-    // Show domain linking
-    document.getElementById("domain-link-section").style.display = "block";
-    document.getElementById("link-success").style.display = "none";
-    document.getElementById("link-btn").disabled = true;
-    document.getElementById("domain-select").value = "";
-    document.getElementById("cname-preview").style.display = "none";
-    populateDomainSelect();
+    // Show assign section
+    document.getElementById("upload-assign-section").style.display = "block";
+    resetUploadAssign();
+    populateAssignDomains("uassign-domain-select");
+    populateAssignDomains("uassign-sub-parent");
 
     toast("Uploaded! " + res.id.slice(0,8) + "...", true);
     loadMyUploads();
   } catch (e) {
     toast(e.message || "Upload failed", false);
   } finally {
-    btn.textContent = "↑ Upload";
-    btn.disabled = false;
+    btn.textContent = "↑ Upload"; btn.disabled = false;
   }
 }
 
-// ── DOMAIN LINKING ────────────────────────────────────────────
+function resetUploadAssign() {
+  document.getElementById("uassign-domain-success").style.display = "none";
+  document.getElementById("uassign-sub-success").style.display = "none";
+  document.getElementById("uassign-domain-btn-go").disabled = true;
+  document.getElementById("uassign-sub-btn-go").disabled = true;
+}
+
+// ── MY UPLOADS ────────────────────────────────────────────────
+async function loadMyUploads() {
+  const list = document.getElementById("uploads-list");
+  const uploads = getStoredUploads();
+  if (uploads.length === 0) {
+    list.innerHTML = `<div class="no-items">No uploads yet.<br>Your uploads will appear here.</div>`;
+    return;
+  }
+  list.innerHTML = [...uploads].reverse().slice(0,20).map(u => `
+    <div class="upload-item">
+      <div>
+        <div class="upload-item-name">${esc(u.name)}</div>
+        <div class="upload-item-id">${u.id.slice(0,8)}… · ${new Date(u.ts).toLocaleDateString()}</div>
+      </div>
+      <div class="upload-item-actions">
+        <a class="btn-sm green" href="${esc(CONFIG.api+'/upload/'+u.id)}" target="_blank">Open</a>
+        <button class="btn-sm" onclick="loadUploadInEditor('${u.id}','${esc(u.name)}')">Load</button>
+      </div>
+    </div>
+  `).join("");
+}
+function getStoredUploads() {
+  try { return JSON.parse(localStorage.getItem("hl_uploads_" + username) || "[]"); } catch { return []; }
+}
+function storeUpload(id, name) {
+  if (!username) return;
+  const uploads = getStoredUploads();
+  uploads.push({ id, name, ts: Date.now() });
+  localStorage.setItem("hl_uploads_" + username, JSON.stringify(uploads.slice(-50)));
+}
+async function loadUploadInEditor(id, name) {
+  try {
+    const res = await fetch(CONFIG.api + "/upload/" + id);
+    const html = await res.text();
+    document.getElementById("code-editor").value = html;
+    document.getElementById("file-name").value = name;
+    switchMode("uploads"); switchEditorTab("code");
+    toast("Loaded into editor", true);
+  } catch { toast("Failed to load", false); }
+}
+
+// ── PROJECTS ──────────────────────────────────────────────────
+async function loadProjects() {
+  if (!token) return;
+  try {
+    myProjects = await api("GET", "/projects");
+    renderProjectSelect();
+    renderProjectsList();
+  } catch {}
+}
+
+function renderProjectSelect() {
+  const sel = document.getElementById("project-select");
+  const cur = sel.value;
+  while (sel.options.length > 1) sel.remove(1);
+  myProjects.forEach(p => {
+    const opt = document.createElement("option");
+    opt.value = p.id; opt.textContent = p.name;
+    sel.add(opt);
+  });
+  if (cur) sel.value = cur;
+}
+
+function renderProjectsList() {
+  const list = document.getElementById("projects-list");
+  if (myProjects.length === 0) {
+    list.innerHTML = `<div class="no-items">No projects yet.</div>`; return;
+  }
+  list.innerHTML = myProjects.map(p => `
+    <div class="upload-item" onclick="selectProjectById('${p.id}')">
+      <div>
+        <div class="upload-item-name">${esc(p.name)}</div>
+        <div class="upload-item-id">${p.id.slice(0,8)}… · ${new Date(p.createdAt).toLocaleDateString()}</div>
+      </div>
+      <div class="upload-item-actions">
+        <a class="btn-sm green" href="${esc(CONFIG.api+'/projects/'+p.id+'/')}" target="_blank">Open</a>
+        <button class="btn-sm" onclick="event.stopPropagation();deleteProject('${p.id}','${esc(p.name)}')">Del</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function selectProjectById(id) {
+  document.getElementById("project-select").value = id;
+  onProjectSelect();
+  switchMode("projects");
+}
+
+async function onProjectSelect() {
+  const id = document.getElementById("project-select").value;
+  if (!id) {
+    currentProject = null; currentFile = null; projFiles = [];
+    renderFileTree();
+    document.getElementById("no-file-msg").style.display = "flex";
+    document.getElementById("proj-editor-active").style.display = "none";
+    document.getElementById("project-result").style.display = "none";
+    document.getElementById("project-placeholder").style.display = "block";
+    document.getElementById("project-assign-section").style.display = "none";
+    document.getElementById("ptab-code").style.display = "none";
+    document.getElementById("ptab-preview").style.display = "none";
+    return;
+  }
+  currentProject = myProjects.find(p => p.id === id);
+  if (!currentProject) return;
+
+  // Show project URL
+  const projUrl = CONFIG.api + "/projects/" + id + "/";
+  document.getElementById("proj-url-text").textContent = projUrl;
+  document.getElementById("proj-visit-btn").href = projUrl;
+  document.getElementById("project-result").style.display = "block";
+  document.getElementById("project-placeholder").style.display = "none";
+  document.getElementById("project-assign-section").style.display = "block";
+  populateAssignDomains("passign-domain-select");
+  populateAssignDomains("passign-sub-parent");
+
+  // Load files
+  try {
+    const res = await api("GET", `/projects/${id}/files`);
+    projFiles = res.files || [];
+    renderFileTree();
+  } catch { projFiles = []; renderFileTree(); }
+}
+
+function renderFileTree() {
+  const list = document.getElementById("file-list");
+  if (!currentProject) {
+    list.innerHTML = `<div class="file-tree-empty">Select or create<br>a project first.</div>`; return;
+  }
+  if (projFiles.length === 0) {
+    list.innerHTML = `<div class="file-tree-empty">No files yet.<br>Click + to add one.</div>`; return;
+  }
+  list.innerHTML = projFiles.map(f => `
+    <div class="file-item ${currentFile === f.path ? 'active' : ''}" onclick="openFile('${esc(f.path)}')">
+      <span class="file-item-name">${esc(f.path)}</span>
+      <button class="btn-del-file" onclick="event.stopPropagation();deleteFile('${esc(f.path)}')" title="Delete">✕</button>
+    </div>
+  `).join("");
+}
+
+async function openFile(path) {
+  if (!currentProject) return;
+  currentFile = path;
+  renderFileTree();
+  try {
+    const res = await fetch(CONFIG.api + "/projects/" + currentProject.id + "/" + path);
+    const text = await res.text();
+    document.getElementById("proj-code-editor").value = text;
+  } catch {
+    document.getElementById("proj-code-editor").value = "";
+  }
+  document.getElementById("current-file-name").textContent = path;
+  document.getElementById("no-file-msg").style.display = "none";
+  document.getElementById("proj-editor-active").style.display = "flex";
+  document.getElementById("proj-preview-wrap").style.display = "none";
+
+  const isHtml = path.match(/\.html?$/i);
+  document.getElementById("ptab-code").style.display = isHtml ? "block" : "none";
+  document.getElementById("ptab-preview").style.display = isHtml ? "block" : "none";
+  document.getElementById("ptab-code").classList.add("active");
+  document.getElementById("ptab-preview").classList.remove("active");
+}
+
+async function saveProjFile() {
+  if (!currentProject || !currentFile) return;
+  const html = document.getElementById("proj-code-editor").value;
+  try {
+    await api("POST", `/projects/${currentProject.id}/files`, { path: currentFile, html });
+    toast("Saved: " + currentFile, true);
+    // Refresh file list
+    const res = await api("GET", `/projects/${currentProject.id}/files`);
+    projFiles = res.files || [];
+    renderFileTree();
+  } catch (e) { toast(e.message || "Save failed", false); }
+}
+
+async function deleteFile(path) {
+  if (!currentProject) return;
+  if (!confirm(`Delete ${path}?`)) return;
+  try {
+    await api("DELETE", `/projects/${currentProject.id}/files/${path}`);
+    if (currentFile === path) {
+      currentFile = null;
+      document.getElementById("no-file-msg").style.display = "flex";
+      document.getElementById("proj-editor-active").style.display = "none";
+    }
+    const res = await api("GET", `/projects/${currentProject.id}/files`);
+    projFiles = res.files || [];
+    renderFileTree();
+    toast("Deleted: " + path, true);
+  } catch (e) { toast(e.message || "Delete failed", false); }
+}
+
+async function deleteProject(id, name) {
+  if (!confirm(`Delete project "${name}"? This removes all its files.`)) return;
+  try {
+    await api("DELETE", `/projects/${id}`);
+    if (currentProject && currentProject.id === id) {
+      currentProject = null; currentFile = null; projFiles = [];
+      document.getElementById("project-select").value = "";
+      onProjectSelect();
+    }
+    await loadProjects();
+    toast("Project deleted", true);
+  } catch (e) { toast(e.message || "Delete failed", false); }
+}
+
+// New project modal
+function openNewProject() {
+  if (!token) { openAuth(); return; }
+  document.getElementById("np-name").value = "";
+  document.getElementById("np-error").textContent = "";
+  document.getElementById("new-project-modal").classList.add("open");
+  setTimeout(() => document.getElementById("np-name").focus(), 80);
+}
+function closeNewProject() { document.getElementById("new-project-modal").classList.remove("open"); }
+async function createProject() {
+  const name = document.getElementById("np-name").value.trim();
+  if (!name) { document.getElementById("np-error").textContent = "Enter a name."; return; }
+  try {
+    const proj = await api("POST", "/projects", { name });
+    myProjects.unshift(proj);
+    renderProjectSelect();
+    renderProjectsList();
+    document.getElementById("project-select").value = proj.id;
+    onProjectSelect();
+    closeNewProject();
+    toast("Project created: " + name, true);
+  } catch (e) {
+    document.getElementById("np-error").textContent = e.message || "Failed.";
+  }
+}
+
+// Add file modal
+function openAddFile() {
+  if (!currentProject) { toast("Select a project first", false); return; }
+  document.getElementById("af-path").value = "";
+  document.getElementById("af-error").textContent = "";
+  document.getElementById("add-file-modal").style.display = "flex";
+  setTimeout(() => document.getElementById("af-path").focus(), 80);
+}
+function closeAddFile() { document.getElementById("add-file-modal").style.display = "none"; }
+async function confirmAddFile() {
+  const path = document.getElementById("af-path").value.trim();
+  if (!path) { document.getElementById("af-error").textContent = "Enter a path."; return; }
+  // Create empty file
+  try {
+    await api("POST", `/projects/${currentProject.id}/files`, { path, html: "" });
+    const res = await api("GET", `/projects/${currentProject.id}/files`);
+    projFiles = res.files || [];
+    renderFileTree();
+    closeAddFile();
+    openFile(path);
+    toast("File added: " + path, true);
+  } catch (e) {
+    document.getElementById("af-error").textContent = e.message || "Failed.";
+  }
+}
+
+// ── DOMAIN LOADING ────────────────────────────────────────────
 async function loadMyDomains() {
   try {
     const data = await api("GET", `/search?q=`);
@@ -906,149 +1443,185 @@ async function loadMyDomains() {
   } catch {}
 }
 
-function populateDomainSelect() {
-  const sel = document.getElementById("domain-select");
-  // Keep first option
+function populateAssignDomains(selectId) {
+  const sel = document.getElementById(selectId);
   while (sel.options.length > 1) sel.remove(1);
-
-  if (myDomains.length === 0) {
-    const opt = document.createElement("option");
-    opt.value = "";
-    opt.textContent = "— no domains registered —";
-    opt.disabled = true;
-    sel.add(opt);
-    return;
-  }
-
   myDomains.forEach(d => {
     const opt = document.createElement("option");
     opt.value = d.domain;
-    opt.textContent = d.domain + (d.cname ? " (has CNAME)" : "");
+    opt.textContent = d.domain;
     sel.add(opt);
   });
 }
 
-function onDomainSelect() {
-  const sel = document.getElementById("domain-select");
-  const domain = sel.value;
-  const preview = document.getElementById("cname-preview");
-  const btn = document.getElementById("link-btn");
-  const successEl = document.getElementById("link-success");
-
-  successEl.style.display = "none";
-
-  if (!domain || !currentUploadUrl) {
-    preview.style.display = "none";
-    btn.disabled = true;
-    return;
-  }
-
-  document.getElementById("cp-domain").textContent = domain;
-  document.getElementById("cp-cname").textContent = currentUploadUrl;
-  preview.style.display = "block";
-  btn.disabled = false;
-  btn.textContent = "Link Domain →";
+// ── UPLOAD DOMAIN ASSIGN ──────────────────────────────────────
+function setUploadAssignType(type) {
+  uploadAssignType = type;
+  document.getElementById("uassign-domain-btn").classList.toggle("active", type === "domain");
+  document.getElementById("uassign-sub-btn").classList.toggle("active", type === "subdomain");
+  document.getElementById("uassign-domain-fields").style.display = type === "domain" ? "block" : "none";
+  document.getElementById("uassign-sub-fields").style.display = type === "subdomain" ? "block" : "none";
 }
-
-async function doLinkDomain() {
-  const domain = document.getElementById("domain-select").value;
+function onUAssignDomainChange() {
+  const v = document.getElementById("uassign-domain-select").value;
+  document.getElementById("uassign-domain-btn-go").disabled = !v;
+  document.getElementById("uassign-domain-success").style.display = "none";
+}
+async function doAssignUploadDomain() {
+  const domain = document.getElementById("uassign-domain-select").value;
   if (!domain || !currentUploadUrl) return;
-
-  const btn = document.getElementById("link-btn");
-  btn.innerHTML = '<span class="spinner"></span>Linking...';
-  btn.disabled = true;
-
+  const btn = document.getElementById("uassign-domain-btn-go");
+  btn.innerHTML = '<span class="spinner"></span>Assigning...'; btn.disabled = true;
   try {
     await api("POST", "/domains/cname", { domain, cname: currentUploadUrl });
-
-    const successEl = document.getElementById("link-success");
-    document.getElementById("link-domain-result").textContent = domain;
-    successEl.style.display = "block";
-    btn.textContent = "✓ Linked";
-
-    toast(`${domain} → linked!`, true);
+    const s = document.getElementById("uassign-domain-success");
+    s.textContent = `✓ ${domain} → CNAME set to this upload.`;
+    s.style.display = "block";
+    btn.textContent = "✓ Assigned";
+    toast(`${domain} linked!`, true);
     await loadMyDomains();
   } catch (e) {
-    toast(e.message || "Failed to link domain", false);
-    btn.textContent = "Link Domain →";
-    btn.disabled = false;
+    toast(e.message || "Failed", false);
+    btn.textContent = "Set CNAME →"; btn.disabled = false;
   }
 }
 
-// ── MY UPLOADS ────────────────────────────────────────────────
-async function loadMyUploads() {
-  // Backend doesn't have a list-uploads endpoint, so we track in localStorage
-  const list = document.getElementById("uploads-list");
-
-  let uploads = getStoredUploads();
-
-  if (uploads.length === 0) {
-    list.innerHTML = `<div class="no-uploads">No uploads yet.<br>Your uploads will appear here.</div>`;
-    return;
-  }
-
-  list.innerHTML = uploads.reverse().slice(0, 20).map(u => `
-    <div class="upload-item">
-      <div>
-        <div class="upload-item-name">${esc(u.name)}</div>
-        <div class="upload-item-id">${u.id.slice(0,8)}… · ${new Date(u.ts).toLocaleDateString()}</div>
-      </div>
-      <div class="upload-item-actions">
-        <a class="btn-sm green" href="${esc(CONFIG.api + '/upload/' + u.id)}" target="_blank">Open</a>
-        <button class="btn-sm" onclick="loadUploadInEditor('${u.id}', '${esc(u.name)}')">Load</button>
-      </div>
-    </div>
-  `).join("");
-}
-
-function getStoredUploads() {
+async function onUAssignSubParentChange() {
+  const parent = document.getElementById("uassign-sub-parent").value;
+  const existingRow = document.getElementById("uassign-sub-existing-row");
+  const existingSel = document.getElementById("uassign-sub-existing");
+  if (!parent) { existingRow.style.display = "none"; return; }
   try {
-    return JSON.parse(localStorage.getItem("hl_uploads_" + username) || "[]");
-  } catch { return []; }
+    const subs = await api("GET", `/domains/${parent}/subs`);
+    while (existingSel.options.length > 1) existingSel.remove(1);
+    subs.forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s.subdomain; opt.textContent = s.subdomain + "." + parent;
+      existingSel.add(opt);
+    });
+    existingRow.style.display = subs.length > 0 ? "block" : "none";
+  } catch { existingRow.style.display = "none"; }
+  document.getElementById("uassign-sub-btn-go").disabled = !parent;
 }
-
-function storeUpload(id, name) {
-  if (!username) return;
-  const uploads = getStoredUploads();
-  uploads.push({ id, name, ts: Date.now() });
-  localStorage.setItem("hl_uploads_" + username, JSON.stringify(uploads.slice(-50)));
+function onUAssignSubExistingChange() {
+  const v = document.getElementById("uassign-sub-existing").value;
+  if (v) document.getElementById("uassign-sub-name").value = v;
 }
-
-async function loadUploadInEditor(id, name) {
+async function doAssignUploadSubdomain() {
+  const parent = document.getElementById("uassign-sub-parent").value;
+  const subName = document.getElementById("uassign-sub-name").value.trim();
+  if (!parent || !subName || !currentUploadUrl) return;
+  const btn = document.getElementById("uassign-sub-btn-go");
+  btn.innerHTML = '<span class="spinner"></span>Assigning...'; btn.disabled = true;
   try {
-    const res = await fetch(CONFIG.api + "/upload/" + id);
-    const html = await res.text();
-    document.getElementById("code-editor").value = html;
-    document.getElementById("file-name").value = name;
-    switchTab("code");
-    toast("Loaded into editor", true);
-  } catch {
-    toast("Failed to load", false);
+    // Check if exists
+    const subs = await api("GET", `/domains/${parent}/subs`);
+    const exists = subs.find(s => s.subdomain === subName);
+    if (exists) {
+      await api("PUT", "/domains/sub", { domain: parent, subdomain: subName, cname: currentUploadUrl });
+    } else {
+      await api("POST", "/domains/sub", { domain: parent, subdomain: subName, cname: currentUploadUrl });
+    }
+    const s = document.getElementById("uassign-sub-success");
+    s.textContent = `✓ ${subName}.${parent} → CNAME set.`;
+    s.style.display = "block";
+    btn.textContent = "✓ Assigned";
+    toast(`${subName}.${parent} linked!`, true);
+  } catch (e) {
+    toast(e.message || "Failed", false);
+    btn.textContent = "Set CNAME →"; btn.disabled = false;
   }
 }
 
-// Patch doUpload to also store
-const _origUpload = doUpload;
-// We patch inline instead:
+// ── PROJECT DOMAIN ASSIGN ─────────────────────────────────────
+function setProjAssignType(type) {
+  projAssignType = type;
+  document.getElementById("passign-domain-btn").classList.toggle("active", type === "domain");
+  document.getElementById("passign-sub-btn").classList.toggle("active", type === "subdomain");
+  document.getElementById("passign-domain-fields").style.display = type === "domain" ? "block" : "none";
+  document.getElementById("passign-sub-fields").style.display = type === "subdomain" ? "block" : "none";
+}
+function onPAssignDomainChange() {
+  const v = document.getElementById("passign-domain-select").value;
+  document.getElementById("passign-domain-btn-go").disabled = !v;
+  document.getElementById("passign-domain-success").style.display = "none";
+}
+async function doAssignProjDomain() {
+  const domain = document.getElementById("passign-domain-select").value;
+  if (!domain || !currentProject) return;
+  const projUrl = CONFIG.api + "/projects/" + currentProject.id + "/";
+  const btn = document.getElementById("passign-domain-btn-go");
+  btn.innerHTML = '<span class="spinner"></span>Assigning...'; btn.disabled = true;
+  try {
+    await api("POST", "/domains/cname", { domain, cname: projUrl });
+    const s = document.getElementById("passign-domain-success");
+    s.textContent = `✓ ${domain} → CNAME set to this project.`;
+    s.style.display = "block";
+    btn.textContent = "✓ Assigned";
+    toast(`${domain} linked!`, true);
+    await loadMyDomains();
+  } catch (e) {
+    toast(e.message || "Failed", false);
+    btn.textContent = "Set CNAME →"; btn.disabled = false;
+  }
+}
+async function onPAssignSubParentChange() {
+  const parent = document.getElementById("passign-sub-parent").value;
+  const existingRow = document.getElementById("passign-sub-existing-row");
+  const existingSel = document.getElementById("passign-sub-existing");
+  if (!parent) { existingRow.style.display = "none"; return; }
+  try {
+    const subs = await api("GET", `/domains/${parent}/subs`);
+    while (existingSel.options.length > 1) existingSel.remove(1);
+    subs.forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s.subdomain; opt.textContent = s.subdomain + "." + parent;
+      existingSel.add(opt);
+    });
+    existingRow.style.display = subs.length > 0 ? "block" : "none";
+  } catch { existingRow.style.display = "none"; }
+  document.getElementById("passign-sub-btn-go").disabled = !parent;
+}
+function onPAssignSubExistingChange() {
+  const v = document.getElementById("passign-sub-existing").value;
+  if (v) document.getElementById("passign-sub-name").value = v;
+}
+async function doAssignProjSubdomain() {
+  const parent = document.getElementById("passign-sub-parent").value;
+  const subName = document.getElementById("passign-sub-name").value.trim();
+  if (!parent || !subName || !currentProject) return;
+  const projUrl = CONFIG.api + "/projects/" + currentProject.id + "/";
+  const btn = document.getElementById("passign-sub-btn-go");
+  btn.innerHTML = '<span class="spinner"></span>Assigning...'; btn.disabled = true;
+  try {
+    const subs = await api("GET", `/domains/${parent}/subs`);
+    const exists = subs.find(s => s.subdomain === subName);
+    if (exists) {
+      await api("PUT", "/domains/sub", { domain: parent, subdomain: subName, cname: projUrl });
+    } else {
+      await api("POST", "/domains/sub", { domain: parent, subdomain: subName, cname: projUrl });
+    }
+    const s = document.getElementById("passign-sub-success");
+    s.textContent = `✓ ${subName}.${parent} → CNAME set.`;
+    s.style.display = "block";
+    btn.textContent = "✓ Assigned";
+    toast(`${subName}.${parent} linked!`, true);
+  } catch (e) {
+    toast(e.message || "Failed", false);
+    btn.textContent = "Set CNAME →"; btn.disabled = false;
+  }
+}
 
 // ── AUTH ──────────────────────────────────────────────────────
-function openAuth() {
-  document.getElementById("modal-overlay").classList.add("open");
-  setTimeout(() => document.getElementById("m-user").focus(), 80);
-}
-function closeAuth() {
-  document.getElementById("modal-overlay").classList.remove("open");
-  document.getElementById("modal-error").textContent = "";
-}
+function openAuth() { document.getElementById("modal-overlay").classList.add("open"); setTimeout(() => document.getElementById("m-user").focus(), 80); }
+function closeAuth() { document.getElementById("modal-overlay").classList.remove("open"); document.getElementById("modal-error").textContent = ""; }
 function toggleAuthMode() {
   authMode = authMode === "login" ? "register" : "login";
   const L = authMode === "login";
   document.getElementById("modal-title").textContent = L ? "Sign In" : "Create Account";
   document.getElementById("modal-sub").textContent = L ? "Upload and manage your HTML pages." : "Join the Inner Net.";
   document.getElementById("modal-submit").textContent = L ? "Sign In" : "Create Account";
-  document.getElementById("modal-switch").innerHTML = L
-    ? `No account? <a onclick="toggleAuthMode()">Create one</a>`
-    : `Have one? <a onclick="toggleAuthMode()">Sign in</a>`;
+  document.getElementById("modal-switch").innerHTML = L ? `No account? <a onclick="toggleAuthMode()">Create one</a>` : `Have one? <a onclick="toggleAuthMode()">Sign in</a>`;
   document.getElementById("modal-error").textContent = "";
 }
 async function submitAuth() {
@@ -1057,14 +1630,11 @@ async function submitAuth() {
   const errEl = document.getElementById("modal-error");
   if (!user || !pass) { errEl.textContent = "Fill all fields."; return; }
   const btn = document.getElementById("modal-submit");
-  btn.innerHTML = '<span class="spinner"></span>';
-  btn.disabled = true;
-  errEl.textContent = "";
+  btn.innerHTML = '<span class="spinner"></span>'; btn.disabled = true; errEl.textContent = "";
   try {
     const endpoint = authMode === "login" ? "/auth/login" : "/auth/register";
     const res = await api("POST", endpoint, { username: user, password: pass });
-    token = res.token;
-    username = res.username;
+    token = res.token; username = res.username;
     localStorage.setItem("hl_token", token);
     localStorage.setItem("hl_username", username);
     closeAuth();
@@ -1073,23 +1643,33 @@ async function submitAuth() {
   } catch (e) {
     errEl.textContent = e.message || "Auth failed.";
   } finally {
-    btn.textContent = authMode === "login" ? "Sign In" : "Create Account";
-    btn.disabled = false;
+    btn.textContent = authMode === "login" ? "Sign In" : "Create Account"; btn.disabled = false;
   }
 }
 function logout() {
   token = null; username = null;
-  localStorage.removeItem("hl_token");
-  localStorage.removeItem("hl_username");
+  localStorage.removeItem("hl_token"); localStorage.removeItem("hl_username");
   document.getElementById("lucks-badge").style.display = "none";
   document.getElementById("auth-btn").textContent = "Sign In";
   document.getElementById("my-uploads-section").style.display = "none";
+  document.getElementById("my-projects-side").style.display = "none";
 }
 
-document.addEventListener("keydown", e => { if (e.key === "Escape") closeAuth(); });
-document.getElementById("modal-overlay").addEventListener("click", e => {
-  if (e.target === document.getElementById("modal-overlay")) closeAuth();
+// Keyboard shortcuts
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    closeAuth();
+    closeNewProject();
+    closeAddFile();
+  }
+  // Ctrl+S / Cmd+S to save current project file
+  if ((e.ctrlKey || e.metaKey) && e.key === "s" && currentMode === "projects" && currentFile) {
+    e.preventDefault(); saveProjFile();
+  }
 });
+document.getElementById("modal-overlay").addEventListener("click", e => { if (e.target === document.getElementById("modal-overlay")) closeAuth(); });
+document.getElementById("new-project-modal").addEventListener("click", e => { if (e.target === document.getElementById("new-project-modal")) closeNewProject(); });
+document.getElementById("add-file-modal").addEventListener("click", e => { if (e.target === document.getElementById("add-file-modal")) closeAddFile(); });
 
 // ── API ───────────────────────────────────────────────────────
 async function api(method, path, body) {
@@ -1098,23 +1678,16 @@ async function api(method, path, body) {
   if (body) opts.body = JSON.stringify(body);
   const res = await fetch(CONFIG.api + path, opts);
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    const e = new Error(data.error || res.statusText);
-    e.status = res.status;
-    throw e;
-  }
-  // Track uploads
+  if (!res.ok) { const e = new Error(data.error || res.statusText); e.status = res.status; throw e; }
   if (path === "/upload" && data.id) storeUpload(data.id, body.name || "index.html");
   return data;
 }
 
-// ── COPY URL ─────────────────────────────────────────────────
+// ── UTILS ────────────────────────────────────────────────────
 function copyUrl() {
   if (!currentUploadUrl) return;
   navigator.clipboard.writeText(currentUploadUrl).then(() => toast("URL copied!", true));
 }
-
-// ── TOAST ────────────────────────────────────────────────────
 let toastTimer;
 function toast(msg, ok = true) {
   const el = document.getElementById("toast");
@@ -1123,8 +1696,6 @@ function toast(msg, ok = true) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => el.className = "", 3200);
 }
-
-// ── UTILS ────────────────────────────────────────────────────
 function esc(s) {
   return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
