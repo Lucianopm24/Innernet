@@ -697,6 +697,8 @@ main {
     </div>
     <div class="tld-pills">
       <span class="tld-pill" onclick="appendTld('.lbc')">.lbc</span>
+      <span class="tld-pill" onclick="appendTld('.inn')">.inn</span>
+      <span class="tld-pill" onclick="appendTld('.abc')">.abc</span>
       <span class="tld-pill" onclick="appendTld('.green')">.green</span>
       <span class="tld-pill" onclick="appendTld('.party')">.party</span>
       <span class="tld-pill" onclick="appendTld('.cc')">.cc</span>
@@ -810,7 +812,7 @@ async function doSearch() {
   lookupEl.style.display = "none";
   resultsEl.style.display = "none";
 
-  const isExact = [".lbc", ".green", ".party", ".cc"].some(t => q.endsWith(t));
+  const isExact = [".lbc",".green",".party",".cc",".inn",".abc"].some(t => q.endsWith(t));
 
   if (isExact) {
     // Try to look it up
@@ -1072,7 +1074,7 @@ function appendTld(tld) {
   const inp = document.getElementById("search-input");
   let val = inp.value.trim().toLowerCase();
   // Remove existing tld if any
-  [".lbc",".green",".party",".cc"].forEach(t => {
+  [".lbc",".green",".party",".cc",".inn",".abc"].forEach(t => {
     if (val.endsWith(t)) val = val.slice(0, -t.length);
   });
   inp.value = val + tld;
