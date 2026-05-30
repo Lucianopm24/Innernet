@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>account.innernet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --border: #2a2a2a;
+    --text: #e8e8e8;
+    --muted: #666;
+    --green: #4ade80;
+    --red: #f87171;
+    --yellow: #fbbf24;
+    --blue: #60a5fa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; width: 100%; max-width: 400px; overflow: hidden; }
+  .card-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: .5rem; }
+  .card-header .logo { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted); }
+  .card-header .title { font-size: 14px; font-weight: 500; }
+  .card-body { padding: 1.25rem; display: flex; flex-direction: column; gap: .75rem; }
+  .app-badge { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: .75rem 1rem; display: flex; align-items: center; gap: .75rem; }
+  .app-badge .app-icon { width: 32px; height: 32px; background: var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .app-badge .app-name { font-weight: 500; font-size: 13px; }
+  .app-badge .app-id { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted); }
+  .scope-list { display: flex; flex-direction: column; gap: .4rem; }
+  .scope-item { display: flex; align-items: center; gap: .5rem; font-size: 13px; color: var(--muted); }
+  .scope-item::before { content: '✓'; color: var(--green); font-size: 11px; }
+  .amount-display { text-align: center; padding: 1rem; background: var(--bg); border-radius: 6px; border: 1px solid var(--border); }
+  .amount-display .lucks { font-family: 'IBM Plex Mono', monospace; font-size: 28px; font-weight: 500; color: var(--yellow); }
+  .amount-display .label { font-size: 11px; color: var(--muted); margin-top: .25rem; }
+  .reason { font-size: 12px; color: var(--muted); text-align: center; font-style: italic; }
+  .balance-note { font-size: 11px; color: var(--muted); text-align: center; }
+  .balance-note span { color: var(--text); }
+  .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-top: .25rem; }
+  .btn { padding: .6rem 1rem; border-radius: 6px; border: none; font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: opacity .15s; }
+  .btn:hover { opacity: .85; }
+  .btn-primary { background: var(--green); color: #000; }
+  .btn-danger { background: var(--red); color: #000; }
+  .btn-ghost { background: var(--border); color: var(--text); }
+  .btn-full { grid-column: 1/-1; }
+  input { width: 100%; padding: .6rem .75rem; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; outline: none; transition: border-color .15s; }
+  input:focus { border-color: var(--green); }
+  label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+  .field { display: flex; flex-direction: column; gap: .3rem; }
+  .error { font-size: 12px; color: var(--red); text-align: center; min-height: 16px; }
+  .success { font-size: 12px; color: var(--green); text-align: center; min-height: 16px; }
+  .divider { border: none; border-top: 1px solid var(--border); }
+  .nav { display: flex; gap: .25rem; padding: .75rem 1.25rem; border-bottom: 1px solid var(--border); }
+  .nav-btn { padding: .35rem .75rem; border-radius: 4px; border: none; background: none; color: var(--muted); font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all .15s; }
+  .nav-btn.active { background: var(--border); color: var(--text); }
+  .app-row { display: flex; align-items: center; justify-content: space-between; padding: .6rem 0; border-bottom: 1px solid var(--border); }
+  .app-row:last-child { border-bottom: none; }
+  .app-row .name { font-size: 13px; font-weight: 500; }
+  .app-row .bal { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--yellow); }
+  .empty { color: var(--muted); font-size: 13px; text-align: center; padding: 1rem 0; }
+  .tag { font-size: 10px; padding: .15rem .4rem; border-radius: 3px; background: var(--border); color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+
+  /* views */
+  .view { display: none; }
+  .view.active { display: flex; flex-direction: column; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-header">
+    <span class="logo">innernet://</span>
+    <span class="title" id="card-title">account</span>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="view-login" class="view active card-body">
+    <div class="field">
+      <label>Username</label>
+      <input id="l-user" type="text" placeholder="luciano" autocomplete="off" autocorrect="off" autocapitalize="off">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input id="l-pass" type="password" placeholder="••••••••">
+    </div>
+    <div class="error" id="l-error"></div>
+    <div class="btn-row">
+      <button class="btn btn-primary btn-full" onclick="doLogin()">Sign in</button>
+    </div>
+  </div>
+
+  <!-- MAIN NAV + VIEWS -->
+  <div id="view-main" class="view">
+    <nav class="nav">
+      <button class="nav-btn active" onclick="showTab('profile')">Profile</button>
+      <button class="nav-btn" onclick="showTab('apps')">My Apps</button>
+      <button class="nav-btn" onclick="showTab('security')">Security</button>
+    </nav>
+
+    <!-- Profile tab -->
+    <div id="tab-profile" class="card-body">
+      <div class="app-badge">
+        <div class="app-icon">👤</div>
+        <div>
+          <div class="app-name" id="p-username">—</div>
+          <div class="app-id">innernet user</div>
+        </div>
+      </div>
+      <div class="amount-display">
+        <div class="lucks" id="p-balance">—</div>
+        <div class="label">LUCKS balance</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-ghost btn-full" onclick="doLogout()">Sign out</button>
+      </div>
+    </div>
+
+    <!-- Apps tab -->
+    <div id="tab-apps" class="card-body" style="display:none">
+      <div id="apps-list"><div class="empty">loading...</div></div>
+    </div>
+
+    <!-- Security tab -->
+    <div id="tab-security" class="card-body" style="display:none">
+      <div class="field">
+        <label>Current password</label>
+        <input id="s-old" type="password" placeholder="••••••••">
+      </div>
+      <div class="field">
+        <label>New password</label>
+        <input id="s-new" type="password" placeholder="••••••••">
+      </div>
+      <div class="field">
+        <label>Confirm new password</label>
+        <input id="s-confirm" type="password" placeholder="••••••••">
+      </div>
+      <div class="error" id="s-error"></div>
+      <div class="success" id="s-ok"></div>
+      <button class="btn btn-primary" onclick="changePassword()">Change password</button>
+    </div>
+  </div>
+
+  <!-- OAUTH PROMPT -->
+  <div id="view-oauth" class="view card-body">
+    <div class="app-badge">
+      <div class="app-icon" id="o-icon">🔗</div>
+      <div>
+        <div class="app-name" id="o-appname">Loading...</div>
+        <div class="app-id" id="o-appid"></div>
+      </div>
+    </div>
+    <div class="scope-list" id="o-scopes"></div>
+    <hr class="divider">
+    <div style="font-size:12px; color:var(--muted); text-align:center">
+      Signing in as <strong id="o-user" style="color:var(--text)">—</strong>
+    </div>
+    <div class="error" id="o-error"></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="oauthDecline()">Decline</button>
+      <button class="btn btn-primary" onclick="oauthAccept()">Authorize</button>
+    </div>
+  </div>
+
+  <!-- PAY PROMPT -->
+  <div id="view-pay" class="view card-body">
+    <div class="app-badge">
+      <div class="app-icon" id="pay-icon">💳</div>
+      <div>
+        <div class="app-name" id="pay-appname">Loading...</div>
+        <div class="app-id" id="pay-appid"></div>
+      </div>
+    </div>
+    <div class="amount-display">
+      <div class="lucks" id="pay-amount">—</div>
+      <div class="label">LUCKS</div>
+    </div>
+    <div class="reason" id="pay-reason"></div>
+    <div class="balance-note">Your balance: <span id="pay-balance">—</span> LUCKS</div>
+    <div class="error" id="pay-error"></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="payDecline()">Decline</button>
+      <button class="btn btn-danger" onclick="payAccept()">Pay</button>
+    </div>
+  </div>
+
+  <!-- WITHDRAW MODAL -->
+  <div id="view-withdraw" class="view card-body">
+    <div style="font-size:13px">Withdraw from <strong id="w-appname"></strong></div>
+    <div class="balance-note">App balance: <span id="w-appbal">—</span> LUCKS</div>
+    <div class="field">
+      <label>Amount</label>
+      <input id="w-amount" type="number" placeholder="0" min="1">
+    </div>
+    <div class="error" id="w-error"></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="showTab('apps')">Cancel</button>
+      <button class="btn btn-primary" onclick="doWithdraw()">Withdraw</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = "https://own-net.vercel.app";
+const params = new URLSearchParams(location.search);
+const mode = params.get("mode"); // "oauth" | "pay"
+const projectId = params.get("app");
+const redirectUrl = params.get("redirect");
+const scope = params.get("scope") || "profile";
+const amount = parseInt(params.get("amount")) || 0;
+const reason = params.get("reason") || "";
+
+let session = null;
+let withdrawProjectId = null;
+let withdrawBalance = 0;
+
+function getToken() { return localStorage.getItem("inn_token"); }
+
+async function api(method, path, body) {
+  const r = await fetch(API + path, {
+    method,
+    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + getToken() },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  return r.json();
+}
+
+function show(viewId, title) {
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  document.getElementById(viewId).classList.add("active");
+  document.getElementById("card-title").textContent = title || "account";
+}
+
+async function doLogin() {
+  const user = document.getElementById("l-user").value.trim();
+  const pass = document.getElementById("l-pass").value;
+  const err = document.getElementById("l-error");
+  if (!user || !pass) { err.textContent = "Fill all fields."; return; }
+  err.textContent = "";
+  const r = await fetch(API + "/auth/login", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username: user, password: pass })
+  });
+  const d = await r.json();
+  if (!r.ok) { err.textContent = d.error || "Login failed."; return; }
+  localStorage.setItem("inn_token", d.token);
+  session = d;
+  afterLogin();
+}
+
+async function afterLogin() {
+  const token = getToken();
+  if (!token) { show("view-login", "sign in"); return; }
+  // Verify token
+  const me = await api("GET", "/me").catch(() => null);
+  if (!me || me.error) { localStorage.removeItem("inn_token"); show("view-login", "sign in"); return; }
+  session = me;
+
+  if (mode === "oauth" && projectId) {
+    await showOAuth();
+  } else if (mode === "pay" && projectId && amount) {
+    await showPay();
+  } else {
+    await showMain();
+  }
+}
+
+function doLogout() {
+  localStorage.removeItem("inn_token");
+  session = null;
+  show("view-login", "sign in");
+}
+
+// MAIN
+async function showMain() {
+  show("view-main", "account");
+  document.getElementById("p-username").textContent = session.username;
+  // Get balance
+  const u = await api("GET", "/me");
+  document.getElementById("p-balance").textContent = u.lucks ?? "—";
+}
+
+function showTab(tab) {
+  ["profile","apps","security"].forEach(t => {
+    document.getElementById("tab-" + t).style.display = t === tab ? "flex" : "none";
+  });
+  document.querySelectorAll(".nav-btn").forEach((b, i) => {
+    b.classList.toggle("active", ["profile","apps","security"][i] === tab);
+  });
+  if (tab === "apps") loadApps();
+}
+
+async function loadApps() {
+  const el = document.getElementById("apps-list");
+  el.innerHTML = `<div class="empty">loading...</div>`;
+  const projects = await api("GET", "/projects");
+  if (!projects.length) { el.innerHTML = `<div class="empty">no apps yet</div>`; return; }
+  const rows = await Promise.all(projects.map(async p => {
+    const bal = await api("GET", `/pay/balance/${p.id}`).catch(() => ({ balance: 0 }));
+    return { p, balance: bal.balance || 0 };
+  }));
+  el.innerHTML = rows.map(({ p, balance }) => `
+    <div class="app-row">
+      <div>
+        <div class="name">${esc(p.name || p.id)}</div>
+        <div class="app-id" style="font-family:monospace;font-size:10px;color:var(--muted)">${p.id.slice(0,8)}...</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:.5rem">
+        <span class="bal">${balance} L</span>
+        ${balance > 0 ? `<button class="btn btn-ghost" style="padding:.3rem .6rem;font-size:11px" onclick="openWithdraw('${p.id}','${esc(p.name||p.id)}',${balance})">Withdraw</button>` : ''}
+      </div>
+    </div>
+  `).join("");
+}
+
+function openWithdraw(pid, name, bal) {
+  withdrawProjectId = pid;
+  withdrawBalance = bal;
+  document.getElementById("w-appname").textContent = name;
+  document.getElementById("w-appbal").textContent = bal;
+  document.getElementById("w-amount").value = "";
+  document.getElementById("w-error").textContent = "";
+  show("view-withdraw", "withdraw");
+}
+
+async function doWithdraw() {
+  const amt = parseInt(document.getElementById("w-amount").value);
+  const err = document.getElementById("w-error");
+  if (!amt || amt < 1) { err.textContent = "Enter a valid amount."; return; }
+  if (amt > withdrawBalance) { err.textContent = "Not enough balance."; return; }
+  const r = await api("POST", `/pay/withdraw/${withdrawProjectId}`, { amount: amt });
+  if (r.error) { err.textContent = r.error; return; }
+  showTab("apps");
+}
+
+async function changePassword() {
+  const old = document.getElementById("s-old").value;
+  const nw = document.getElementById("s-new").value;
+  const cf = document.getElementById("s-confirm").value;
+  const err = document.getElementById("s-error");
+  const ok = document.getElementById("s-ok");
+  err.textContent = ""; ok.textContent = "";
+  if (!old || !nw || !cf) { err.textContent = "Fill all fields."; return; }
+  if (nw !== cf) { err.textContent = "Passwords don't match."; return; }
+  const r = await api("POST", "/auth/change-password", { currentPassword: old, newPassword: nw });
+  if (r.error) { err.textContent = r.error; return; }
+  ok.textContent = "Password changed.";
+  document.getElementById("s-old").value = "";
+  document.getElementById("s-new").value = "";
+  document.getElementById("s-confirm").value = "";
+}
+
+// OAUTH
+async function showOAuth() {
+  show("view-oauth", "authorize");
+  document.getElementById("o-user").textContent = session.username;
+  const projects = await api("GET", "/projects");
+  const project = projects.find(p => p.id === projectId);
+  document.getElementById("o-appname").textContent = project?.name || projectId;
+  document.getElementById("o-appid").textContent = projectId.slice(0,8) + "...";
+  const scopeLabels = {
+    profile: "Read your username",
+    pay: "Request payments",
+    "profile pay": "Read your username and request payments"
+  };
+  document.getElementById("o-scopes").innerHTML = (scopeLabels[scope] || scope).split(" and ").map(s =>
+    `<div class="scope-item">${s}</div>`
+  ).join("");
+  document.getElementById("o-error").textContent = "";
+}
+
+async function oauthAccept() {
+  const err = document.getElementById("o-error");
+  const r = await api("POST", "/oauth/authorize", { projectId, redirect: redirectUrl, scope });
+  if (r.error) { err.textContent = r.error; return; }
+  const url = new URL(redirectUrl);
+  url.searchParams.set("code", r.code);
+  location.href = url.toString();
+}
+
+function oauthDecline() {
+  if (!redirectUrl) { history.back(); return; }
+  const url = new URL(redirectUrl);
+  url.searchParams.set("error", "access_denied");
+  location.href = url.toString();
+}
+
+// PAY
+async function showPay() {
+  show("view-pay", "payment");
+  const projects = await api("GET", "/projects");
+  const project = projects.find(p => p.id === projectId);
+  document.getElementById("pay-appname").textContent = project?.name || projectId;
+  document.getElementById("pay-appid").textContent = projectId.slice(0,8) + "...";
+  document.getElementById("pay-amount").textContent = amount;
+  document.getElementById("pay-reason").textContent = reason || "";
+  const me = await api("GET", "/me");
+  document.getElementById("pay-balance").textContent = me.lucks ?? "—";
+  document.getElementById("pay-error").textContent = "";
+}
+
+async function payAccept() {
+  const err = document.getElementById("pay-error");
+  const r = await api("POST", "/pay/confirm", { projectId, amount });
+  if (r.error) { err.textContent = r.error; return; }
+  if (!redirectUrl) { show("view-main", "account"); return; }
+  const url = new URL(redirectUrl);
+  url.searchParams.set("success", "true");
+  url.searchParams.set("paid", amount);
+  location.href = url.toString();
+}
+
+function payDecline() {
+  if (!redirectUrl) { history.back(); return; }
+  const url = new URL(redirectUrl);
+  url.searchParams.set("error", "declined");
+  location.href = url.toString();
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+// Boot
+afterLogin();
+</script>
+</body>
+</html>
