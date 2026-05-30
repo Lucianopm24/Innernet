@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InnerNet Docs</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0e0e0e;--bg2:#161616;--bg3:#1e1e1e;--ink:#e8e8e0;--ink2:#a0a090;--ink3:#585850;--accent:#c8ff57;--red:#ff6b6b;--blue:#57b8ff;--border:#222;--card:#141414}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;display:flex;min-height:100vh;font-size:14px;line-height:1.6}
+
+/* SIDEBAR */
+nav{width:220px;flex-shrink:0;border-right:1px solid var(--border);padding:2rem 0;position:sticky;top:0;height:100vh;overflow-y:auto}
+.nav-logo{font-family:'DM Mono',monospace;font-size:.8rem;color:var(--accent);padding:0 1.5rem;margin-bottom:2rem;letter-spacing:.05em}
+.nav-logo span{color:var(--ink3)}>// docs</span>
+.nav-section{font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3);padding:.4rem 1.5rem;margin-top:1.2rem}
+nav a{display:block;padding:.32rem 1.5rem;font-size:.78rem;color:var(--ink2);text-decoration:none;transition:color .12s}
+nav a:hover,nav a.active{color:var(--accent)}
+
+/* CONTENT */
+main{flex:1;max-width:740px;padding:3rem 2.5rem;overflow-x:hidden}
+section{margin-bottom:4rem;padding-top:.5rem}
+h1{font-family:'DM Mono',monospace;font-size:1.6rem;font-weight:500;color:var(--ink);margin-bottom:.5rem;letter-spacing:-.02em}
+h2{font-family:'DM Mono',monospace;font-size:1rem;font-weight:500;color:var(--accent);margin:2rem 0 .8rem;letter-spacing:.02em}
+h3{font-family:'DM Mono',monospace;font-size:.82rem;font-weight:500;color:var(--ink);margin:1.5rem 0 .5rem}
+p{font-size:.85rem;color:var(--ink2);line-height:1.8;margin-bottom:.8rem}
+.lead{font-size:.95rem;color:var(--ink);line-height:1.8}
+
+/* CODE */
+code{font-family:'DM Mono',monospace;font-size:.78rem;background:var(--bg3);color:var(--accent);padding:.1rem .35rem;border-radius:3px}
+pre{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:1rem 1.2rem;overflow-x:auto;margin:1rem 0}
+pre code{background:none;padding:0;font-size:.78rem;color:var(--ink);line-height:1.7}
+.comment{color:var(--ink3)}
+.key{color:var(--blue)}
+.val{color:var(--accent)}
+.method{color:var(--red)}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.78rem}
+th{text-align:left;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--ink3);padding:.5rem .8rem;border-bottom:1px solid var(--border)}
+td{padding:.55rem .8rem;border-bottom:1px solid var(--border);color:var(--ink2);vertical-align:top}
+td:first-child{font-family:'DM Mono',monospace;color:var(--ink);white-space:nowrap}
+
+/* BADGES */
+.badge{font-family:'DM Mono',monospace;font-size:.6rem;padding:.15rem .45rem;border-radius:3px;letter-spacing:.05em}
+.get{background:rgba(87,184,255,.12);color:var(--blue);border:1px solid rgba(87,184,255,.2)}
+.post{background:rgba(200,255,87,.1);color:var(--accent);border:1px solid rgba(200,255,87,.2)}
+.delete{background:rgba(255,107,107,.1);color:var(--red);border:1px solid rgba(255,107,107,.2)}
+.put{background:rgba(255,165,87,.1);color:#ffa557;border:1px solid rgba(255,165,87,.2)}
+.auth-req{background:rgba(200,255,87,.06);color:var(--ink3);border:1px solid var(--border);font-size:.58rem}
+
+/* ENDPOINT BLOCK */
+.endpoint{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:1rem 1.2rem;margin-bottom:.8rem}
+.endpoint-head{display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem;flex-wrap:wrap}
+.endpoint-path{font-family:'DM Mono',monospace;font-size:.82rem;color:var(--ink)}
+.endpoint-desc{font-size:.78rem;color:var(--ink2);line-height:1.6}
+
+/* CALLOUT */
+.callout{border-left:2px solid var(--accent);padding:.7rem 1rem;background:rgba(200,255,87,.04);margin:1rem 0;font-size:.8rem;color:var(--ink2);line-height:1.7}
+.callout.warn{border-color:var(--red);background:rgba(255,107,107,.04)}
+
+/* DIVIDER */
+hr{border:none;border-top:1px solid var(--border);margin:2rem 0}
+
+@media(max-width:700px){
+  nav{display:none}
+  main{padding:2rem 1.2rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">innernet <span>// docs</span></div>
+  <div class="nav-section">getting started</div>
+  <a href="#intro">What is InnerNet?</a>
+  <a href="#tlds">TLDs & Pricing</a>
+  <a href="#register">Register a Domain</a>
+  <div class="nav-section">apps</div>
+  <a href="#getaname">getaname.lbc</a>
+  <a href="#host">host.lbc</a>
+  <a href="#mail">mail.party</a>
+  <a href="#bankly">bankly.lbc</a>
+  <a href="#reviews">reviews.inn</a>
+  <div class="nav-section">for developers</div>
+  <a href="#kv">KV Storage</a>
+  <a href="#env">Env Variables</a>
+  <a href="#env-proxy">Env Proxy</a>
+  <a href="#projects">Projects</a>
+  <div class="nav-section">api reference</div>
+  <a href="#api-auth">Auth</a>
+  <a href="#api-domains">Domains</a>
+  <a href="#api-mail">Mail</a>
+  <a href="#api-lucks">LUCKS</a>
+  <a href="#api-kv">KV</a>
+  <a href="#api-projects">Projects</a>
+</nav>
+
+<main>
+
+<!-- INTRO -->
+<section id="intro">
+  <h1>InnerNet Docs</h1>
+  <p class="lead">InnerNet is a private web inside the web. You can register domains, host pages, send in-mail, and build apps — all powered by LUCKS, InnerNet's internal currency.</p>
+  <p>The backend runs at <code>own-net.vercel.app</code>. The browser is at <code>innernet.qzz.io</code> or <code>innernet.lbc</code>. Everything else lives on top of these two.</p>
+  <div class="callout">InnerNet is not the real internet. Domains like <code>.lbc</code> only resolve inside the InnerNet browser. Links shared outside won't work unless the viewer also uses InnerNet.</div>
+</section>
+
+<!-- TLDS -->
+<section id="tlds">
+  <h2>TLDs & Pricing</h2>
+  <p>All domains cost 100 LUCKS flat. No renewals, no auctions.</p>
+  <table>
+    <tr><th>TLD</th><th>Rules</th></tr>
+    <tr><td>.lbc</td><td>General purpose. No restrictions.</td></tr>
+    <tr><td>.green</td><td>General purpose. No restrictions.</td></tr>
+    <tr><td>.party</td><td>General purpose. No restrictions.</td></tr>
+    <tr><td>.cc</td><td>General purpose. No restrictions.</td></tr>
+    <tr><td>.inn</td><td>Must contain content exclusive to InnerNet.</td></tr>
+    <tr><td>.abc</td><td>General purpose. No restrictions.</td></tr>
+  </table>
+  <p>Single-letter domains are valid. No length limit. Standard DNS character rules apply: lowercase letters, numbers, hyphens in the middle only.</p>
+</section>
+
+<!-- REGISTER -->
+<section id="register">
+  <h2>Register a Domain</h2>
+  <p>Go to <code>getaname.lbc</code> and search for any name with a TLD. If it's available, click Register. The 100 LUCKS are deducted immediately.</p>
+  <p>After registering you can set two DNS records from the domain panel:</p>
+  <table>
+    <tr><th>Record</th><th>Purpose</th></tr>
+    <tr><td>CNAME</td><td>Points the domain to a page. Can be an upload URL, a project URL, or any external URL.</td></tr>
+    <tr><td>MX</td><td>Sets the mail server. Use <code>mail.host</code> to enable in-mail for this domain.</td></tr>
+  </table>
+</section>
+
+<!-- GETANAME -->
+<section id="getaname">
+  <h2>getaname.lbc</h2>
+  <p>The domain registrar. Search, register, and manage all your domains from one place. Available at <code>getaname.lbc</code> and also at <code>innernet.qzz.io/dns</code>.</p>
+  <h3>Features</h3>
+  <p>Search any name with or without TLD. Exact matches show availability instantly. Set CNAME and MX records per domain. View your full domain list under "My Domains".</p>
+</section>
+
+<!-- HOST -->
+<section id="host">
+  <h2>host.lbc</h2>
+  <p>Upload HTML pages and host them on InnerNet. Supports drag & drop, a built-in code editor, and live preview.</p>
+  <h3>Upload flow</h3>
+  <p>Write or paste your HTML → click Upload → get a public URL at <code>own-net.vercel.app/upload/UUID</code>. Then link it to a domain by setting that URL as the CNAME.</p>
+  <div class="callout warn">Single uploads are one-file only. For multi-file sites with CSS, JS, and images use <a href="#projects" style="color:var(--red)">Projects</a> instead.</div>
+</section>
+
+<!-- MAIL -->
+<section id="mail">
+  <h2>mail.party</h2>
+  <p>InnerNet's mail client. Addresses use the format <code>name@domain.tld</code> — these are <strong>in-mail</strong> addresses, not regular email. They only work within InnerNet.</p>
+  <h3>Create an account</h3>
+  <p>Your domain must have MX set to <code>mail.host</code>. Then go to mail.party, enter your desired address and a password, and click Create.</p>
+  <h3>Send & receive</h3>
+  <p>Log in with your address and password. Compose sends to any in-mail address. Received mail appears in your inbox. Session persists until you sign out.</p>
+</section>
+
+<!-- BANKLY -->
+<section id="bankly">
+  <h2>bankly.lbc</h2>
+  <p>View your LUCKS balance and transfer LUCKS to other users. LUCKS are InnerNet's currency — used for domain registration and anything else the community decides to price.</p>
+  <h3>Transfers</h3>
+  <p>Enter a username and amount. Transfers are instant and irreversible. You can't transfer to yourself or send more than your balance.</p>
+  <h3>Getting LUCKS</h3>
+  <p>LUCKS can be added by @luciano via the admin API. They can also be earned by providing services to other users on InnerNet.</p>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <h2>reviews.inn</h2>
+  <p>Leave and read reviews for any InnerNet domain. Built on the KV system. Requires an InnerNet account to submit a review.</p>
+  <p>Each user can leave one review per domain. Reviews include a star rating (1–5) and a text body.</p>
+</section>
+
+<!-- KV -->
+<section id="kv">
+  <h2>KV Storage</h2>
+  <p>Every project gets a key-value store. Use it to persist data across page loads — reviews, counters, user-generated content, anything JSON-serializable.</p>
+  <h3>Limits</h3>
+  <table>
+    <tr><th>Plan</th><th>Storage</th></tr>
+    <tr><td>Default</td><td>100 KB per project</td></tr>
+    <tr><td>Extended (owner-assigned)</td><td>1 MB per project</td></tr>
+  </table>
+  <p>Check your usage at <code>GET /kv/:projectId/size</code>. If you need more than 1 MB, you'll need your own backend.</p>
+  <h3>Reading data (public)</h3>
+  <pre><code><span class="comment">// No auth required — anyone can read</span>
+fetch(<span class="val">"https://own-net.vercel.app/kv/PROJECT_ID/my-key"</span>)
+  .then(r => r.json())
+  .then(d => JSON.parse(d.value))</code></pre>
+  <h3>Writing data</h3>
+  <p>Writes go through the <a href="#env-proxy" style="color:var(--accent)">Env Proxy</a> — direct POST to <code>/kv</code> requires auth. See the next section.</p>
+</section>
+
+<!-- ENV VARS -->
+<section id="env">
+  <h2>Env Variables</h2>
+  <p>Store secrets in the backend, not in your HTML. Env vars are tied to a project and only readable server-side. The name is visible in your code; the value never leaves the server.</p>
+  <h3>Create a variable</h3>
+  <p>From the browser console while logged in to InnerNet:</p>
+  <pre><code>fetch(<span class="val">"https://own-net.vercel.app/projects/PROJECT_ID/env"</span>, {
+  method: <span class="val">"POST"</span>,
+  headers: {
+    <span class="key">"Content-Type"</span>: <span class="val">"application/json"</span>,
+    <span class="key">"Authorization"</span>: <span class="val">"Bearer "</span> + localStorage.getItem(<span class="val">"inn_token"</span>)
+  },
+  body: JSON.stringify({ <span class="key">name</span>: <span class="val">"MY_KEY"</span>, <span class="key">value</span>: <span class="val">"my-secret-value"</span> })
+})</code></pre>
+  <div class="callout warn">localStorage is blocked inside the InnerNet browser iframe. Run this from a direct tab at innernet.qzz.io or own-net.vercel.app.</div>
+  <h3>List variables (names only)</h3>
+  <pre><code>GET /projects/:id/env  <span class="comment">// returns names, never values</span></code></pre>
+  <h3>Delete a variable</h3>
+  <pre><code>DELETE /projects/:id/env/:name</code></pre>
+</section>
+
+<!-- ENV PROXY -->
+<section id="env-proxy">
+  <h2>Env Proxy</h2>
+  <p>The env proxy lets your static HTML make authenticated requests without exposing secrets. You send the variable <em>name</em> in a header; the backend looks up the value itself and performs the operation.</p>
+  <h3>Write to KV via env proxy</h3>
+  <pre><code><span class="comment">// In your HTML — the value of MY_KEY never appears here</span>
+fetch(<span class="val">`https://own-net.vercel.app/env-proxy/PROJECT_ID/kv/my-key`</span>, {
+  method: <span class="val">"POST"</span>,
+  headers: {
+    <span class="key">"Content-Type"</span>: <span class="val">"application/json"</span>,
+    <span class="key">"x-env"</span>: <span class="val">"MY_KEY"</span>  <span class="comment">// name only</span>
+  },
+  body: JSON.stringify({ value: myData })
+})</code></pre>
+  <h3>How it works</h3>
+  <p>The backend receives <code>x-env: MY_KEY</code>, looks up <code>MY_KEY</code> in the DB for that project, verifies it exists, then performs the KV write internally. The actual key value is never sent over the network.</p>
+  <div class="callout">Anyone who knows the variable name can trigger the proxy — but they can only write to <em>your</em> project's KV. They can't read the variable value or use it anywhere else.</div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <h2>Projects</h2>
+  <p>Projects let you host multi-file sites with HTML, CSS, JS, and more. Each project gets a URL at <code>own-net.vercel.app/projects/UUID/</code>.</p>
+  <h3>Create a project</h3>
+  <pre><code>POST /projects  { name: "my-project" }</code></pre>
+  <h3>Upload files</h3>
+  <pre><code>POST /projects/:id/files  { path: "index.html", html: "..." }
+POST /projects/:id/files  { path: "about.html", html: "..." }
+POST /projects/:id/files  { path: "css/style.css", html: "..." }</code></pre>
+  <p>You dont actually have to use POST or console, just enter <code>innernet.qzz.io/host</code></p>
+  <p>Files are gzip-compressed in storage. The <code>path</code> field is relative — use <code>index.html</code> for the root.</p>
+  <h3>Link to a domain</h3>
+  <p>Set your domain's CNAME to <code>https://own-net.vercel.app/projects/UUID/</code> in getaname.lbc.</p>
+</section>
+
+<hr>
+
+<!-- API AUTH -->
+<section id="api-auth">
+  <h2>API — Auth</h2>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge post">POST</span><span class="endpoint-path">/auth/register</span></div>
+    <div class="endpoint-desc">Create a new account. Body: <code>{ username, password }</code>. Returns <code>{ token, username, lucks }</code>.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge post">POST</span><span class="endpoint-path">/auth/login</span></div>
+    <div class="endpoint-desc">Log in. Body: <code>{ username, password }</code>. Returns <code>{ token, username, lucks }</code>.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge get">GET</span><span class="endpoint-path">/me</span><span class="badge auth-req">auth</span></div>
+    <div class="endpoint-desc">Get current user. Returns <code>{ username, lucks }</code>.</div>
+  </div>
+</section>
+
+<!-- API DOMAINS -->
+<section id="api-domains">
+  <h2>API — Domains</h2>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge post">POST</span><span class="endpoint-path">/domains/register</span><span class="badge auth-req">auth</span></div>
+    <div class="endpoint-desc">Register a domain. Body: <code>{ domain }</code>. Deducts 100 LUCKS.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge get">GET</span><span class="endpoint-path">/domains/mine</span><span class="badge auth-req">auth</span></div>
+    <div class="endpoint-desc">List all domains owned by the current user.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge get">GET</span><span class="endpoint-path">/domains/:domain</span></div>
+    <div class="endpoint-desc">Get info for a specific domain.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge post">POST</span><span class="endpoint-path">/domains/cname</span><span class="badge auth-req">auth</span></div>
+    <div class="endpoint-desc">Set CNAME. Body: <code>{ domain, cname }</code>.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge post">POST</span><span class="endpoint-path">/domains/mx</span><span class="badge auth-req">auth</span></div>
+    <div class="endpoint-desc">Set MX record. Body: <code>{ domain, mx }</code>.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge get">GET</span><span class="endpoint-path">/resolve/:domain</span></div>
+    <div class="endpoint-desc">Resolve a domain — returns owner, CNAME, MX.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge get">GET</span><span class="endpoint-path">/search?q=</span></div>
+    <div class="endpoint-desc">Search domains by name. Returns up to 50 results scored by relevance.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge post">POST</span><span class="endpoint-path">/domains/sub</span><span class="badge auth-req">auth</span></div>
+    <div class="endpoint-desc">Create a subdomain. Body: <code>{ domain, subdomain, cname?, mx? }</code>. Parent domain must be yours.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge get">GET</span><span class="endpoint-path">/domains/:domain/subs</span></div>
+    <div class="endpoint-desc">List all subdomains of a domain.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge put">PUT</span><span class="endpoint-path">/domains/sub</span><span class="badge auth-req">auth</span></div>
+    <div class="endpoint-desc">Update subdomain CNAME or MX. Body: <code>{ domain, subdomain, cname?, mx? }</code>.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge delete">DELETE</span><span class="endpoint-path">/domains/sub</span><span class="badge auth-req">auth</span></div>
+    <div class="endpoint-desc">Delete a subdomain. Body: <code>{ domain, subdomain }</code>.</div>
+  </div>
+</section>
+
+<!-- API MAIL -->
+<section id="api-mail">
+  <h2>API — Mail</h2>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge post">POST</span><span class="endpoint-path">/mail/create</span><span class="badge auth-req">auth</span></div>
+    <div class="endpoint-desc">Create a mail account. Body: <code>{ address, password }</code>. Domain must have MX set and be owned by you.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge post">POST</span><span class="endpoint-path">/mail/:domain/:user/send</span></div>
+    <div class="endpoint-desc">Send mail. Body: <code>{ password, to, subject, body }</code>.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge post">POST</span><span class="endpoint-path">/mail/:domain/:user/inbox</span></div>
+    <div class="endpoint-desc">Get inbox. Body: <code>{ password }</code>. Returns array of mail objects.</div>
+  </div>
+</section>
+
+<!-- API LUCKS -->
+<section id="api-lucks">
+  <h2>API — LUCKS</h2>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge post">POST</span><span class="endpoint-path">/lucks/add</span><span class="badge auth-req">x-api-key</span></div>
+    <div class="endpoint-desc">Add LUCKS to a user. Admin only — requires <code>x-api-key</code> header. Body: <code>{ username, amount }</code>.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge post">POST</span><span class="endpoint-path">/lucks/transfer</span><span class="badge auth-req">auth</span></div>
+    <div class="endpoint-desc">Transfer LUCKS to another user. Body: <code>{ to, amount }</code>.</div>
+  </div>
+</section>
+
+<!-- API KV -->
+<section id="api-kv">
+  <h2>API — KV</h2>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge get">GET</span><span class="endpoint-path">/kv/:project/:key</span></div>
+    <div class="endpoint-desc">Read a value. Public. Returns <code>{ key, value }</code> where value is a JSON string.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge post">POST</span><span class="endpoint-path">/kv/:project/:key</span><span class="badge auth-req">auth</span></div>
+    <div class="endpoint-desc">Write a value. Requires auth as project owner. Body: <code>{ value }</code>.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge delete">DELETE</span><span class="endpoint-path">/kv/:project/:key</span><span class="badge auth-req">auth</span></div>
+    <div class="endpoint-desc">Delete a value. Requires auth as project owner.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge get">GET</span><span class="endpoint-path">/kv/:project/size</span></div>
+    <div class="endpoint-desc">Check storage usage. Returns <code>{ used, limit, unit }</code> in bytes.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge post">POST</span><span class="endpoint-path">/env-proxy/:project/kv/:key</span></div>
+    <div class="endpoint-desc">Write via env proxy. Header: <code>x-env: VAR_NAME</code>. The backend validates the var exists for this project. Body: <code>{ value }</code>.</div>
+  </div>
+</section>
+
+<!-- API PROJECTS -->
+<section id="api-projects">
+  <h2>API — Projects</h2>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge post">POST</span><span class="endpoint-path">/projects</span><span class="badge auth-req">auth</span></div>
+    <div class="endpoint-desc">Create a project. Body: <code>{ name }</code>. Returns project with UUID.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge get">GET</span><span class="endpoint-path">/projects</span><span class="badge auth-req">auth</span></div>
+    <div class="endpoint-desc">List your projects.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge post">POST</span><span class="endpoint-path">/projects/:id/files</span><span class="badge auth-req">auth</span></div>
+    <div class="endpoint-desc">Upload or overwrite a file. Body: <code>{ path, html }</code>.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge get">GET</span><span class="endpoint-path">/projects/:id/files</span><span class="badge auth-req">auth</span></div>
+    <div class="endpoint-desc">List all files in a project.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge get">GET</span><span class="endpoint-path">/projects/:id/*</span></div>
+    <div class="endpoint-desc">Serve a project file publicly. Falls back to <code>index.html</code> for paths without extension.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge delete">DELETE</span><span class="endpoint-path">/projects/:id</span><span class="badge auth-req">auth</span></div>
+    <div class="endpoint-desc">Delete a project and all its files.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge delete">DELETE</span><span class="endpoint-path">/projects/:id/files/:path</span><span class="badge auth-req">auth</span></div>
+    <div class="endpoint-desc">Delete a specific file from a project.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge post">POST</span><span class="endpoint-path">/projects/:id/env</span><span class="badge auth-req">auth</span></div>
+    <div class="endpoint-desc">Create or update an env variable. Body: <code>{ name, value }</code>.</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge get">GET</span><span class="endpoint-path">/projects/:id/env</span><span class="badge auth-req">auth</span></div>
+    <div class="endpoint-desc">List env variable names (values never returned).</div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-head"><span class="badge delete">DELETE</span><span class="endpoint-path">/projects/:id/env/:name</span><span class="badge auth-req">auth</span></div>
+    <div class="endpoint-desc">Delete an env variable.</div>
+  </div>
+
+  <div style="margin-top:3rem;padding-top:1rem;border-top:1px solid var(--border)">
+    <p style="font-size:.72rem;color:var(--ink3);font-family:'DM Mono',monospace">innernet docs · backend: own-net.vercel.app · browser: innernet.qzz.io</p>
+  </div>
+</section>
+
+</main>
+
+<script>
+// Highlight active nav link on scroll
+const sections = document.querySelectorAll("section[id]");
+const links = document.querySelectorAll("nav a");
+window.addEventListener("scroll", () => {
+  let current = "";
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) current = s.id; });
+  links.forEach(a => {
+    a.classList.toggle("active", a.getAttribute("href") === "#" + current);
+  });
+}, { passive: true });
+</script>
+</body>
+</html>
