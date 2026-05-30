@@ -1,0 +1,8 @@
+{
+  "name": "Innernet",
+  "short_name": "Innernet",
+  "start_url": "https://innernet.qzz.io",
+  "display": "standalone",
+  "background_color": "#f6f3ed",
+  "theme_color": "#c0471e"
+}
