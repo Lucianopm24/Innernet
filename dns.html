@@ -920,9 +920,8 @@ async function loadMyDomains() {
   list.innerHTML = `<div style="color:var(--ink3);font-size:0.75rem;padding:1rem 0"><span class="spinner"></span> Loading...</div>`;
 
   try {
-    // No direct endpoint — search by owner using empty query and filter
-    const data = await api("GET", `/search?q=`);
-    myDomains = data.filter(d => d.owner === username);
+    const data = await api("GET", `/domains/mine`);
+    myDomains = data;
     document.getElementById("domains-count").textContent = `${myDomains.length} registered`;
 
     if (myDomains.length === 0) {
