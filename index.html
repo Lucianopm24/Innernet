@@ -965,7 +965,7 @@ function parseUrl(raw) {
 }
 
 async function navigateTo(rawUrl) {
-  const { domain, path } = parseUrl(rawUrl);
+  const { domain, path, hash } = parseUrl(rawUrl);
   if (!domain) { showHome(); return; }
 
   const fullAddr = path ? `${domain}/${path}` : domain;
@@ -1372,10 +1372,7 @@ function hideSuggestions() { document.getElementById("suggestions").classList.re
 
 function setAddrBar(val) {
   document.getElementById("address-input").value = val;
-  function setAddrBar(val) {
-  document.getElementById("address-input").value = val;
   document.getElementById("addr-prefix").style.display = "flex";
-}
 }
 
 // ═══════════════════════════════════════════
