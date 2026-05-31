@@ -671,9 +671,10 @@ html, body {
     <button class="nav-btn"                  onclick="goHome()"             title="Home">⌂</button>
     <div class="nav-sep"></div>
 
-    <span class="addr-prefix" id="addr-prefix">
-      <span class="lock-icon" id="ssl-icon">🔒</span><span id="ssl-scheme">inn://</span>
-    </span>
+    <div id="address-bar-wrap">
+      <span class="addr-prefix" id="addr-prefix">
+        <span class="lock-icon" id="ssl-icon">🔒</span><span id="ssl-scheme">inn://</span>
+      </span>
       <input type="text" id="address-input"
         placeholder="Search domains or type one to visit (e.g. blog.lbc/about)"
         autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
