@@ -1083,8 +1083,10 @@ function resolveFilePath(base, requested) {
   }
   // If requested has an extension, use as-is
   if (/\.\w{2,5}$/.test(requested)) return requested;
-  // Otherwise append /index.html
-  return requested.replace(/\/?$/, "/index.html");
+  // If it looks like a short code (no dots, no slashes), serve as-is
+if (!requested.includes("/") && !requested.includes(".")) return requested;
+// Otherwise append /index.html
+return requested.replace(/\/?$/, "/index.html");
 }
 
 // Fetch HTML from a URL directly
