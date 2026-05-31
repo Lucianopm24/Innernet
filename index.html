@@ -1134,7 +1134,11 @@ function hideFrameOverlay() {
 // (iframes with blob URLs can postMessage)
 window.addEventListener("message", e => {
   if (e.data && e.data.type === "inn-navigate") {
-    navigateTo(e.data.url);
+    if (e.data.newTab) {
+      newTab(e.data.url);
+    } else {
+      navigateTo(e.data.url);
+    }
   }
 });
 
@@ -1149,7 +1153,14 @@ function rewriteLinks(html, domain, currentPath) {
     const a = e.target.closest("a[href]");
     if (!a) return;
     const href = a.getAttribute("href");
-    if (!href || href.startsWith("http") || href.startsWith("//") || href.startsWith("mailto:") || href.startsWith("#")) return;
+    if (!href) return;
+    if (href.startsWith("inn://") || href.startsWith("inns://")) {
+      e.preventDefault();
+      const url = href.replace(/^inns?:\/\//i, "");
+      window.parent.postMessage({ type: "inn-navigate", url, newTab: true }, "*");
+      return;
+    }
+    if (href.startsWith("http") || href.startsWith("//") || href.startsWith("mailto:") || href.startsWith("#")) return;
     e.preventDefault();
     const resolved = href.startsWith("/") ? DOMAIN + href : DOMAIN + "/" + href;
     window.parent.postMessage({ type: "inn-navigate", url: resolved }, "*");
