@@ -1278,7 +1278,10 @@ function hideSuggestions() { document.getElementById("suggestions").classList.re
 
 function setAddrBar(val) {
   document.getElementById("address-input").value = val;
-  document.getElementById("addr-prefix").style.display = val ? "none" : "flex";
+  function setAddrBar(val) {
+  document.getElementById("address-input").value = val;
+  document.getElementById("addr-prefix").style.display = "flex";
+}
 }
 
 // ═══════════════════════════════════════════
