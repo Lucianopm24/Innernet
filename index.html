@@ -1041,6 +1041,7 @@ if (parts.length >= 3) {
   tab.title   = extractTitle(html) || domain;
   tab.favicon = "🌐";
   tab.page    = "frame";
+  tab.ssl = data.ssl;
   updateSslBadge(data.ssl);
   renderTabs();
 }
