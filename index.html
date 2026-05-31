@@ -1040,12 +1040,8 @@ if (parts.length >= 3) {
     const basePath    = projectMatch[2] || "";
     const filePath    = resolveFilePath(basePath, path);
     const url = `${API}/projects/${projectId}/${filePath}`;
-html = await fetchHtml(url);
-if (html === null && filePath !== "index.html") {
-  html = await fetchHtml(`${API}/projects/${projectId}/404.html`);
-  if (html === null) html = await fetchHtml(`${API}/projects/${projectId}/index.html`);
-}
-  } else if (uploadMatch) {
+    html = await fetchHtml(url) }
+    else if (uploadMatch) {
     // ── SINGLE-FILE UPLOAD ──
     if (path) {
       // Single-upload domains don't have sub-paths
