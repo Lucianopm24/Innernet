@@ -857,6 +857,12 @@ async function initUser() {
   } catch { logout(); }
 }
 
+function injectPath(html, path) {
+  if (!path) return html;
+  const inject = `<script>window.INN_PATH = "${path}";<\/script>`;
+  return html.replace(/<head>/i, "<head>" + inject);
+}
+  
 async function fetchSiteRating(domain) {
   try {
     const r = await fetch(`https://own-net.vercel.app/kv/8319f623-3651-4b46-9b4b-e39e0efc0d21/reviews:${domain}`);
