@@ -674,6 +674,7 @@ html, body {
     <div id="address-bar-wrap">
       <span class="addr-prefix" id="addr-prefix">
   <span class="lock-icon" id="ssl-icon" onclick="showSslInfo()" style="cursor:pointer">🔒</span><span id="ssl-scheme">inn://</span>
+        <span class="lock-icon" id="ssl-icon" onclick="showSslInfo()" style="cursor:pointer">🔒</span><span id="ssl-scheme">inn://</span><span id="rating-badge" style="font-size:.72rem;color:var(--ink2);margin-left:6px;display:flex;align-items:center;gap:3px"></span>
 </span>
       <input type="text" id="address-input"
         placeholder="Search domains or type one to visit (e.g. blog.lbc/about)"
@@ -850,6 +851,28 @@ async function initUser() {
   } catch { logout(); }
 }
 
+async function fetchSiteRating(domain) {
+  try {
+    const r = await fetch(`https://own-net.vercel.app/kv/8319f623-3651-4b46-9b4b-e39e0efc0d21/reviews:${domain}`);
+    if (!r.ok) { updateRatingBadge(null); return; }
+    const d = await r.json();
+    const reviews = JSON.parse(d.value);
+    if (!reviews || !reviews.length) { updateRatingBadge(null); return; }
+    const avg = reviews.reduce((a, r) => a + r.stars, 0) / reviews.length;
+    updateRatingBadge(avg);
+  } catch { updateRatingBadge(null); }
+}
+
+function updateRatingBadge(avg) {
+  const tab = getActiveTab();
+  const ssl = tab?.ssl || null;
+  const el = document.getElementById("rating-badge");
+  if (!avg) { el.textContent = ""; return; }
+  const stars = "★".repeat(Math.round(avg)) + "☆".repeat(5 - Math.round(avg));
+  const isGood = avg >= 4.5 && ssl;
+  el.innerHTML = `<span style="color:#f5a623">${stars}</span> ${avg.toFixed(1)}${isGood ? ' <span style="background:var(--green);color:#fff;border-radius:4px;padding:1px 6px;font-size:.65rem;font-weight:600;margin-left:3px">good</span>' : ""}`;
+}
+  
 function showSslInfo() {
   const tab = getActiveTab();
   if (!tab || !tab.url) return;
@@ -1042,6 +1065,7 @@ if (parts.length >= 3) {
   tab.favicon = "🌐";
   tab.page    = "frame";
   tab.ssl = data.ssl;
+  fetchSiteRating(domain);
   updateSslBadge(data.ssl);
   renderTabs();
 }
