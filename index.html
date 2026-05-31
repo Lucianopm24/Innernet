@@ -857,9 +857,9 @@ async function initUser() {
   } catch { logout(); }
 }
 
-function injectPath(html, path) {
-  if (!path) return html;
-  const inject = `<script>window.INN_PATH = "${path}";<\/script>`;
+function injectPath(html, path, hash) {
+  if (!path && !hash) return html;
+  const inject = `<script>window.INN_PATH = "${path || ""}"; window.INN_HASH = "${hash || ""}";<\/script>`;
   return html.replace(/<head>/i, "<head>" + inject);
 }
   
@@ -954,10 +954,14 @@ function restoreTabView(tab) {
 // ═══════════════════════════════════════════
 // Handles: domain.tld  /  domain.tld/path  /  domain.tld/path.html
 function parseUrl(raw) {
-  const s = raw.trim().replace(/^inn:\/\//i, "").replace(/^\/+/, "").toLowerCase();
-  const slash = s.indexOf("/");
-  if (slash === -1) return { domain: s, path: null };
-  return { domain: s.slice(0, slash), path: s.slice(slash + 1) || null };
+  const s = raw.trim().replace(/^inn:\/\//i, "").replace(/^\/+/, "");
+  const hashIdx = s.indexOf("#");
+  const hash = hashIdx !== -1 ? s.slice(hashIdx + 1) : null;
+  const clean = hashIdx !== -1 ? s.slice(0, hashIdx) : s;
+  const lower = clean.toLowerCase();
+  const slash = lower.indexOf("/");
+  if (slash === -1) return { domain: lower, path: null, hash };
+  return { domain: lower.slice(0, slash), path: lower.slice(slash + 1) || null, hash };
 }
 
 async function navigateTo(rawUrl) {
@@ -973,6 +977,7 @@ async function navigateTo(rawUrl) {
   tab.history.push(fullAddr);
   tab.historyIndex = tab.history.length - 1;
   tab.url = fullAddr;
+  tab.hash = hash || null;
   updateNavBtns();
 
   startLoading();
@@ -1065,7 +1070,7 @@ if (parts.length >= 3) {
 
   // Rewrite relative links so in-page navigation works
   html = rewriteLinks(html, domain, path);
-  html = injectPath(html, path);
+  html = injectPath(html, path, tab.hash);
   tab.frameHtml = html;
   if (!data.ssl) {
   const proceed = await showSslWarning(domain);
