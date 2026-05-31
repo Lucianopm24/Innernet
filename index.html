@@ -671,10 +671,9 @@ html, body {
     <button class="nav-btn"                  onclick="goHome()"             title="Home">⌂</button>
     <div class="nav-sep"></div>
 
-    <div id="address-bar-wrap">
-      <span class="addr-prefix" id="addr-prefix">
-        <span class="lock-icon">🔒</span>inn://
-      </span>
+    <span class="addr-prefix" id="addr-prefix">
+      <span class="lock-icon" id="ssl-icon">🔒</span><span id="ssl-scheme">inn://</span>
+    </span>
       <input type="text" id="address-input"
         placeholder="Search domains or type one to visit (e.g. blog.lbc/about)"
         autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
@@ -940,7 +939,20 @@ async function navigateTo(rawUrl) {
 
 // Core resolution logic
 async function resolveAndLoad(domain, path, tab) {
-  const data = await apiFetch("GET", `/resolve/${encodeURIComponent(domain)}`);
+  let data;
+const parts = domain.split(".");
+if (parts.length >= 3) {
+  const sub = parts[0];
+  const root = parts.slice(1).join(".");
+  try {
+    data = await apiFetch("GET", `/resolve/sub/${encodeURIComponent(sub)}.${encodeURIComponent(root)}`);
+    data.cname = data.cname;
+  } catch {
+    data = await apiFetch("GET", `/resolve/${encodeURIComponent(domain)}`);
+  }
+} else {
+  data = await apiFetch("GET", `/resolve/${encodeURIComponent(domain)}`);
+}
 
   if (!data.cname) {
     showDomainInfo(data);
@@ -984,11 +996,12 @@ async function resolveAndLoad(domain, path, tab) {
   html = rewriteLinks(html, domain, path);
 
   tab.frameHtml = html;
-  loadHtmlInFrame(html);
+  loadHtmlInFrame(html, data.ssl);
   showPage("frame");
   tab.title   = extractTitle(html) || domain;
   tab.favicon = "🌐";
   tab.page    = "frame";
+  updateSslBadge(data.ssl);
   renderTabs();
 }
 
@@ -1022,12 +1035,15 @@ async function fetchViaProxy(url) {
 }
 
 // Load raw HTML into the iframe via blob URL
-function loadHtmlInFrame(html) {
+function loadHtmlInFrame(html, ssl) {
   const frame = document.getElementById("page-frame");
-  const blob  = new Blob([html], { type: "text/html" });
-  const burl  = URL.createObjectURL(blob);
-  frame.src   = burl;
-  // Revoke old blob after a moment
+  const sandboxVal = ssl
+    ? "allow-scripts allow-forms allow-same-origin allow-popups allow-top-navigation"
+    : "allow-scripts allow-forms allow-popups allow-top-navigation";
+  frame.setAttribute("sandbox", sandboxVal);
+  const blob = new Blob([html], { type: "text/html" });
+  const burl = URL.createObjectURL(blob);
+  frame.src = burl;
   frame.onload = () => {
     setTimeout(() => URL.revokeObjectURL(burl), 5000);
     hideFrameOverlay();
@@ -1081,7 +1097,27 @@ function extractTitle(html) {
 // ═══════════════════════════════════════════
 // DOMAIN INFO / 404
 // ═══════════════════════════════════════════
-function showDomainInfo(data) {
+function updateSslBadge(ssl) {
+  const icon = document.getElementById("ssl-icon");
+  const scheme = document.getElementById("ssl-scheme");
+  if (!ssl) {
+    icon.textContent = "⚠️";
+    scheme.textContent = "inn://";
+    scheme.style.color = "var(--accent)";
+  } else if (ssl === "trusted") {
+    icon.textContent = "✓";
+    icon.style.color = "var(--blue)";
+    scheme.textContent = "inns://";
+    scheme.style.color = "var(--green)";
+  } else {
+    icon.textContent = "🔒";
+    icon.style.color = "";
+    scheme.textContent = "inns://";
+    scheme.style.color = "var(--green)";
+  }
+}
+  
+  function showDomainInfo(data) {
   const tab = getActiveTab();
   tab.title = data.domain; tab.favicon = "ℹ️"; tab.page = "domaininfo";
 
@@ -1090,6 +1126,7 @@ function showDomainInfo(data) {
     <div class="dip-row"><span class="dip-key">Owner</span><span class="dip-val">${esc(data.owner)}</span></div>
     <div class="dip-row"><span class="dip-key">CNAME</span><span class="dip-val none">not set</span></div>
     <div class="dip-row"><span class="dip-key">MX</span><span class="dip-val ${data.mx ? "green" : "none"}">${data.mx ? esc(data.mx) : "not set"}</span></div>
+    <div class="dip-row"><span class="dip-key">SSL</span><span class="dip-val ${data.ssl ? "green" : "none"}">${data.ssl || "none"}</span></div>
     <div class="dip-row"><span class="dip-key">Since</span><span class="dip-val">${new Date(data.createdAt).toLocaleDateString()}</span></div>
   `;
   document.getElementById("dip-notice").innerHTML =
