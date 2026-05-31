@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'DM Mono',monospace,sans-serif;background:#fff;overflow:hidden;font-size:12px}
+#wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:.4rem;position:relative}
+#ad-box{width:100%;height:100%;display:flex;align-items:center;gap:.75rem;padding:.5rem .75rem;border:1px solid #e8e0d4;border-radius:6px;background:#faf8f4;cursor:pointer;transition:border-color .15s;overflow:hidden;text-decoration:none;color:inherit}
+#ad-box:hover{border-color:#c8bfac}
+#ad-img{width:48px;height:48px;object-fit:cover;border-radius:4px;flex-shrink:0;display:none}
+#ad-body{flex:1;min-width:0}
+#ad-title{font-size:.75rem;font-weight:500;color:#1a1410;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:.15rem}
+#ad-content{font-size:.65rem;color:#6b5f4e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ad-badge{font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:#a89880;flex-shrink:0;border:1px solid #e0d8cc;border-radius:3px;padding:.1rem .3rem}
+#empty{display:none;font-size:.62rem;color:#c8bfac;text-align:center;width:100%}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <a id="ad-box" href="#" onclick="handleClick(event)">
+    <img id="ad-img" src="" alt="">
+    <div id="ad-body">
+      <div id="ad-title">—</div>
+      <div id="ad-content">—</div>
+    </div>
+    <span id="ad-badge">ad</span>
+  </a>
+  <div id="empty">no ads available</div>
+</div>
+<script>
+const API = "https://own-net.vercel.app";
+const params = new URLSearchParams(location.search);
+const targetUser = params.get("user") || "";
+let currentAd = null;
+
+async function loadAd() {
+  try {
+    const r = await fetch(`${API}/ads/serve`);
+    if (!r.ok) { showEmpty(); return; }
+    currentAd = await r.json();
+    document.getElementById("ad-title").textContent = currentAd.title;
+    document.getElementById("ad-content").textContent = currentAd.type === "image" || currentAd.type === "video" ? currentAd.content : currentAd.content;
+    if (currentAd.type === "image") {
+      const img = document.getElementById("ad-img");
+      img.src = currentAd.content;
+      img.style.display = "block";
+    }
+    document.getElementById("ad-box").style.display = "flex";
+    // Register view
+    if (targetUser) {
+      await fetch(`${API}/ads/view`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ adId: currentAd.id, targetUser })
+      }).catch(() => {});
+    }
+  } catch { showEmpty(); }
+}
+
+function showEmpty() {
+  document.getElementById("ad-box").style.display = "none";
+  document.getElementById("empty").style.display = "block";
+}
+
+function handleClick(e) {
+  e.preventDefault();
+  if (!currentAd) return;
+  if (currentAd.type === "link") {
+    const url = currentAd.content;
+    if (url.startsWith("inn://") || url.startsWith("inns://")) {
+      window.parent?.postMessage({ type: "inn-navigate", url: url.replace(/^inns?:\/\//i, ""), newTab: true }, "*");
+    } else {
+      window.open(url, "_blank");
+    }
+  }
+}
+
+loadAd();
+</script>
+</body>
+</html>
