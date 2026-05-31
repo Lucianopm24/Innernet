@@ -1059,7 +1059,7 @@ if (parts.length >= 3) {
 
   // Rewrite relative links so in-page navigation works
   html = rewriteLinks(html, domain, path);
-
+  html = injectPath(html, path);
   tab.frameHtml = html;
   if (!data.ssl) {
   const proceed = await showSslWarning(domain);
