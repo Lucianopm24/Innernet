@@ -37,7 +37,7 @@ let currentAd = null;
 
 async function loadAd() {
   try {
-    const r = await fetch(`${API}/ads/serve`);
+    const r = await fetch(`${API}/adnet/serve`);
     if (!r.ok) { showEmpty(); return; }
     currentAd = await r.json();
     document.getElementById("ad-title").textContent = currentAd.title;
@@ -50,7 +50,7 @@ async function loadAd() {
     document.getElementById("ad-box").style.display = "flex";
     // Register view
     if (targetUser) {
-      await fetch(`${API}/ads/view`, {
+      await fetch(`${API}/adnet/view`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ adId: currentAd.id, targetUser })
