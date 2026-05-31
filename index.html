@@ -966,7 +966,6 @@ function parseUrl(raw) {
 
 async function navigateTo(rawUrl) {
   const { domain, path, hash } = parseUrl(rawUrl);
-  toast("hash: " + (hash || "none"));
   if (!domain) { showHome(); return; }
 
   const fullAddr = path ? `${domain}/${path}` : domain;
