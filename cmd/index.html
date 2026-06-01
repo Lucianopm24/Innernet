@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>innernet cmd</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0c0c;
+  --surface: #111;
+  --border: #1e1e1e;
+  --green: #39ff6e;
+  --green2: #1a7a35;
+  --yellow: #f5c842;
+  --red: #ff4f4f;
+  --blue: #4fc3f7;
+  --muted: #444;
+  --text: #c8c8c8;
+  --font: 'DM Mono', monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;overflow:hidden}
+
+#terminal{display:flex;flex-direction:column;height:100vh;max-width:900px;margin:0 auto;padding:0 8px}
+
+#header{padding:16px 8px 8px;border-bottom:1px solid var(--border);flex-shrink:0}
+#header-top{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.dot{width:10px;height:10px;border-radius:50%}
+.dot.red{background:#ff5f57}
+.dot.yellow{background:#febc2e}
+.dot.green{background:#28c840}
+#title{color:var(--muted);font-size:.75rem;margin-left:4px}
+#header-info{font-size:.7rem;color:var(--muted)}
+#header-info span{color:var(--green);margin-right:16px}
+
+#output{flex:1;overflow-y:auto;padding:12px 8px;display:flex;flex-direction:column;gap:2px}
+#output::-webkit-scrollbar{width:3px}
+#output::-webkit-scrollbar-thumb{background:var(--border)}
+
+#input-row{display:flex;align-items:center;gap:8px;padding:10px 8px;border-top:1px solid var(--border);flex-shrink:0}
+#prompt{color:var(--green);white-space:nowrap;font-size:.8rem}
+#input{flex:1;background:none;border:none;outline:none;color:var(--green);font-family:var(--font);font-size:.8rem;caret-color:var(--green)}
+
+.line{font-size:.78rem;line-height:1.7;white-space:pre-wrap;word-break:break-all}
+.line.cmd{color:var(--green)}
+.line.out{color:var(--text)}
+.line.err{color:var(--red)}
+.line.ok{color:var(--green)}
+.line.info{color:var(--blue)}
+.line.warn{color:var(--yellow)}
+.line.muted{color:var(--muted)}
+.line.title{color:var(--yellow);font-weight:500}
+
+table{border-collapse:collapse;font-size:.75rem;margin:4px 0}
+td,th{padding:2px 16px 2px 0;vertical-align:top}
+th{color:var(--muted);font-weight:400}
+td{color:var(--text)}
+td.g{color:var(--green)}
+td.y{color:var(--yellow)}
+td.r{color:var(--red)}
+td.b{color:var(--blue)}
+td.m{color:var(--muted)}
+</style>
+</head>
+<body>
+<div id="terminal">
+  <div id="header">
+    <div id="header-top">
+      <div class="dot red"></div>
+      <div class="dot yellow"></div>
+      <div class="dot green"></div>
+      <span id="title">innernet cmd — the web inside the web</span>
+    </div>
+    <div id="header-info">
+      <span id="h-user">not logged in</span>
+      <span id="h-balance" style="display:none"></span>
+      <span style="color:var(--muted)">own-net.vercel.app · type <span style="color:var(--text)">help</span> to start</span>
+    </div>
+  </div>
+  <div id="output"></div>
+  <div id="input-row">
+    <span id="prompt">❯</span>
+    <input id="input" autofocus autocomplete="off" spellcheck="false" placeholder="type a command...">
+  </div>
+</div>
+
+<script>
+const API = "https://own-net.vercel.app"
+let token = localStorage.getItem("cmd_token")
+let username = localStorage.getItem("cmd_user")
+let currentProject = null
+let stagedFiles = {}
+let history = []
+let histIdx = -1
+
+const output = document.getElementById("output")
+const input = document.getElementById("input")
+const hUser = document.getElementById("h-user")
+const hBalance = document.getElementById("h-balance")
+
+function print(text, cls = "out") {
+  const el = document.createElement("div")
+  el.className = `line ${cls}`
+  el.textContent = text
+  output.appendChild(el)
+  output.scrollTop = output.scrollHeight
+}
+
+function printHTML(html) {
+  const el = document.createElement("div")
+  el.className = "line out"
+  el.innerHTML = html
+  output.appendChild(el)
+  output.scrollTop = output.scrollHeight
+}
+
+function printTable(headers, rows) {
+  const t = document.createElement("table")
+  const thead = document.createElement("tr")
+  headers.forEach(h => { const th = document.createElement("th"); th.textContent = h; thead.appendChild(th) })
+  t.appendChild(thead)
+  rows.forEach(row => {
+    const tr = document.createElement("tr")
+    row.forEach(([val, cls]) => { const td = document.createElement("td"); td.textContent = val; if(cls) td.className = cls; tr.appendChild(td) })
+    t.appendChild(tr)
+  })
+  output.appendChild(t)
+  output.scrollTop = output.scrollHeight
+}
+
+function printCmd(cmd) {
+  const prompt = username ? `${username}@innernet` : "guest@innernet"
+  const proj = currentProject ? `:${currentProject.name}` : ""
+  print(`${prompt}${proj} ❯ ${cmd}`, "cmd")
+}
+
+function updateHeader() {
+  if (username) {
+    hUser.textContent = username
+    hUser.style.color = "var(--green)"
+    hBalance.style.display = "inline"
+  } else {
+    hUser.textContent = "not logged in"
+    hUser.style.color = "var(--muted)"
+    hBalance.style.display = "none"
+  }
+}
+
+async function fetchBalance() {
+  if (!token) return
+  try {
+    const r = await fetch(`${API}/me`, { headers: { Authorization: `Bearer ${token}` } })
+    const d = await r.json()
+    hBalance.textContent = `⚡ ${d.lucks}`
+    hBalance.style.color = "var(--yellow)"
+  } catch {}
+}
+
+async function req(method, path, body) {
+  const opts = { method, headers: { "Content-Type": "application/json" } }
+  if (token) opts.headers.Authorization = `Bearer ${token}`
+  if (body) opts.body = JSON.stringify(body)
+  const r = await fetch(`${API}${path}`, opts)
+  return { r, d: await r.json() }
+}
+
+// COMMANDS
+const commands = {
+
+  async help(args) {
+    print("", "muted")
+    print("╔══════════════════════════════════════╗", "muted")
+    print("║         innernet cmd — help           ║", "title")
+    print("╚══════════════════════════════════════╝", "muted")
+    print("", "muted")
+    print("AUTH", "warn")
+    print("  login <user> <pass>       log in to innernet", "out")
+    print("  register <user> <pass>    create new account", "out")
+    print("  logout                    clear session", "out")
+    print("  whoami                    show current user", "out")
+    print("", "muted")
+    print("LUCKS ⚡", "warn")
+    print("  balance                   show your balance", "out")
+    print("  transfer <user> <amount>  send lucks to user", "out")
+    print("  addlucks <user> <amount>  add lucks (requires API key)", "out")
+    print("", "muted")
+    print("DOMAINS", "warn")
+    print("  domains                   list your domains", "out")
+    print("  register <domain>         register a domain (100 ⚡)", "out")
+    print("  cname <domain> <url>      set CNAME record", "out")
+    print("  mx <domain> <record>      set MX record", "out")
+    print("  whois <domain>            lookup domain info", "out")
+    print("  search <query>            search domains", "out")
+    print("  tlds                      list available TLDs", "out")
+    print("", "muted")
+    print("HOSTING", "warn")
+    print("  visit <domain>            view page (rendered)", "out")
+    print("  visit <domain> --text     view page as text", "out")
+    print("", "muted")
+    print("PROJECTS (git-style)", "warn")
+    print("  projects                  list your projects", "out")
+    print("  init <name>               create new project", "out")
+    print("  cd <name|id>              switch to project", "out")
+    print("  ls                        list project files", "out")
+    print("  add <path> <html>         stage file locally", "out")
+    print("  push                      upload staged files", "out")
+    print("", "muted")
+    print("KV STORE", "warn")
+    print("  kv get <key>              get value", "out")
+    print("  kv set <key> <value>      set value", "out")
+    print("  kv del <key>              delete key", "out")
+    print("", "muted")
+    print("MAIL", "warn")
+    print("  mail create <addr> <pass> create mail account", "out")
+    print("  mail inbox <addr> <pass>  read inbox", "out")
+    print("  mail send <from> <pass> <to> <subject> <body>", "out")
+    print("", "muted")
+    print("  clear                     clear terminal", "out")
+    print("", "muted")
+  },
+
+  async login([user, pass]) {
+    if (!user || !pass) return print("usage: login <user> <pass>", "err")
+    const { r, d } = await req("POST", "/auth/login", { username: user, password: pass })
+    if (!r.ok) return print(`error: ${d.error}`, "err")
+    token = d.token; username = d.username
+    localStorage.setItem("cmd_token", token)
+    localStorage.setItem("cmd_user", username)
+    updateHeader()
+    await fetchBalance()
+    print(`logged in as ${username} — ⚡ ${d.lucks} lucks`, "ok")
+  },
+
+  async register([user, pass]) {
+    if (!user || !pass) return print("usage: register <user> <pass>", "err")
+    const { r, d } = await req("POST", "/auth/register", { username: user, password: pass })
+    if (!r.ok) return print(`error: ${d.error}`, "err")
+    token = d.token; username = d.username
+    localStorage.setItem("cmd_token", token)
+    localStorage.setItem("cmd_user", username)
+    updateHeader()
+    print(`account created: ${username}`, "ok")
+  },
+
+  logout() {
+    token = null; username = null; currentProject = null; stagedFiles = {}
+    localStorage.removeItem("cmd_token")
+    localStorage.removeItem("cmd_user")
+    updateHeader()
+    print("logged out", "ok")
+  },
+
+  async whoami() {
+    if (!token) return print("not logged in", "err")
+    const { r, d } = await req("GET", "/me")
+    if (!r.ok) return print(`error: ${d.error}`, "err")
+    print(`${d.username}  ⚡ ${d.lucks} lucks`, "ok")
+  },
+
+  async balance() {
+    if (!token) return print("not logged in", "err")
+    const { r, d } = await req("GET", "/me")
+    if (!r.ok) return print(`error: ${d.error}`, "err")
+    print(`⚡ ${d.lucks} lucks`, "ok")
+    hBalance.textContent = `⚡ ${d.lucks}`
+  },
+
+  async transfer([to, amount]) {
+    if (!token) return print("not logged in", "err")
+    if (!to || !amount) return print("usage: transfer <user> <amount>", "err")
+    const { r, d } = await req("POST", "/lucks/transfer", { to, amount: Number(amount) })
+    if (!r.ok) return print(`error: ${d.error}`, "err")
+    print(`transferred ⚡ ${amount} to @${to} — balance: ⚡ ${d.balance}`, "ok")
+    await fetchBalance()
+  },
+
+  async addlucks([user, amount, apikey]) {
+    if (!user || !amount || !apikey) return print("usage: addlucks <user> <amount> <apikey>", "err")
+    const r = await fetch(`${API}/lucks/add`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-api-key": apikey },
+      body: JSON.stringify({ username: user, amount: Number(amount) })
+    })
+    const d = await r.json()
+    if (!r.ok) return print(`error: ${d.error}`, "err")
+    print(`added ⚡ ${amount} to @${user} — balance: ⚡ ${d.balance}`, "ok")
+  },
+
+  async domains() {
+    if (!token) return print("not logged in", "err")
+    const { r, d } = await req("GET", "/domains/mine")
+    if (!r.ok) return print(`error: ${d.error}`, "err")
+    if (!d.length) return print("no domains registered", "muted")
+    printTable(
+      ["domain", "cname", "mx", "ssl"],
+      d.map(x => [
+        [x.domain, "g"],
+        [x.cname ? x.cname.replace("https://own-net.vercel.app/projects/","proj:") : "—", x.cname ? "b" : "m"],
+        [x.mx || "—", x.mx ? "b" : "m"],
+        [x.ssl || "—", x.ssl ? "ok" : "m"]
+      ])
+    )
+  },
+
+  async whois([domain]) {
+    if (!domain) return print("usage: whois <domain>", "err")
+    const { r, d } = await req("GET", `/resolve/${domain}`)
+    if (!r.ok) return print(`not found: ${domain}`, "err")
+    print(`domain   ${d.domain}`, "out")
+    print(`owner    ${d.owner}`, "ok")
+    print(`cname    ${d.cname || "—"}`, d.cname ? "info" : "muted")
+    print(`mx       ${d.mx || "—"}`, d.mx ? "info" : "muted")
+    print(`ssl      ${d.ssl || "none"}`, d.ssl ? "ok" : "muted")
+  },
+
+  async cname([domain, url]) {
+    if (!token) return print("not logged in", "err")
+    if (!domain || !url) return print("usage: cname <domain> <url>", "err")
+    const { r, d } = await req("POST", "/domains/cname", { domain, cname: url })
+    if (!r.ok) return print(`error: ${d.error}`, "err")
+    print(`cname set: ${domain} → ${url}`, "ok")
+  },
+
+  async mx([domain, record]) {
+    if (!token) return print("not logged in", "err")
+    if (!domain || !record) return print("usage: mx <domain> <record>", "err")
+    const { r, d } = await req("POST", "/domains/mx", { domain, mx: record })
+    if (!r.ok) return print(`error: ${d.error}`, "err")
+    print(`mx set: ${domain} → ${record}`, "ok")
+  },
+
+  async search([query]) {
+    if (!query) return print("usage: search <query>", "err")
+    const r = await fetch(`${API}/search?q=${encodeURIComponent(query)}`)
+    const d = await r.json()
+    if (!d.length) return print("no results", "muted")
+    printTable(
+      ["domain", "owner", "live"],
+      d.slice(0, 20).map(x => [
+        [x.domain, "g"],
+        [x.owner, "out"],
+        [x.cname ? "yes" : "dns only", x.cname ? "ok" : "m"]
+      ])
+    )
+  },
+
+  async tlds() {
+    const r = await fetch(`${API}/tlds`)
+    const d = await r.json()
+    print(d.join("  "), "ok")
+  },
+
+  async register([domain]) {
+    if (!token) return print("not logged in", "err")
+    if (!domain) return print("usage: register <domain>", "err")
+    if (!domain.includes(".")) return print("domain must include TLD (e.g. mysite.lbc)", "err")
+    const { r, d } = await req("POST", "/domains/register", { domain })
+    if (!r.ok) return print(`error: ${d.error}`, "err")
+    print(`registered: ${domain}`, "ok")
+    await fetchBalance()
+  },
+
+  async visit([domain, flag]) {
+    if (!domain) return print("usage: visit <domain> [--text]", "err")
+    const { r: dr, d: dd } = await req("GET", `/resolve/${domain}`)
+    if (!dr.ok) return print(`domain not found: ${domain}`, "err")
+    if (!dd.cname) return print(`${domain} has no page (dns only)`, "warn")
+    try {
+      const r = await fetch(`${API}/proxy?url=${encodeURIComponent(dd.cname)}`)
+      if (!r.ok) return print("failed to fetch page", "err")
+      const html = await r.text()
+      if (flag === "--text") {
+        const tmp = document.createElement("div")
+        tmp.innerHTML = html
+        const text = tmp.innerText.replace(/\s+/g, " ").trim().slice(0, 1000)
+        print(text, "out")
+      } else {
+        const iframe = document.createElement("iframe")
+        iframe.srcdoc = html
+        iframe.style.cssText = "width:100%;height:300px;border:1px solid var(--border);border-radius:4px;margin:4px 0;background:#fff"
+        output.appendChild(iframe)
+        output.scrollTop = output.scrollHeight
+      }
+    } catch(e) { print(`error: ${e.message}`, "err") }
+  },
+
+  async projects() {
+    if (!token) return print("not logged in", "err")
+    const { r, d } = await req("GET", "/projects")
+    if (!r.ok) return print(`error: ${d.error}`, "err")
+    if (!d.length) return print("no projects — use: init <name>", "muted")
+    printTable(
+      ["id", "name", "created"],
+      d.map(x => [
+        [x.id.slice(0,8)+"...", "m"],
+        [x.name, "g"],
+        [new Date(x.createdAt).toLocaleDateString(), "m"]
+      ])
+    )
+  },
+
+  async init([name]) {
+    if (!token) return print("not logged in", "err")
+    if (!name) return print("usage: init <name>", "err")
+    const { r, d } = await req("POST", "/projects", { name })
+    if (!r.ok) return print(`error: ${d.error}`, "err")
+    currentProject = d
+    stagedFiles = {}
+    print(`initialized project: ${d.name} (${d.id.slice(0,8)}...)`, "ok")
+    print(`switched to project: ${d.name}`, "info")
+  },
+
+  async cd([nameOrId]) {
+    if (!token) return print("not logged in", "err")
+    if (!nameOrId) return print("usage: cd <name|id>", "err")
+    const { r, d } = await req("GET", "/projects")
+    if (!r.ok) return print(`error: ${d.error}`, "err")
+    const found = d.find(p => p.name === nameOrId || p.id === nameOrId || p.id.startsWith(nameOrId))
+    if (!found) return print(`project not found: ${nameOrId}`, "err")
+    currentProject = found
+    stagedFiles = {}
+    print(`switched to: ${found.name}`, "ok")
+  },
+
+  async ls() {
+    if (!token) return print("not logged in", "err")
+    if (!currentProject) return print("no project selected — use: cd <name>", "err")
+    const { r, d } = await req("GET", `/projects/${currentProject.id}/files`)
+    if (!r.ok) return print(`error: ${d.error}`, "err")
+    if (!d.files.length && !Object.keys(stagedFiles).length) return print("empty project", "muted")
+    d.files.forEach(f => print(`  ${f.path}  ${new Date(f.updatedAt).toLocaleDateString()}`, "out"))
+    Object.keys(stagedFiles).forEach(f => print(`  ${f}  (staged)`, "warn"))
+  },
+
+  add(args) {
+    if (!currentProject) return print("no project selected — use: cd <name>", "err")
+    const path = args[0]
+    const html = args.slice(1).join(" ")
+    if (!path || !html) return print("usage: add <path> <html content>", "err")
+    stagedFiles[path] = html
+    print(`staged: ${path}`, "warn")
+  },
+
+  async push() {
+    if (!token) return print("not logged in", "err")
+    if (!currentProject) return print("no project selected", "err")
+    const files = Object.keys(stagedFiles)
+    if (!files.length) return print("nothing staged — use: add <path> <html>", "muted")
+    let ok = 0
+    for (const path of files) {
+      const { r, d } = await req("POST", `/projects/${currentProject.id}/files`, { path, html: stagedFiles[path] })
+      if (!r.ok) { print(`error pushing ${path}: ${d.error}`, "err"); continue }
+      print(`pushed: ${path}`, "ok")
+      ok++
+    }
+    stagedFiles = {}
+    print(`${ok}/${files.length} files pushed`, ok === files.length ? "ok" : "warn")
+  },
+
+  async kv([action, key, ...rest]) {
+    if (!token) return print("not logged in", "err")
+    if (!currentProject) return print("no project selected — use: cd <name>", "err")
+    const pid = currentProject.id
+    if (action === "get") {
+      if (!key) return print("usage: kv get <key>", "err")
+      const { r, d } = await req("GET", `/kv/${pid}/${key}`)
+      if (!r.ok) return print(`not found: ${key}`, "err")
+      print(`${key} = ${d.value}`, "ok")
+    } else if (action === "set") {
+      const value = rest.join(" ")
+      if (!key || !value) return print("usage: kv set <key> <value>", "err")
+      const { r, d } = await req("POST", `/kv/${pid}/${key}`, { value })
+      if (!r.ok) return print(`error: ${d.error}`, "err")
+      print(`set: ${key}`, "ok")
+    } else if (action === "del") {
+      if (!key) return print("usage: kv del <key>", "err")
+      const { r, d } = await req("DELETE", `/kv/${pid}/${key}`)
+      if (!r.ok) return print(`error: ${d.error}`, "err")
+      print(`deleted: ${key}`, "ok")
+    } else {
+      print("usage: kv <get|set|del> <key> [value]", "err")
+    }
+  },
+
+  async mail([action, ...args]) {
+    if (!token) return print("not logged in", "err")
+    if (action === "create") {
+      const [addr, pass] = args
+      if (!addr || !pass) return print("usage: mail create <address> <password>", "err")
+      const { r, d } = await req("POST", "/mail/create", { address: addr, password: pass })
+      if (!r.ok) return print(`error: ${d.error}`, "err")
+      print(`mail account created: ${addr}`, "ok")
+    } else if (action === "inbox") {
+      const [addr, pass] = args
+      if (!addr || !pass) return print("usage: mail inbox <address> <password>", "err")
+      const [user, domain] = addr.split("@")
+      const { r, d } = await req("POST", `/mail/${domain}/${user}/inbox`, { password: pass })
+      if (!r.ok) return print(`error: ${d.error}`, "err")
+      if (!d.length) return print("inbox empty", "muted")
+      d.forEach(m => {
+        print(`from: ${m.from}  ${new Date(m.createdAt).toLocaleString()}`, "info")
+        print(`subj: ${m.subject}`, "out")
+        print(`${m.body}`, "out")
+        print("─────────────────────────────", "muted")
+      })
+    } else if (action === "send") {
+      const [from, pass, to, subject, ...bodyArr] = args
+      if (!from || !pass || !to || !subject) return print("usage: mail send <from> <pass> <to> <subject> <body>", "err")
+      const [user, domain] = from.split("@")
+      const { r, d } = await req("POST", `/mail/${domain}/${user}/send`, { password: pass, to, subject, body: bodyArr.join(" ") })
+      if (!r.ok) return print(`error: ${d.error}`, "err")
+      print(`sent to ${to}`, "ok")
+    } else {
+      print("usage: mail <create|inbox|send>", "err")
+    }
+  },
+
+  clear() {
+    output.innerHTML = ""
+  }
+}
+
+async function run(raw) {
+  const trimmed = raw.trim()
+  if (!trimmed) return
+  history.unshift(trimmed)
+  histIdx = -1
+  printCmd(trimmed)
+  const parts = trimmed.match(/(?:[^\s"]+|"[^"]*")+/g).map(s => s.replace(/^"|"$/g, ""))
+  const cmd = parts[0].toLowerCase()
+  const args = parts.slice(1)
+
+  if (cmd in commands) {
+    try { await commands[cmd](args) }
+    catch(e) { print(`runtime error: ${e.message}`, "err") }
+  } else {
+    print(`command not found: ${cmd} — type 'help' for commands`, "err")
+  }
+}
+
+input.addEventListener("keydown", async e => {
+  if (e.key === "Enter") {
+    const val = input.value
+    input.value = ""
+    await run(val)
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault()
+    if (histIdx < history.length - 1) { histIdx++; input.value = history[histIdx] }
+  } else if (e.key === "ArrowDown") {
+    e.preventDefault()
+    if (histIdx > 0) { histIdx--; input.value = history[histIdx] }
+    else { histIdx = -1; input.value = "" }
+  } else if (e.key === "Tab") {
+    e.preventDefault()
+    const val = input.value.trim()
+    const cmds = Object.keys(commands)
+    const match = cmds.find(c => c.startsWith(val))
+    if (match) input.value = match
+  }
+})
+
+// BOOT
+;(async () => {
+  print("innernet cmd v1.0", "title")
+  print("the web inside the web — terminal interface", "muted")
+  print("", "muted")
+  if (token && username) {
+    print(`session restored: ${username}`, "info")
+    updateHeader()
+    await fetchBalance()
+  } else {
+    print("type 'help' to see available commands", "muted")
+    print("login or register to get started", "muted")
+  }
+  print("", "muted")
+})()
+</script>
+</body>
+</html>
