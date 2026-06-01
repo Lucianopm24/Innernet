@@ -771,6 +771,8 @@ const CONFIG = {
   domainPrice: 100,
 };
 
+let activeTLDs = [];
+  
 // ── STATE ──────────────────────────────────────────────────────
 let token = localStorage.getItem("gn_token") || null;
 let username = localStorage.getItem("gn_username") || null;
@@ -780,6 +782,14 @@ let pendingRegisterDomain = null;
 
 // ── INIT ───────────────────────────────────────────────────────
 window.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const res = await fetch(CONFIG.api + "/tlds")
+    activeTLDs = await res.json()
+    // Actualizar pills
+    document.querySelector(".tld-pills").innerHTML = activeTLDs
+      .map(t => `<span class="tld-pill" onclick="appendTld('${t}')">${t}</span>`)
+      .join("")
+  } catch {}
   if (token) await initUser();
   document.getElementById("search-input").addEventListener("keydown", e => {
     if (e.key === "Enter") doSearch();
@@ -812,7 +822,7 @@ async function doSearch() {
   lookupEl.style.display = "none";
   resultsEl.style.display = "none";
 
-  const isExact = [".lbc",".green",".party",".cc",".inn",".abc"].some(t => q.endsWith(t));
+ const isExact = activeTLDs.some(t => q.endsWith(t));
 
   if (isExact) {
     // Try to look it up
@@ -1073,7 +1083,7 @@ function appendTld(tld) {
   const inp = document.getElementById("search-input");
   let val = inp.value.trim().toLowerCase();
   // Remove existing tld if any
-  [".lbc",".green",".party",".cc",".inn",".abc"].forEach(t => {
+  activeTLDs.forEach(t => {
     if (val.endsWith(t)) val = val.slice(0, -t.length);
   });
   inp.value = val + tld;
