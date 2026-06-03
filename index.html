@@ -1017,9 +1017,11 @@ function showSslWarning(domain) {
 async function resolveAndLoad(domain, path, tab) {
   let data;
 const parts = domain.split(".");
+console.log("parts:", parts, "length:", parts.length);
 if (parts.length >= 3) {
   const sub = parts[0];
   const root = parts.slice(1).join(".");
+  console.log("Trying subdomain:", sub, root);
   try {
     data = await apiFetch("GET", `/resolve/sub/${encodeURIComponent(sub)}.${encodeURIComponent(root)}`);
     data.cname = data.cname;
