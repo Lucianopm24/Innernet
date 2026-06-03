@@ -1091,7 +1091,8 @@ html = await fetchHtml(url);
   html = rewriteLinks(html, domain, path);
   html = injectPath(html, path, tab.hash);
   tab.frameHtml = html;
-  if (!data.ssl) {
+  const isSubdomain = domain.split(".").length >= 3;
+if (!data.ssl && !isSubdomain) {
   const proceed = await showSslWarning(domain);
   if (!proceed) { showHome(); return; }
 }
@@ -1102,7 +1103,7 @@ html = await fetchHtml(url);
   tab.page    = "frame";
   tab.ssl = data.ssl;
   fetchSiteRating(domain);
-  updateSslBadge(data.ssl);
+  updateSslBadge(isSubdomain ? (data.ssl || "self") : data.ssl);
   renderTabs();
 }
 
