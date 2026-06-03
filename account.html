@@ -123,24 +123,30 @@
     </div>
 
     <!-- Security tab -->
-    <div id="tab-security" class="card-body" style="display:none">
-      <div class="field">
-        <label>Current password</label>
-        <input id="s-old" type="password" placeholder="••••••••">
-      </div>
-      <div class="field">
-        <label>New password</label>
-        <input id="s-new" type="password" placeholder="••••••••">
-      </div>
-      <div class="field">
-        <label>Confirm new password</label>
-        <input id="s-confirm" type="password" placeholder="••••••••">
-      </div>
-      <div class="error" id="s-error"></div>
-      <div class="success" id="s-ok"></div>
-      <button class="btn btn-primary" onclick="changePassword()">Change password</button>
-    </div>
+   <div id="tab-security" class="card-body" style="display:none">
+  <div class="field">
+    <label>Current password</label>
+    <input id="s-old" type="password" placeholder="••••••••">
   </div>
+  <div class="field">
+    <label>New password</label>
+    <input id="s-new" type="password" placeholder="••••••••">
+  </div>
+  <div class="field">
+    <label>Confirm new password</label>
+    <input id="s-confirm" type="password" placeholder="••••••••">
+  </div>
+  <div class="error" id="s-error"></div>
+  <div class="success" id="s-ok"></div>
+  <button class="btn btn-primary" onclick="changePassword()">Change password</button>
+
+  <hr class="divider">
+
+  <!-- 2FA -->
+  <div style="font-size:12px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.05em">Two-Factor Authentication</div>
+  <div id="twofa-status" style="font-size:12px;color:var(--muted);text-align:center">loading...</div>
+  <div id="twofa-section"></div>
+</div>
 
   <!-- OAUTH PROMPT -->
   <div id="view-oauth" class="view card-body">
@@ -289,6 +295,7 @@ function showTab(tab) {
     b.classList.toggle("active", ["profile","apps","security"][i] === tab);
   });
   if (tab === "apps") loadApps();
+if (tab === "security") load2FA();
 }
 
 async function loadApps() {
@@ -351,6 +358,74 @@ async function changePassword() {
   document.getElementById("s-confirm").value = "";
 }
 
+async function load2FA() {
+  const me = await api("GET", "/me");
+  const enabled = me.twoFactorEnabled;
+  document.getElementById("twofa-status").textContent = enabled
+    ? "✓ 2FA is enabled"
+    : "2FA is not enabled";
+  document.getElementById("twofa-status").style.color = enabled ? "var(--green)" : "var(--muted)";
+
+  const section = document.getElementById("twofa-section");
+  if (enabled) {
+    section.innerHTML = `
+      <div class="field">
+        <label>Enter code to disable</label>
+        <input id="twofa-dis-code" type="text" maxlength="6" placeholder="000000"
+          style="letter-spacing:.2em;text-align:center">
+      </div>
+      <div class="error" id="twofa-dis-error"></div>
+      <button class="btn btn-danger" onclick="disable2FA()">Disable 2FA</button>
+    `;
+  } else {
+    section.innerHTML = `
+      <button class="btn btn-primary" onclick="setup2FA()">Enable 2FA</button>
+      <div id="twofa-setup-area"></div>
+    `;
+  }
+}
+
+async function setup2FA() {
+  const area = document.getElementById("twofa-setup-area");
+  area.innerHTML = `<div class="empty">loading...</div>`;
+  const r = await api("POST", "/auth/2fa/setup");
+  if (r.error) { area.innerHTML = `<div class="error">${r.error}</div>`; return; }
+  area.innerHTML = `
+    <div style="text-align:center">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:.5rem">
+        Scan this QR with Google Authenticator or Authy
+      </div>
+      <img src="${r.qr}" style="width:160px;height:160px;border-radius:6px;border:1px solid var(--border)">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);margin-top:.5rem;word-break:break-all">${r.secret}</div>
+    </div>
+    <div class="field">
+      <label>Enter code to confirm</label>
+      <input id="twofa-verify-code" type="text" maxlength="6" placeholder="000000"
+        style="letter-spacing:.2em;text-align:center">
+    </div>
+    <div class="error" id="twofa-verify-error"></div>
+    <button class="btn btn-primary" onclick="verify2FA()">Activate 2FA</button>
+  `;
+}
+
+async function verify2FA() {
+  const code = document.getElementById("twofa-verify-code").value.trim();
+  const err = document.getElementById("twofa-verify-error");
+  if (!code) { err.textContent = "Enter the code."; return; }
+  const r = await api("POST", "/auth/2fa/verify", { code });
+  if (r.error) { err.textContent = r.error; return; }
+  await load2FA();
+}
+
+async function disable2FA() {
+  const code = document.getElementById("twofa-dis-code").value.trim();
+  const err = document.getElementById("twofa-dis-error");
+  if (!code) { err.textContent = "Enter the code."; return; }
+  const r = await api("POST", "/auth/2fa/disable", { code });
+  if (r.error) { err.textContent = r.error; return; }
+  await load2FA();
+}
+  
 // OAUTH
 async function showOAuth() {
   show("view-oauth", "authorize");
