@@ -1519,8 +1519,13 @@ async function submitAuth() {
   errEl.textContent = "";
   try {
     const ep  = authMode === "login" ? "/auth/login" : "/auth/register";
-    const res = await apiFetch("POST", ep, { username: user, password: pass });
-
+    const refParam = new URLSearchParams(location.search).get("ref") || null;
+const res = await apiFetch("POST", ep, { 
+  username: user, 
+  password: pass,
+  ...(authMode === "register" && refParam ? { ref: refParam } : {})
+});
+    
     if (res.requiresTwoFactor) {
       tempToken = res.tempToken;
       closeAuth();
