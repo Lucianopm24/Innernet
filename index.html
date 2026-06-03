@@ -1024,7 +1024,10 @@ if (parts.length >= 3) {
     data = await apiFetch("GET", `/resolve/sub/${encodeURIComponent(sub)}.${encodeURIComponent(root)}`);
     data.cname = data.cname;
   } catch {
+   } catch(e) {
+    if (e.status === 404) throw e;
     data = await apiFetch("GET", `/resolve/${encodeURIComponent(domain)}`);
+  }
   }
 } else {
   data = await apiFetch("GET", `/resolve/${encodeURIComponent(domain)}`);
