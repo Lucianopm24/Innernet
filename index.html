@@ -535,6 +535,8 @@ body.fullscreen #content-area { height: 100vh; }
 }
 #modal-overlay.open { display: flex; }
 
+#twofa-overlay.open { display: flex; }
+  
 .modal {
   background: var(--card);
   border: 1px solid var(--border2);
@@ -811,6 +813,22 @@ body.fullscreen #content-area { height: 100vh; }
 
 <div id="toast"></div>
 
+<!-- 2FA MODAL -->
+<div id="twofa-overlay" style="position:fixed;inset:0;background:rgba(26,24,21,.52);z-index:700;display:none;align-items:center;justify-content:center;backdrop-filter:blur(5px);">
+  <div class="modal">
+    <button class="modal-close" onclick="close2FAModal()">×</button>
+    <div class="modal-title">Two-Factor Auth</div>
+    <div class="modal-sub">Enter the 6-digit code from your authenticator app.</div>
+    <div class="modal-field">
+      <label>Code</label>
+      <input type="text" id="twofa-code" maxlength="6" autocomplete="one-time-code"
+        placeholder="000000" style="letter-spacing:.2em;font-size:1.1rem;text-align:center">
+    </div>
+    <div class="modal-error" id="twofa-error"></div>
+    <button class="modal-submit" id="twofa-submit" onclick="submit2FA()">Verify</button>
+  </div>
+</div>
+  
 <script>
 // ═══════════════════════════════════════════
 // CONFIG
@@ -823,6 +841,7 @@ const API = "https://own-net.vercel.app";
 let token    = localStorage.getItem("inn_token") || null;
 let username = localStorage.getItem("inn_username") || null;
 let authMode = "login";
+let tempToken = null;
 
 let tabs = [], activeTabId = null, tabCounter = 0;
 
@@ -1500,6 +1519,14 @@ async function submitAuth() {
   try {
     const ep  = authMode === "login" ? "/auth/login" : "/auth/register";
     const res = await apiFetch("POST", ep, { username: user, password: pass });
+
+    if (res.requiresTwoFactor) {
+      tempToken = res.tempToken;
+      closeAuth();
+      show2FAModal();
+      return;
+    }
+
     token = res.token; username = res.username;
     localStorage.setItem("inn_token", token);
     localStorage.setItem("inn_username", username);
@@ -1513,6 +1540,42 @@ async function submitAuth() {
     btn.disabled = false;
   }
 }
+
+  function show2FAModal() {
+  document.getElementById("twofa-overlay").classList.add("open");
+  setTimeout(() => document.getElementById("twofa-code").focus(), 80);
+}
+
+function close2FAModal() {
+  document.getElementById("twofa-overlay").classList.remove("open");
+  document.getElementById("twofa-error").textContent = "";
+  document.getElementById("twofa-code").value = "";
+}
+
+async function submit2FA() {
+  const code = document.getElementById("twofa-code").value.trim();
+  const errEl = document.getElementById("twofa-error");
+  if (!code) { errEl.textContent = "Enter the code."; return; }
+  const btn = document.getElementById("twofa-submit");
+  btn.innerHTML = '<span class="spin"></span>';
+  btn.disabled = true;
+  errEl.textContent = "";
+  try {
+    const res = await apiFetch("POST", "/auth/2fa/confirm", { tempToken, code });
+    token = res.token; username = res.username;
+    localStorage.setItem("inn_token", token);
+    localStorage.setItem("inn_username", username);
+    close2FAModal();
+    await initUser();
+    toast("Welcome, " + username + "!");
+  } catch (e) {
+    errEl.textContent = e.message || "Invalid code.";
+  } finally {
+    btn.textContent = "Verify";
+    btn.disabled = false;
+  }
+}
+
 function logout() {
   token = null; username = null;
   localStorage.removeItem("inn_token");
@@ -1555,6 +1618,10 @@ function esc(s) {
     .replace(/&/g,"&amp;").replace(/</g,"&lt;")
     .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
+
+  document.getElementById("twofa-overlay").addEventListener("click", e => {
+  if (e.target === document.getElementById("twofa-overlay")) close2FAModal();
+});
 </script>
 </body>
 </html>
