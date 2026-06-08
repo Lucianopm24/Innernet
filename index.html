@@ -1091,30 +1091,30 @@ html = await fetchHtml(url);
 html = rewriteLinks(html, domain, path);
 html = injectPath(html, path, tab.hash);
 tab.frameHtml = html;
-const isSubdomain = domain.split(".").length >= 3;
-let effectiveSsl = data.ssl;
+  const isSubdomain = domain.split(".").length >= 3;
+  let effectiveSsl = data.ssl;
 
-if (!effectiveSsl && isSubdomain) {
-  const parentDomain = domain.split(".").slice(1).join(".");
-  try {
-    const parentData = await apiFetch("GET", `/resolve/${encodeURIComponent(parentDomain)}`);
-    if (parentData.ssl) effectiveSsl = parentData.ssl;
-  } catch {}
-}
+  if (!effectiveSsl && isSubdomain) {
+    const parentDomain = domain.split(".").slice(1).join(".");
+    try {
+      const parentData = await apiFetch("GET", `/resolve/${encodeURIComponent(parentDomain)}`);
+      if (parentData.ssl) effectiveSsl = parentData.ssl;
+    } catch {}
+  }
 
-if (!effectiveSsl && !isSubdomain) {
-  const proceed = await showSslWarning(domain);
-  if (!proceed) { showHome(); return; }
-}
-loadHtmlInFrame(html, effectiveSsl);
-showPage("frame");
-tab.title   = extractTitle(html) || domain;
-tab.favicon = "🌐";
-tab.page    = "frame";
-tab.ssl = effectiveSsl;
-fetchSiteRating(domain);
-updateSslBadge(effectiveSsl);
-renderTabs();
+  if (!effectiveSsl && !isSubdomain) {
+    const proceed = await showSslWarning(domain);
+    if (!proceed) { showHome(); return; }
+  }
+  loadHtmlInFrame(html, effectiveSsl);
+  showPage("frame");
+  tab.title   = extractTitle(html) || domain;
+  tab.favicon = "🌐";
+  tab.page    = "frame";
+  tab.ssl = effectiveSsl;
+  fetchSiteRating(domain);
+  updateSslBadge(effectiveSsl);
+  renderTabs();
 
 // Helper: given base path from cname and requested path, produce a file path
 function resolveFilePath(base, requested) {
