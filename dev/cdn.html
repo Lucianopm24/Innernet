@@ -637,17 +637,31 @@ async function confirmUpload() {
   const fill = document.getElementById("progress-fill")
   const label = document.getElementById("progress-label")
   progress.classList.add("show")
-  label.textContent = "Leyendo archivo…"
-  fill.style.width = "20%"
+  label.textContent = "Subiendo a la red…"
+  fill.style.width = "30%"
 
   try {
-    const base64 = await fileToBase64(pendingFile)
-    fill.style.width = "50%"; label.textContent = "Subiendo a la red…"
-
     const isPublic = document.getElementById("vis-toggle").checked
+
+    // 1 — Subir archivo al Worker directamente
+    const form = new FormData()
+    form.append("file", pendingFile, pendingFile.name)
+    const workerRes = await fetch(CDN_WORKER + "/upload", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + token },
+      body: form
+    })
+    const workerData = await workerRes.json()
+    if (!workerRes.ok) throw new Error(workerData.error || "Error subiendo archivo")
+
+    fill.style.width = "70%"; label.textContent = "Guardando metadata…"
+
+    // 2 — Guardar metadata en Vercel
     const res = await authFetch("POST", "/cdn/upload", {
-      base64, filename: pendingFile.name,
+      fileId: workerData.fileId,
+      filename: pendingFile.name,
       mimetype: pendingFile.type || "application/octet-stream",
+      size: pendingFile.size,
       public: isPublic
     })
 
@@ -664,15 +678,6 @@ async function confirmUpload() {
   } finally {
     btn.textContent = "Subir"; btn.disabled = false
   }
-}
-
-function fileToBase64(file) {
-  return new Promise((res, rej) => {
-    const r = new FileReader()
-    r.onload = () => res(r.result.split(",")[1])
-    r.onerror = () => rej(new Error("Error leyendo archivo"))
-    r.readAsDataURL(file)
-  })
 }
 
 // ── FILES ──
