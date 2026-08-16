@@ -10,6 +10,7 @@
 <title>Innernet</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://js.puter.com/v2/"></script>
 <style>
 :root {
   --bg:      #f6f3ed;
@@ -647,6 +648,219 @@ body.fullscreen #content-area { height: 100vh; }
   .home-inner { padding: 3vh 1rem 2rem; }
   .wm-title { font-size: 3rem; }
 }
+
+/* ═══════════════════════════════
+   PUTER CONNECT TOAST
+═══════════════════════════════ */
+#puter-toast {
+  position: fixed; bottom: 1.1rem; left: 1.1rem;
+  background: var(--card); color: var(--ink);
+  border: 1.5px solid var(--border2);
+  border-radius: var(--r); padding: .9rem 1rem;
+  z-index: 950; max-width: 300px;
+  box-shadow: var(--shadow-lg);
+  font-family: 'Geist', sans-serif;
+  display: none; flex-direction: column; gap: .55rem;
+  transform: translateY(8px); opacity: 0;
+  transition: all .22s;
+}
+#puter-toast.show { display: flex; transform: translateY(0); opacity: 1; }
+.pt-head { display: flex; align-items: flex-start; justify-content: space-between; gap: .5rem; }
+.pt-title { font-size: .78rem; font-weight: 600; color: var(--ink); line-height: 1.4; }
+.pt-close {
+  flex-shrink: 0; width: 18px; height: 18px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink3); font-size: .7rem; cursor: pointer; transition: all .12s;
+}
+.pt-close:hover { background: var(--bg2); color: var(--ink); }
+.pt-body { font-size: .71rem; color: var(--ink2); line-height: 1.55; }
+.pt-actions { display: flex; gap: .4rem; margin-top: .1rem; }
+.pt-connect {
+  background: var(--accent); color: #fff; border: none; border-radius: var(--r-sm);
+  padding: .4rem .8rem; font-family: 'Geist', sans-serif; font-size: .7rem; font-weight: 600;
+  cursor: pointer; transition: background .15s;
+}
+.pt-connect:hover { background: var(--accent2); }
+
+/* ═══════════════════════════════
+   HTTPS BLOCKED POPUP
+═══════════════════════════════ */
+#https-blocked-overlay {
+  position: fixed; inset: 0; background: rgba(26,24,21,.72);
+  z-index: 900; display: none; align-items: center; justify-content: center;
+  backdrop-filter: blur(5px);
+}
+#https-blocked-overlay.open { display: flex; }
+.hb-card {
+  background: var(--card); border-radius: 14px; padding: 1.9rem;
+  max-width: 380px; width: 90%; box-shadow: var(--shadow-lg);
+}
+.hb-icon { font-size: 2rem; margin-bottom: .6rem; }
+.hb-title { font-family: 'Instrument Serif', serif; font-size: 1.35rem; color: var(--ink); margin-bottom: .4rem; letter-spacing: -.02em; }
+.hb-body { font-size: .78rem; color: var(--ink2); line-height: 1.6; margin-bottom: 1rem; }
+.hb-perks { list-style: none; margin-bottom: 1.2rem; display: flex; flex-direction: column; gap: .4rem; }
+.hb-perks li { font-size: .73rem; color: var(--ink2); display: flex; align-items: center; gap: .5rem; }
+.hb-perks li::before { content: "✦"; color: var(--accent); font-size: .7rem; }
+.hb-actions { display: flex; gap: .5rem; justify-content: flex-end; }
+.hb-cancel {
+  padding: .55rem 1rem; border: 1px solid var(--border2); border-radius: var(--r-sm);
+  background: var(--bg); color: var(--ink2); font-family: 'Geist', sans-serif;
+  font-size: .74rem; cursor: pointer;
+}
+.hb-connect {
+  padding: .55rem 1.1rem; border: none; border-radius: var(--r-sm);
+  background: var(--accent); color: #fff; font-family: 'Geist', sans-serif;
+  font-size: .74rem; font-weight: 600; cursor: pointer;
+}
+.hb-connect:hover { background: var(--accent2); }
+
+/* ═══════════════════════════════
+   LUXER AI TOGGLE (nav bar)
+═══════════════════════════════ */
+#luxer-toggle-btn {
+  display: none; align-items: center; gap: .3rem;
+  background: none; border: 1px solid var(--border2); border-radius: 20px;
+  padding: .28rem .65rem; font-family: 'Geist', sans-serif;
+  font-size: .68rem; font-weight: 600; color: var(--ink2);
+  cursor: pointer; transition: all .12s;
+}
+#luxer-toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
+#luxer-toggle-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+#luxer-toggle-btn .lx-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); }
+
+/* ═══════════════════════════════
+   LUXER AI SIDE PANEL
+═══════════════════════════════ */
+#content-area.luxer-open { display: flex; }
+#content-area.luxer-open #luxer-main { flex: 1; min-width: 0; height: 100%; position: relative; }
+
+#luxer-panel {
+  display: none; flex-direction: column;
+  width: 320px; flex-shrink: 0; height: 100%;
+  background: var(--bg2); border-left: 1px solid var(--border2);
+}
+#luxer-panel.open { display: flex; }
+
+.lx-header {
+  height: 42px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 .75rem; border-bottom: 1px solid var(--border);
+  background: var(--bg3);
+}
+.lx-header-title { display: flex; align-items: center; gap: .4rem; font-size: .74rem; font-weight: 600; color: var(--ink); }
+.lx-header-title .lx-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); }
+.lx-header-actions { display: flex; align-items: center; gap: .3rem; }
+.lx-icon-btn {
+  width: 22px; height: 22px; border-radius: var(--r-sm); border: none; background: none;
+  color: var(--ink3); font-size: .8rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all .12s;
+}
+.lx-icon-btn:hover { background: var(--border); color: var(--ink); }
+
+#lx-messages {
+  flex: 1; overflow-y: auto; padding: .75rem;
+  display: flex; flex-direction: column; gap: .55rem;
+}
+.lx-msg { font-size: .74rem; line-height: 1.55; max-width: 92%; }
+.lx-msg-user {
+  align-self: flex-end; background: var(--accent); color: #fff;
+  padding: .5rem .7rem; border-radius: 10px 10px 2px 10px;
+}
+.lx-msg-assistant {
+  align-self: flex-start; background: var(--card); color: var(--ink);
+  padding: .5rem .7rem; border-radius: 10px 10px 10px 2px;
+  border: 1px solid var(--border);
+}
+.lx-msg-assistant p { margin-bottom: .5rem; }
+.lx-msg-assistant p:last-child { margin-bottom: 0; }
+.lx-msg-assistant code {
+  background: var(--bg2); padding: .1rem .3rem; border-radius: 4px;
+  font-family: 'DM Mono', monospace; font-size: .68rem;
+}
+.lx-msg-assistant pre {
+  background: var(--bg2); padding: .5rem; border-radius: 6px; overflow-x: auto;
+  margin: .4rem 0; font-family: 'DM Mono', monospace; font-size: .67rem;
+}
+.lx-msg-assistant pre code { background: none; padding: 0; }
+.lx-msg-assistant h1, .lx-msg-assistant h2, .lx-msg-assistant h3,
+.lx-msg-assistant h4, .lx-msg-assistant h5, .lx-msg-assistant h6 {
+  font-family: 'Geist', sans-serif; font-weight: 600; color: var(--ink);
+  margin: .55rem 0 .3rem; line-height: 1.3;
+}
+.lx-msg-assistant h1 { font-size: .92rem; }
+.lx-msg-assistant h2 { font-size: .87rem; }
+.lx-msg-assistant h3 { font-size: .8rem; }
+.lx-msg-assistant h4, .lx-msg-assistant h5, .lx-msg-assistant h6 { font-size: .75rem; }
+.lx-msg-assistant h1:first-child, .lx-msg-assistant h2:first-child,
+.lx-msg-assistant h3:first-child { margin-top: 0; }
+.lx-msg-assistant ul, .lx-msg-assistant ol {
+  margin: .3rem 0 .5rem 1.1rem;
+  display: flex; flex-direction: column; gap: .2rem;
+}
+.lx-msg-assistant li { line-height: 1.5; }
+.lx-msg-assistant strong { font-weight: 600; color: var(--ink); }
+.lx-msg-assistant em { font-style: italic; }
+.lx-msg-assistant a { color: var(--blue); text-decoration: underline; }
+.lx-tool-note {
+  align-self: flex-start; font-size: .64rem; color: var(--ink3);
+  font-family: 'DM Mono', monospace; padding: .1rem .3rem;
+  display: flex; align-items: center; gap: .3rem;
+}
+.lx-empty {
+  color: var(--ink3); font-size: .72rem; text-align: center;
+  padding: 2rem 1rem; line-height: 1.6;
+}
+
+#lx-input-wrap {
+  flex-shrink: 0; border-top: 1px solid var(--border);
+  padding: .6rem; display: flex; gap: .4rem; align-items: flex-end;
+  background: var(--bg2);
+}
+#lx-input {
+  flex: 1; resize: none; max-height: 90px; min-height: 32px;
+  background: var(--card); border: 1.5px solid var(--border2); border-radius: var(--r-sm);
+  padding: .45rem .6rem; font-family: 'Geist', sans-serif; font-size: .74rem;
+  color: var(--ink); outline: none; transition: border-color .15s;
+}
+#lx-input:focus { border-color: var(--accent); }
+#lx-send-btn {
+  width: 30px; height: 30px; border-radius: var(--r-sm); border: none;
+  background: var(--accent); color: #fff; font-size: .8rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: background .15s;
+}
+#lx-send-btn:hover:not(:disabled) { background: var(--accent2); }
+#lx-send-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ═══════════════════════════════
+   LUXER KV CONSENT MODAL
+═══════════════════════════════ */
+#luxer-consent-overlay {
+  position: fixed; inset: 0; background: rgba(26,24,21,.72);
+  z-index: 900; display: none; align-items: center; justify-content: center;
+  backdrop-filter: blur(5px);
+}
+#luxer-consent-overlay.open { display: flex; }
+.lxc-card { background: var(--card); border-radius: 14px; padding: 1.9rem; max-width: 360px; width: 90%; box-shadow: var(--shadow-lg); }
+.lxc-icon { font-size: 1.8rem; margin-bottom: .55rem; }
+.lxc-title { font-family: 'Instrument Serif', serif; font-size: 1.3rem; color: var(--ink); margin-bottom: .45rem; letter-spacing: -.02em; }
+.lxc-body { font-size: .77rem; color: var(--ink2); line-height: 1.6; margin-bottom: 1.2rem; }
+.lxc-actions { display: flex; gap: .5rem; justify-content: flex-end; }
+.lxc-decline {
+  padding: .55rem 1rem; border: 1px solid var(--border2); border-radius: var(--r-sm);
+  background: var(--bg); color: var(--ink2); font-family: 'Geist', sans-serif;
+  font-size: .74rem; cursor: pointer;
+}
+.lxc-accept {
+  padding: .55rem 1.1rem; border: none; border-radius: var(--r-sm);
+  background: var(--accent); color: #fff; font-family: 'Geist', sans-serif;
+  font-size: .74rem; font-weight: 600; cursor: pointer;
+}
+.lxc-accept:hover { background: var(--accent2); }
+
+@media (max-width: 700px) {
+  #luxer-panel { width: 100%; position: absolute; right: 0; top: 0; z-index: 50; }
+}
 </style>
 </head>
 <body>
@@ -686,6 +900,9 @@ body.fullscreen #content-area { height: 100vh; }
     </div>
 
     <div class="nav-right">
+      <button id="luxer-toggle-btn" onclick="toggleLuxerPanel()" title="Luxer AI">
+        <span class="lx-dot"></span> Luxer AI
+      </button>
       <div id="user-pill" onclick="openAuth()">
         <div class="user-av" id="user-av">?</div>
         <span id="user-name-pill">—</span>
@@ -697,6 +914,7 @@ body.fullscreen #content-area { height: 100vh; }
 
   <!-- ═══════════ CONTENT ═══════════ -->
   <div id="content-area">
+  <div id="luxer-main">
 
     <!-- Home -->
     <div id="home-page">
@@ -787,6 +1005,26 @@ body.fullscreen #content-area { height: 100vh; }
     </div>
 
   </div>
+  <!-- closes #luxer-main -->
+
+  <!-- ═══════════ LUXER AI PANEL ═══════════ -->
+  <div id="luxer-panel">
+    <div class="lx-header">
+      <div class="lx-header-title"><span class="lx-dot"></span> Luxer AI</div>
+      <div class="lx-header-actions">
+        <button class="lx-icon-btn" onclick="clearLuxerHistory()" title="Clear conversation">🗑</button>
+        <button class="lx-icon-btn" onclick="toggleLuxerPanel()" title="Close">×</button>
+      </div>
+    </div>
+    <div id="lx-messages">
+      <div class="lx-empty">Ask about the page you're on. Luxer can read this page's HTML with the <strong>read_page</strong> tool.</div>
+    </div>
+    <div id="lx-input-wrap">
+      <textarea id="lx-input" rows="1" placeholder="Ask Luxer AI…"></textarea>
+      <button id="lx-send-btn" onclick="sendLuxerMessage()" title="Send">➤</button>
+    </div>
+  </div>
+  <!-- closes #content-area -->
 </div>
 
 <!-- AUTH MODAL -->
@@ -846,6 +1084,339 @@ let tempToken = null;
 let tabs = [], activeTabId = null, tabCounter = 0;
 
 // ═══════════════════════════════════════════
+// PUTER STATE
+// ═══════════════════════════════════════════
+let puterConnected = false;
+let puterCheckDone = false;
+let pendingHttpsUrl = null;      // https:// url waiting on connect
+let puterToastTimer = null;
+
+async function checkPuterConnected() {
+  try {
+    puterConnected = typeof puter !== "undefined" && await puter.auth.isSignedIn();
+  } catch { puterConnected = false; }
+  puterCheckDone = true;
+  updateLuxerToggleVisibility();
+  return puterConnected;
+}
+
+async function connectPuter() {
+  try {
+    await puter.auth.signIn();
+    puterConnected = await puter.auth.isSignedIn();
+    if (puterConnected) {
+      toast("Puter connected");
+      updateLuxerToggleVisibility();
+    }
+    return puterConnected;
+  } catch {
+    return false;
+  }
+}
+
+function updateLuxerToggleVisibility() {
+  document.getElementById("luxer-toggle-btn").style.display = puterConnected ? "flex" : "none";
+  if (!puterConnected) closeLuxerPanel();
+}
+
+// ── "Connect Puter" toast (external CNAME, no Puter) ──
+function showPuterToast() {
+  if (puterConnected) return;
+  const el = document.getElementById("puter-toast");
+  el.classList.add("show");
+  clearTimeout(puterToastTimer);
+  puterToastTimer = setTimeout(() => el.classList.remove("show"), 14000);
+}
+function dismissPuterToast() {
+  document.getElementById("puter-toast").classList.remove("show");
+  clearTimeout(puterToastTimer);
+}
+async function connectPuterFromToast() {
+  dismissPuterToast();
+  await connectPuter();
+}
+
+// ── https:// blocked popup ──
+function showHttpsBlocked(url) {
+  pendingHttpsUrl = url;
+  document.getElementById("https-blocked-overlay").classList.add("open");
+}
+function closeHttpsBlocked() {
+  pendingHttpsUrl = null;
+  document.getElementById("https-blocked-overlay").classList.remove("open");
+}
+async function connectPuterFromBlocked() {
+  const url = pendingHttpsUrl;
+  closeHttpsBlocked();
+  const ok = await connectPuter();
+  if (ok && url) navigateTo(url);
+}
+
+// ═══════════════════════════════════════════
+// LUXER AI
+// ═══════════════════════════════════════════
+const LUXER_MODEL = "z-ai/glm-4.7-flash";
+const LUXER_KV_CONSENT_KEY = "luxer_kv_consent";   // "granted" | "declined"
+const LUXER_KV_HISTORY_KEY = "luxer_history";
+
+let luxerHistory = [];          // in-memory always
+let luxerPersistMode = null;    // null (not asked yet) | "granted" | "declined"
+let luxerSending = false;
+
+function toggleLuxerPanel() {
+  const panel = document.getElementById("luxer-panel");
+  if (panel.classList.contains("open")) closeLuxerPanel();
+  else openLuxerPanel();
+}
+
+async function openLuxerPanel() {
+  if (!puterConnected) return;
+  document.getElementById("luxer-panel").classList.add("open");
+  document.getElementById("content-area").classList.add("luxer-open");
+  document.getElementById("luxer-toggle-btn").classList.add("active");
+
+  if (luxerPersistMode === null) {
+    // First time opening in this session — check stored consent choice
+    try {
+      const stored = await puter.kv.get(LUXER_KV_CONSENT_KEY);
+      if (stored === "granted") {
+        luxerPersistMode = "granted";
+        await loadLuxerHistoryFromKv();
+      } else if (stored === "declined") {
+        luxerPersistMode = "declined";
+      } else {
+        document.getElementById("luxer-consent-overlay").classList.add("open");
+      }
+    } catch {
+      document.getElementById("luxer-consent-overlay").classList.add("open");
+    }
+  }
+}
+
+function closeLuxerPanel() {
+  document.getElementById("luxer-panel").classList.remove("open");
+  document.getElementById("content-area").classList.remove("luxer-open");
+  document.getElementById("luxer-toggle-btn").classList.remove("active");
+}
+
+async function acceptLuxerPersistence() {
+  document.getElementById("luxer-consent-overlay").classList.remove("open");
+  luxerPersistMode = "granted";
+  try { await puter.kv.set(LUXER_KV_CONSENT_KEY, "granted"); } catch {}
+  await loadLuxerHistoryFromKv();
+}
+
+async function declineLuxerPersistence() {
+  document.getElementById("luxer-consent-overlay").classList.remove("open");
+  luxerPersistMode = "declined";
+  try { await puter.kv.set(LUXER_KV_CONSENT_KEY, "declined"); } catch {}
+}
+
+async function loadLuxerHistoryFromKv() {
+  try {
+    const raw = await puter.kv.get(LUXER_KV_HISTORY_KEY);
+    if (raw) {
+      luxerHistory = JSON.parse(raw);
+      renderLuxerMessages();
+    }
+  } catch {}
+}
+
+async function saveLuxerHistoryToKv() {
+  if (luxerPersistMode !== "granted") return;
+  try { await puter.kv.set(LUXER_KV_HISTORY_KEY, JSON.stringify(luxerHistory)); } catch {}
+}
+
+async function clearLuxerHistory() {
+  luxerHistory = [];
+  renderLuxerMessages();
+  if (luxerPersistMode === "granted") {
+    try { await puter.kv.del(LUXER_KV_HISTORY_KEY); } catch {}
+  }
+}
+
+function setupLuxerInput() {
+  const ta = document.getElementById("lx-input");
+  ta.addEventListener("input", () => {
+    ta.style.height = "auto";
+    ta.style.height = Math.min(ta.scrollHeight, 90) + "px";
+  });
+  ta.addEventListener("keydown", e => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendLuxerMessage();
+    }
+  });
+}
+
+function renderLuxerMessages() {
+  const el = document.getElementById("lx-messages");
+  if (!luxerHistory.length) {
+    el.innerHTML = `<div class="lx-empty">Ask about the page you're on. Luxer can read this page's HTML with the <strong>read_page</strong> tool.</div>`;
+    return;
+  }
+  el.innerHTML = luxerHistory.map(m => {
+    if (m.role === "user") {
+      return `<div class="lx-msg lx-msg-user">${esc(m.content)}</div>`;
+    }
+    return `<div class="lx-msg lx-msg-assistant">${formatLuxerText(m.content)}</div>`;
+  }).join("");
+  el.scrollTop = el.scrollHeight;
+}
+
+function formatLuxerText(text) {
+  if (!text) return "";
+
+  // 1. Pull out fenced code blocks first so nothing inside them gets touched
+  const blocks = [];
+  let t = text.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) => {
+    blocks.push(`<pre><code${lang ? ` class="lang-${esc(lang)}"` : ""}>${esc(code.replace(/\n$/, ""))}</code></pre>`);
+    return `\u0000BLOCK${blocks.length - 1}\u0000`;
+  });
+
+  // 2. Escape everything else
+  t = esc(t);
+
+  // 3. Inline code
+  t = t.replace(/`([^`]+)`/g, (_, code) => `<code>${code}</code>`);
+
+  // 4. Headers (###, ##, #)
+  t = t.replace(/^######\s+(.+)$/gm, "<h6>$1</h6>")
+       .replace(/^#####\s+(.+)$/gm, "<h5>$1</h5>")
+       .replace(/^####\s+(.+)$/gm, "<h4>$1</h4>")
+       .replace(/^###\s+(.+)$/gm, "<h3>$1</h3>")
+       .replace(/^##\s+(.+)$/gm, "<h2>$1</h2>")
+       .replace(/^#\s+(.+)$/gm, "<h1>$1</h1>");
+
+  // 5. Bold / italic
+  t = t.replace(/\*\*\*(.+?)\*\*\*/g, "<strong><em>$1</em></strong>")
+       .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+       .replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, "<em>$1</em>");
+
+  // 6. Links [text](url)
+  t = t.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+
+  // 7. Lists — group consecutive list lines into <ul>/<ol>
+  const lines = t.split("\n");
+  let out = [];
+  let listBuf = [];
+  let listType = null;
+  const flushList = () => {
+    if (listBuf.length) {
+      out.push(`<${listType}>${listBuf.map(li => `<li>${li}</li>`).join("")}</${listType}>`);
+      listBuf = [];
+      listType = null;
+    }
+  };
+  for (const line of lines) {
+    const ul = line.match(/^\s*[-*]\s+(.+)$/);
+    const ol = line.match(/^\s*\d+\.\s+(.+)$/);
+    if (ul) {
+      if (listType && listType !== "ul") flushList();
+      listType = "ul"; listBuf.push(ul[1]);
+    } else if (ol) {
+      if (listType && listType !== "ol") flushList();
+      listType = "ol"; listBuf.push(ol[1]);
+    } else {
+      flushList();
+      out.push(line);
+    }
+  }
+  flushList();
+  t = out.join("\n");
+
+  // 8. Paragraphs: split remaining plain text on blank lines, wrap non-block lines
+  t = t.split(/\n{2,}/).map(chunk => {
+    if (/^<(h[1-6]|ul|ol|pre)/.test(chunk.trim())) return chunk;
+    return `<p>${chunk.replace(/\n/g, "<br>")}</p>`;
+  }).join("");
+
+  // 9. Restore code blocks
+  t = t.replace(/\u0000BLOCK(\d+)\u0000/g, (_, i) => blocks[+i]);
+
+  return t;
+}
+
+function getCurrentPageHtml() {
+  const frame = document.getElementById("page-frame");
+  try {
+    return frame.contentDocument ? frame.contentDocument.documentElement.outerHTML : (getActiveTab()?.frameHtml || "");
+  } catch {
+    return getActiveTab()?.frameHtml || "(unable to read page content — cross-origin restricted)";
+  }
+}
+
+const LUXER_SYSTEM_PROMPT = "You are Luxer AI, a helpful assistant embedded in the Innernet browser's side panel. You can inspect the page the user is currently viewing using the read_page tool. Always format your responses in Markdown whenever it's reasonable to do so — use headers, bold/italic, bullet or numbered lists, links, and fenced code blocks with a language tag for any code, commands, or HTML/CSS/JS snippets. Keep responses concise and skimmable given the panel is narrow.";
+
+const LUXER_TOOLS = [{
+  type: "function",
+  function: {
+    name: "read_page",
+    description: "Returns the full HTML source of the page currently loaded in the browser.",
+    parameters: { type: "object", properties: {}, required: [] }
+  }
+}];
+
+async function sendLuxerMessage() {
+  if (luxerSending || !puterConnected) return;
+  const ta = document.getElementById("lx-input");
+  const text = ta.value.trim();
+  if (!text) return;
+  ta.value = "";
+  ta.style.height = "auto";
+
+  luxerHistory.push({ role: "user", content: text });
+  renderLuxerMessages();
+  saveLuxerHistoryToKv();
+
+  luxerSending = true;
+  document.getElementById("lx-send-btn").disabled = true;
+
+  try {
+    await runLuxerTurn();
+  } catch (e) {
+    luxerHistory.push({ role: "assistant", content: "Sorry, something went wrong: " + (e.message || "unknown error") });
+    renderLuxerMessages();
+  } finally {
+    luxerSending = false;
+    document.getElementById("lx-send-btn").disabled = false;
+  }
+}
+
+async function runLuxerTurn() {
+  const messages = [
+    { role: "system", content: LUXER_SYSTEM_PROMPT },
+    ...luxerHistory.map(m => ({ role: m.role, content: m.content }))
+  ];
+  let rounds = 0;
+
+  while (rounds < 5) {
+    rounds++;
+    const resp = await puter.ai.chat(messages, { model: LUXER_MODEL, tools: LUXER_TOOLS });
+    const msg = resp?.message || resp;
+    const toolCalls = msg?.tool_calls;
+
+    if (toolCalls && toolCalls.length) {
+      messages.push({ role: "assistant", content: msg.content || "", tool_calls: toolCalls });
+      for (const call of toolCalls) {
+        let result = "";
+        if (call.function?.name === "read_page") {
+          result = getCurrentPageHtml();
+        }
+        messages.push({ role: "tool", tool_call_id: call.id, content: result });
+      }
+      continue;
+    }
+
+    const finalText = msg?.content || (typeof resp === "string" ? resp : "");
+    luxerHistory.push({ role: "assistant", content: finalText });
+    renderLuxerMessages();
+    saveLuxerHistoryToKv();
+    return;
+  }
+}
+
+// ═══════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════
 window.addEventListener("DOMContentLoaded", async () => {
@@ -862,6 +1433,8 @@ if (m) {
 newTab(m ? m[1] : null);
 
   if (token) await initUser();
+  await checkPuterConnected();
+  setupLuxerInput();
 });
 
 async function initUser() {
@@ -984,6 +1557,44 @@ function parseUrl(raw) {
 }
 
 async function navigateTo(rawUrl) {
+  // ── Handle regular web (https://) addresses ──
+  const trimmed = rawUrl.trim();
+  if (/^https?:\/\//i.test(trimmed)) {
+    if (!puterConnected) {
+      showHttpsBlocked(trimmed);
+      return;
+    }
+    setAddrBar(trimmed);
+    hideSuggestions();
+    const tab = getActiveTab();
+    tab.history = tab.history.slice(0, tab.historyIndex + 1);
+    tab.history.push(trimmed);
+    tab.historyIndex = tab.history.length - 1;
+    tab.url = trimmed;
+    updateNavBtns();
+    startLoading();
+    try {
+      const r = await puter.net.fetch(trimmed);
+      const html = await r.text();
+      if (html == null) { showNotFound(trimmed); return; }
+      tab.frameHtml = html;
+      loadHtmlInFrame(html, true);
+      showPage("frame");
+      tab.title = extractTitle(html) || trimmed;
+      tab.favicon = "🌐";
+      tab.page = "frame";
+      tab.ssl = true;
+      updateSslBadge(true);
+      renderTabs();
+    } catch (e) {
+      toast("Error: " + (e.message || "could not load page"));
+      showNotFound(trimmed);
+    } finally {
+      stopLoading();
+    }
+    return;
+  }
+
   const { domain, path, hash } = parseUrl(rawUrl);
   if (!domain) { showHome(); return; }
 
@@ -1080,9 +1691,19 @@ html = await fetchHtml(url);
     }
     html = await fetchHtml(cname);
   } else {
-    // ── EXTERNAL CNAME — use proxy ──
+    // ── EXTERNAL CNAME ──
     const proxyBase = path ? `${cname.replace(/\/$/, "")}/${path}` : cname;
-    html = await fetchViaProxy(proxyBase);
+    if (puterConnected) {
+      // Puter connected: fetch the CNAME target directly, no proxy, no toast
+      try {
+        const r = await puter.net.fetch(proxyBase);
+        html = await r.text();
+      } catch { html = null; }
+    } else {
+      // No Puter: use the proxy as before, and nudge the user to connect
+      html = await fetchViaProxy(proxyBase);
+      showPuterToast();
+    }
   }
 
   if (html === null) { showNotFound(tab.url); return; }
@@ -1639,5 +2260,49 @@ function esc(s) {
   if (e.target === document.getElementById("twofa-overlay")) close2FAModal();
 });
 </script>
+
+<!-- PUTER CONNECT TOAST (shown on external CNAME without Puter) -->
+<div id="puter-toast">
+  <div class="pt-head">
+    <div class="pt-title">Connect Puter for a better experience</div>
+    <div class="pt-close" onclick="dismissPuterToast()">×</div>
+  </div>
+  <div class="pt-body">Pages load faster and more reliably when Puter is connected.</div>
+  <div class="pt-actions">
+    <button class="pt-connect" onclick="connectPuterFromToast()">Connect Puter</button>
+  </div>
+</div>
+
+<!-- HTTPS BLOCKED POPUP -->
+<div id="https-blocked-overlay">
+  <div class="hb-card">
+    <div class="hb-icon">🔗</div>
+    <div class="hb-title">Puter required</div>
+    <div class="hb-body">Visiting a regular <code>https://</code> web address requires a connected Puter account. Connecting unlocks:</div>
+    <ul class="hb-perks">
+      <li>Luxer AI</li>
+      <li>Faster page loads</li>
+      <li>Normal web pages unlocked</li>
+    </ul>
+    <div class="hb-actions">
+      <button class="hb-cancel" onclick="closeHttpsBlocked()">Cancel</button>
+      <button class="hb-connect" onclick="connectPuterFromBlocked()">Connect Puter</button>
+    </div>
+  </div>
+</div>
+
+<!-- LUXER KV CONSENT MODAL -->
+<div id="luxer-consent-overlay">
+  <div class="lxc-card">
+    <div class="lxc-icon">💬</div>
+    <div class="lxc-title">Save your conversations?</div>
+    <div class="lxc-body">Luxer AI can remember your chat history by saving it to your own Puter cloud storage. If you decline, your conversation will only be kept for this session and will be lost when you close or reload the page.</div>
+    <div class="lxc-actions">
+      <button class="lxc-decline" onclick="declineLuxerPersistence()">Don't save</button>
+      <button class="lxc-accept" onclick="acceptLuxerPersistence()">Save conversations</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
