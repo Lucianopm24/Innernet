@@ -733,6 +733,39 @@ body.fullscreen #content-area { height: 100vh; }
 #luxer-toggle-btn .lx-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); }
 
 /* ═══════════════════════════════
+   CONNECT PUTER BUTTON + DROPDOWN
+═══════════════════════════════ */
+#connect-puter-wrap { position: relative; }
+#connect-puter-btn {
+  display: flex; align-items: center; gap: .35rem;
+  background: var(--teal); border: 1px solid var(--teal); border-radius: 20px;
+  padding: .28rem .7rem .28rem .6rem; font-family: 'Geist', sans-serif;
+  font-size: .68rem; font-weight: 600; color: #fff;
+  cursor: pointer; transition: all .12s;
+}
+#connect-puter-btn:hover { background: #14595a; border-color: #14595a; }
+#connect-puter-btn .cp-cloud { font-size: .82rem; line-height: 1; }
+
+#connect-puter-menu {
+  display: none; position: absolute; top: calc(100% + 8px); right: 0;
+  width: 260px; background: var(--card); border: 1px solid var(--border2);
+  border-radius: var(--r); box-shadow: var(--shadow-lg); padding: 1rem;
+  z-index: 500;
+}
+#connect-puter-menu.open { display: block; }
+.cpm-title { font-size: .78rem; font-weight: 600; color: var(--ink); margin-bottom: .35rem; line-height: 1.35; }
+.cpm-body { font-size: .7rem; color: var(--ink2); line-height: 1.5; margin-bottom: .65rem; }
+.cpm-perks { list-style: none; margin-bottom: .85rem; display: flex; flex-direction: column; gap: .38rem; }
+.cpm-perks li { font-size: .7rem; color: var(--ink2); line-height: 1.4; display: flex; gap: .4rem; }
+.cpm-perks li::before { content: "✦"; color: var(--teal); flex-shrink: 0; font-size: .65rem; margin-top: .1rem; }
+.cpm-connect {
+  width: 100%; padding: .5rem; border: none; border-radius: var(--r-sm);
+  background: var(--teal); color: #fff; font-family: 'Geist', sans-serif;
+  font-size: .73rem; font-weight: 600; cursor: pointer; transition: background .15s;
+}
+.cpm-connect:hover { background: #14595a; }
+
+/* ═══════════════════════════════
    LUXER AI SIDE PANEL
 ═══════════════════════════════ */
 #luxer-main { width: 100%; height: 100%; position: relative; }
@@ -905,6 +938,21 @@ body.fullscreen #content-area { height: 100vh; }
     </div>
 
     <div class="nav-right">
+      <div id="connect-puter-wrap">
+        <button id="connect-puter-btn" onclick="toggleConnectPuterMenu()" title="Connect Puter">
+          <span class="cp-cloud">☁</span> Connect Puter
+        </button>
+        <div id="connect-puter-menu">
+          <div class="cpm-title">Connect your Puter account</div>
+          <div class="cpm-body">Puter powers extra features in Innernet, at no cost — you use your own free Puter account.</div>
+          <ul class="cpm-perks">
+            <li>Luxer AI, an assistant that can read the page you're on</li>
+            <li>Faster page loads</li>
+            <li>Normal web pages unlocked (https://)</li>
+          </ul>
+          <button class="cpm-connect" onclick="connectPuterFromMenu()">Connect Puter</button>
+        </div>
+      </div>
       <button id="luxer-toggle-btn" onclick="toggleLuxerPanel()" title="Luxer AI">
         <span class="lx-dot"></span> Luxer AI
       </button>
@@ -1121,8 +1169,25 @@ async function connectPuter() {
 
 function updateLuxerToggleVisibility() {
   document.getElementById("luxer-toggle-btn").style.display = puterConnected ? "flex" : "none";
+  document.getElementById("connect-puter-wrap").style.display = puterConnected ? "none" : "block";
   if (!puterConnected) closeLuxerPanel();
 }
+
+// ── "Connect Puter" nav button + dropdown ──
+function toggleConnectPuterMenu() {
+  document.getElementById("connect-puter-menu").classList.toggle("open");
+}
+function closeConnectPuterMenu() {
+  document.getElementById("connect-puter-menu").classList.remove("open");
+}
+async function connectPuterFromMenu() {
+  const ok = await connectPuter();
+  if (ok) closeConnectPuterMenu();
+}
+document.addEventListener("click", e => {
+  const wrap = document.getElementById("connect-puter-wrap");
+  if (wrap && !wrap.contains(e.target)) closeConnectPuterMenu();
+});
 
 // ── "Connect Puter" toast (external CNAME, no Puter) ──
 function showPuterToast() {
@@ -1583,8 +1648,9 @@ async function navigateTo(rawUrl) {
     startLoading();
     try {
       const r = await puter.net.fetch(trimmed);
-      const html = await r.text();
+      let html = await r.text();
       if (html == null) { showNotFound(trimmed); return; }
+      html = injectBaseHref(html, trimmed);
       tab.frameHtml = html;
       loadHtmlInFrame(html, true, tab);
       if (tab.id === activeTabId) showPage("frame");
@@ -1706,6 +1772,7 @@ html = await fetchHtml(url);
       try {
         const r = await puter.net.fetch(proxyBase);
         html = await r.text();
+        if (html) html = injectBaseHref(html, proxyBase);
       } catch { html = null; }
     } else {
       // No Puter: use the proxy as before, and nudge the user to connect
@@ -1891,6 +1958,25 @@ function rewriteLinks(html, domain, currentPath) {
 function extractTitle(html) {
   const m = html.match(/<title[^>]*>([^<]+)<\/title>/i);
   return m ? m[1].trim() : null;
+}
+
+// Insert a <base href> pointing at the real origin so relative paths
+// (CSS, JS, images, fetch/XHR calls the page makes internally) resolve
+// correctly once the document is detached into a blob: URL.
+// This does NOT make every site work (sites with strict CSP/X-Frame-Options,
+// or that need same-origin cookies/auth, will still fail to fully render —
+// that requires a real rewriting proxy, not just a <base> tag) but it fixes
+// the common case of broken relative asset paths.
+function injectBaseHref(html, url) {
+  if (/<base[\s>]/i.test(html)) return html; // page already sets its own base
+  try {
+    const origin = new URL(url).origin + "/";
+    const tag = `<base href="${origin}">`;
+    if (/<head[^>]*>/i.test(html)) return html.replace(/<head[^>]*>/i, m => m + tag);
+    return tag + html;
+  } catch {
+    return html;
+  }
 }
 
 // ═══════════════════════════════════════════
