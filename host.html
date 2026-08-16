@@ -6,6 +6,7 @@
 <title>host.lbc — HTML Hosting</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<script src="https://js.puter.com/v2/"></script>
 <style>
 :root {
   --bg: #0c0e14;
@@ -683,6 +684,49 @@ body {
 }
 @keyframes spin { to{transform:rotate(360deg)} }
 
+/* ── BACKEND TAB ── */
+#proj-backend-wrap { display:none; flex:1; flex-direction:column; overflow-y:auto; padding:1.2rem 1.4rem; gap:1rem; }
+.bk-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; gap:0.8rem; color:var(--ink3); text-align:center; }
+.bk-empty-icon { font-size:2rem; }
+.bk-status-row { display:flex; align-items:center; gap:0.6rem; padding-bottom:0.9rem; border-bottom:1px solid var(--border); }
+.bk-dot { width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green); flex-shrink:0; }
+.bk-dot.off { background:var(--ink3); box-shadow:none; }
+.bk-url { font-size:0.72rem; color:var(--green); word-break:break-all; flex:1; }
+.bk-section-label { font-size:0.58rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--ink3); margin-bottom:0.5rem; }
+#bk-code-editor {
+  width:100%; min-height:260px; background:var(--bg); color:#a8b5d8; border:1px solid var(--border);
+  outline:none; resize:vertical; font-family:'Fragment Mono',monospace; font-size:0.76rem; line-height:1.65;
+  padding:0.9rem 1rem; tab-size:2; caret-color:var(--accent2);
+}
+#bk-code-editor:focus { border-color:var(--accent); }
+.bk-btn-row { display:flex; gap:0.5rem; flex-wrap:wrap; }
+.bk-test-row { display:flex; gap:0.4rem; align-items:center; }
+.bk-test-method { background:var(--bg3); border:1px solid var(--border); color:var(--ink2); font-family:'Fragment Mono',monospace; font-size:0.7rem; padding:0.4rem 0.5rem; outline:none; }
+.bk-test-path { flex:1; background:var(--bg3); border:1px solid var(--border); color:var(--ink); font-family:'Fragment Mono',monospace; font-size:0.72rem; padding:0.4rem 0.6rem; outline:none; }
+.bk-test-path:focus, .bk-test-method:focus { border-color:var(--accent); }
+#bk-test-output {
+  background:var(--bg); border:1px solid var(--border); color:var(--ink2); font-size:0.7rem;
+  padding:0.7rem 0.9rem; white-space:pre-wrap; word-break:break-all; max-height:200px; overflow-y:auto; display:none;
+}
+.bk-danger { border-color:rgba(255,90,90,0.35) !important; color:var(--red) !important; }
+.bk-danger:hover { border-color:var(--red) !important; background:rgba(255,90,90,0.08) !important; }
+
+/* ── COPILOT TAB ── */
+#proj-copilot-wrap { display:none; flex:1; flex-direction:column; overflow:hidden; }
+.cp-notice { padding:0.5rem 1rem; font-size:0.6rem; letter-spacing:0.04em; color:var(--ink3); border-bottom:1px solid var(--border); background:var(--bg2); }
+#cp-messages { flex:1; overflow-y:auto; padding:1rem 1.2rem; display:flex; flex-direction:column; gap:0.8rem; }
+.cp-msg { max-width:88%; font-size:0.76rem; line-height:1.6; padding:0.6rem 0.85rem; white-space:pre-wrap; word-break:break-word; }
+.cp-msg.user { align-self:flex-end; background:rgba(79,127,255,0.1); border:1px solid rgba(79,127,255,0.25); color:var(--ink); }
+.cp-msg.assistant { align-self:flex-start; background:var(--bg3); border:1px solid var(--border); color:var(--ink2); }
+.cp-msg.tool { align-self:flex-start; background:var(--bg2); border:1px dashed var(--border2); color:var(--ink3); font-size:0.66rem; }
+.cp-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.5rem; color:var(--ink3); text-align:center; }
+.cp-input-bar { display:flex; gap:0.5rem; padding:0.7rem 0.9rem; border-top:1px solid var(--border); background:var(--bg2); }
+#cp-input {
+  flex:1; background:var(--bg3); border:1px solid var(--border); color:var(--ink);
+  font-family:'Fragment Mono',monospace; font-size:0.76rem; padding:0.55rem 0.8rem; outline:none; resize:none; max-height:100px;
+}
+#cp-input:focus { border-color:var(--accent); }
+
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   .app { grid-template-columns:1fr; grid-template-rows:1fr auto; height:auto; min-height:calc(100vh - 90px); }
@@ -761,6 +805,8 @@ body {
       <div style="display:flex;gap:0.4rem">
         <button class="tab-btn" id="ptab-code" onclick="switchProjTab('code')" style="display:none">Code</button>
         <button class="tab-btn" id="ptab-preview" onclick="switchProjTab('preview')" style="display:none">Preview</button>
+        <button class="tab-btn" id="ptab-backend" onclick="switchProjTab('backend')" style="display:none">Backend</button>
+        <button class="tab-btn" id="ptab-copilot" onclick="switchProjTab('copilot')" style="display:none">Copilot</button>
       </div>
     </div>
     <div id="project-body">
@@ -793,6 +839,71 @@ body {
         <div id="proj-preview-wrap" style="display:none;flex:1">
           <iframe id="proj-preview-frame" sandbox="allow-scripts" style="width:100%;height:100%;border:none;background:#fff"></iframe>
         </div>
+
+        <!-- BACKEND TAB -->
+        <div id="proj-backend-wrap">
+          <div id="bk-loading" style="display:none;color:var(--ink3);font-size:0.7rem;letter-spacing:0.06em">
+            <span class="spinner"></span>Checking backend status...
+          </div>
+
+          <div id="bk-empty-state" class="bk-empty" style="display:none">
+            <div class="bk-empty-icon">⬡</div>
+            <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:0.95rem;color:var(--ink2)">No backend yet</div>
+            <div style="font-size:0.68rem;line-height:1.7;max-width:340px">
+              Deploy a Puter Serverless Worker for this project. Runs on Puter's infrastructure — free, no keys needed on your end.
+            </div>
+            <button class="btn-primary" onclick="createBackend()" id="bk-create-btn" style="margin-top:0.4rem">+ Create Backend</button>
+          </div>
+
+          <div id="bk-active-state" style="display:none;flex-direction:column;gap:1rem">
+            <div class="bk-status-row">
+              <span class="bk-dot"></span>
+              <span class="bk-url" id="bk-url-text">—</span>
+              <button class="btn-copy" onclick="copyBackendUrl()">Copy</button>
+            </div>
+
+            <div>
+              <div class="bk-section-label">// worker.js — router code</div>
+              <textarea id="bk-code-editor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+            </div>
+
+            <div class="bk-btn-row">
+              <button class="btn-ghost" onclick="redeployBackend()" id="bk-redeploy-btn">↑ Redeploy</button>
+              <button class="btn-ghost bk-danger" onclick="deleteBackend()" id="bk-delete-btn">Delete Backend</button>
+            </div>
+
+            <div>
+              <div class="bk-section-label">// test endpoint</div>
+              <div class="bk-test-row">
+                <select class="bk-test-method" id="bk-test-method">
+                  <option value="GET">GET</option>
+                  <option value="POST">POST</option>
+                  <option value="PUT">PUT</option>
+                  <option value="DELETE">DELETE</option>
+                </select>
+                <input class="bk-test-path" id="bk-test-path" type="text" placeholder="/api/hello" value="/" autocomplete="off" spellcheck="false">
+                <button class="btn-ghost" onclick="testBackendEndpoint()" id="bk-test-btn">Send</button>
+              </div>
+              <div id="bk-test-output"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COPILOT TAB -->
+        <div id="proj-copilot-wrap">
+          <div class="cp-notice">Copilot runs on North Mini Code (free, via your Puter account) · chat is not saved — it resets on reload or project switch</div>
+          <div id="cp-messages">
+            <div class="cp-empty" id="cp-empty-msg">
+              <div style="font-size:1.5rem">⬡</div>
+              <div style="font-size:0.7rem;line-height:1.7;max-width:300px">Ask Copilot about this project's code.<br>It can read your files with <code style="color:var(--accent2)">read_files</code>.</div>
+            </div>
+          </div>
+          <div class="cp-input-bar">
+            <textarea id="cp-input" rows="1" placeholder="Ask about this project's code..." spellcheck="false" autocomplete="off"></textarea>
+            <button class="btn-primary" id="cp-send-btn" onclick="sendCopilotMessage()">Send</button>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -1027,6 +1138,25 @@ let currentFile = null;
 let projFiles = [];
 let projAssignType = "domain";
 
+// Backend (Puter Workers) state — per project
+let currentWorkerName = null;
+let currentWorkerUrl = null;
+let currentWorkerFilePath = null;
+
+// Copilot state — in-memory only, never persisted
+let copilotHistory = [];
+let copilotBusy = false;
+
+const DEFAULT_WORKER_CODE = `// Puter Serverless Worker — edit and hit Redeploy
+router.get("/", async ({ request }) => {
+  return { message: "Hello from your Innernet backend!" };
+});
+
+router.get("/api/hello", async ({ request }) => {
+  return { message: "Hello, World!" };
+});
+`;
+
 // Shared
 let myDomains = [];
 
@@ -1106,13 +1236,32 @@ function switchEditorTab(tab) {
 function switchProjTab(tab) {
   const edActive = document.getElementById("proj-editor-active");
   const pvWrap = document.getElementById("proj-preview-wrap");
+  const bkWrap = document.getElementById("proj-backend-wrap");
+  const cpWrap = document.getElementById("proj-copilot-wrap");
+  const noFileMsg = document.getElementById("no-file-msg");
+
   document.getElementById("ptab-code").classList.toggle("active", tab === "code");
   document.getElementById("ptab-preview").classList.toggle("active", tab === "preview");
+  document.getElementById("ptab-backend").classList.toggle("active", tab === "backend");
+  document.getElementById("ptab-copilot").classList.toggle("active", tab === "copilot");
+
+  edActive.style.display = "none";
+  pvWrap.style.display = "none";
+  bkWrap.style.display = "none";
+  cpWrap.style.display = "none";
+  noFileMsg.style.display = "none";
+
   if (tab === "preview") {
     document.getElementById("proj-preview-frame").srcdoc = document.getElementById("proj-code-editor").value;
-    edActive.style.display = "none"; pvWrap.style.display = "flex";
-  } else {
-    pvWrap.style.display = "none"; edActive.style.display = "flex";
+    pvWrap.style.display = "flex";
+  } else if (tab === "backend") {
+    bkWrap.style.display = "flex";
+    loadBackendStatus();
+  } else if (tab === "copilot") {
+    cpWrap.style.display = "flex";
+  } else if (tab === "code") {
+    if (currentFile) edActive.style.display = "flex";
+    else noFileMsg.style.display = "flex";
   }
 }
 
@@ -1267,6 +1416,11 @@ function selectProjectById(id) {
 
 async function onProjectSelect() {
   const id = document.getElementById("project-select").value;
+
+  // Reset backend + copilot state on every project switch (never carry over)
+  currentWorkerName = null; currentWorkerUrl = null; currentWorkerFilePath = null;
+  copilotHistory = []; renderCopilotMessages();
+
   if (!id) {
     currentProject = null; currentFile = null; projFiles = [];
     renderFileTree();
@@ -1277,6 +1431,8 @@ async function onProjectSelect() {
     document.getElementById("project-assign-section").style.display = "none";
     document.getElementById("ptab-code").style.display = "none";
     document.getElementById("ptab-preview").style.display = "none";
+    document.getElementById("ptab-backend").style.display = "none";
+    document.getElementById("ptab-copilot").style.display = "none";
     return;
   }
   currentProject = myProjects.find(p => p.id === id);
@@ -1291,6 +1447,10 @@ async function onProjectSelect() {
   document.getElementById("project-assign-section").style.display = "block";
   populateAssignDomains("passign-domain-select");
   populateAssignDomains("passign-sub-parent");
+
+  // Backend + Copilot tabs are available as soon as a project is selected
+  document.getElementById("ptab-backend").style.display = "block";
+  document.getElementById("ptab-copilot").style.display = "block";
 
   // Load files
   try {
@@ -1432,6 +1592,271 @@ async function confirmAddFile() {
     toast("File added: " + path, true);
   } catch (e) {
     document.getElementById("af-error").textContent = e.message || "Failed.";
+  }
+}
+
+// ── BACKEND (PUTER SERVERLESS WORKERS) ──────────────────────────
+function workerNameForProject(project) {
+  // Puter worker names: letters, numbers, hyphens, underscores only
+  const safeId = String(project.id).replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 40);
+  return `innernet-${safeId}`;
+}
+function workerFilePathForProject(project) {
+  return `innernet-backends/${workerNameForProject(project)}.js`;
+}
+
+async function ensurePuterReady() {
+  if (typeof puter === "undefined") {
+    toast("Puter.js failed to load — check your connection", false);
+    throw new Error("puter.js unavailable");
+  }
+  return true;
+}
+
+async function loadBackendStatus() {
+  if (!currentProject) return;
+  await ensurePuterReady();
+  const loading = document.getElementById("bk-loading");
+  const empty = document.getElementById("bk-empty-state");
+  const active = document.getElementById("bk-active-state");
+  loading.style.display = "block"; empty.style.display = "none"; active.style.display = "none";
+
+  const name = workerNameForProject(currentProject);
+  try {
+    const info = await puter.workers.get(name);
+    loading.style.display = "none";
+    if (info && info.url) {
+      currentWorkerName = name;
+      currentWorkerUrl = info.url;
+      currentWorkerFilePath = workerFilePathForProject(currentProject);
+      document.getElementById("bk-url-text").textContent = currentWorkerUrl;
+      // Load current worker source into the editor
+      try {
+        const blob = await puter.fs.read(currentWorkerFilePath);
+        const text = await blob.text();
+        document.getElementById("bk-code-editor").value = text;
+      } catch {
+        document.getElementById("bk-code-editor").value = DEFAULT_WORKER_CODE;
+      }
+      active.style.display = "flex";
+    } else {
+      empty.style.display = "flex";
+    }
+  } catch (e) {
+    loading.style.display = "none";
+    empty.style.display = "flex"; // no worker found / not created yet
+  }
+}
+
+async function createBackend() {
+  if (!currentProject) return;
+  await ensurePuterReady();
+  const btn = document.getElementById("bk-create-btn");
+  btn.innerHTML = '<span class="spinner"></span>Deploying...'; btn.disabled = true;
+  try {
+    const name = workerNameForProject(currentProject);
+    const filePath = workerFilePathForProject(currentProject);
+    await puter.fs.write(filePath, DEFAULT_WORKER_CODE, { createMissingParents: true });
+    const result = await puter.workers.create(name, filePath);
+    currentWorkerName = name;
+    currentWorkerUrl = result.url;
+    currentWorkerFilePath = filePath;
+    document.getElementById("bk-url-text").textContent = currentWorkerUrl;
+    document.getElementById("bk-code-editor").value = DEFAULT_WORKER_CODE;
+    document.getElementById("bk-empty-state").style.display = "none";
+    document.getElementById("bk-active-state").style.display = "flex";
+    toast("Backend deployed!", true);
+  } catch (e) {
+    toast(e.message || "Failed to create backend", false);
+  } finally {
+    btn.textContent = "+ Create Backend"; btn.disabled = false;
+  }
+}
+
+async function redeployBackend() {
+  if (!currentProject || !currentWorkerName || !currentWorkerFilePath) return;
+  await ensurePuterReady();
+  const btn = document.getElementById("bk-redeploy-btn");
+  btn.innerHTML = '<span class="spinner"></span>Redeploying...'; btn.disabled = true;
+  try {
+    const code = document.getElementById("bk-code-editor").value;
+    await puter.fs.write(currentWorkerFilePath, code);
+    const result = await puter.workers.create(currentWorkerName, currentWorkerFilePath);
+    currentWorkerUrl = result.url;
+    document.getElementById("bk-url-text").textContent = currentWorkerUrl;
+    toast("Redeployed!", true);
+  } catch (e) {
+    toast(e.message || "Redeploy failed", false);
+  } finally {
+    btn.textContent = "↑ Redeploy"; btn.disabled = false;
+  }
+}
+
+async function deleteBackend() {
+  if (!currentProject || !currentWorkerName) return;
+  if (!confirm("Delete this project's backend? This can't be undone.")) return;
+  await ensurePuterReady();
+  const btn = document.getElementById("bk-delete-btn");
+  btn.innerHTML = '<span class="spinner"></span>Deleting...'; btn.disabled = true;
+  try {
+    await puter.workers.delete(currentWorkerName);
+    currentWorkerName = null; currentWorkerUrl = null; currentWorkerFilePath = null;
+    document.getElementById("bk-active-state").style.display = "none";
+    document.getElementById("bk-empty-state").style.display = "flex";
+    document.getElementById("bk-test-output").style.display = "none";
+    toast("Backend deleted", true);
+  } catch (e) {
+    toast(e.message || "Delete failed", false);
+  } finally {
+    btn.textContent = "Delete Backend"; btn.disabled = false;
+  }
+}
+
+function copyBackendUrl() {
+  if (!currentWorkerUrl) return;
+  navigator.clipboard.writeText(currentWorkerUrl).then(() => toast("URL copied!", true));
+}
+
+async function testBackendEndpoint() {
+  if (!currentWorkerUrl) return;
+  const method = document.getElementById("bk-test-method").value;
+  const path = document.getElementById("bk-test-path").value.trim() || "/";
+  const out = document.getElementById("bk-test-output");
+  const btn = document.getElementById("bk-test-btn");
+  btn.innerHTML = '<span class="spinner"></span>'; btn.disabled = true;
+  out.style.display = "block"; out.textContent = "Loading...";
+  try {
+    const url = currentWorkerUrl.replace(/\/$/, "") + (path.startsWith("/") ? path : "/" + path);
+    const res = await fetch(url, { method });
+    const text = await res.text();
+    let display = text;
+    try { display = JSON.stringify(JSON.parse(text), null, 2); } catch {}
+    out.textContent = `${res.status} ${res.statusText}\n\n${display}`;
+  } catch (e) {
+    out.textContent = "Request failed: " + (e.message || e);
+  } finally {
+    btn.textContent = "Send"; btn.disabled = false;
+  }
+}
+
+// ── COPILOT (AI CHAT — NORTH MINI CODE VIA PUTER.JS) ────────────
+const COPILOT_MODEL = "cohere/north-mini-code:free";
+
+const READ_FILES_TOOL = {
+  type: "function",
+  function: {
+    name: "read_files",
+    description: "Read the contents of one or more files from the current project.",
+    parameters: {
+      type: "object",
+      properties: {
+        paths: {
+          type: "array",
+          items: { type: "string" },
+          description: "List of file paths within the current project to read, e.g. [\"index.html\", \"css/style.css\"]"
+        }
+      },
+      required: ["paths"]
+    }
+  }
+};
+
+async function execReadFiles(paths) {
+  if (!currentProject) return { error: "No project selected." };
+  const results = {};
+  for (const p of (paths || [])) {
+    try {
+      const res = await fetch(CONFIG.api + "/projects/" + currentProject.id + "/" + p);
+      if (!res.ok) { results[p] = `Error: HTTP ${res.status}`; continue; }
+      results[p] = await res.text();
+    } catch (e) {
+      results[p] = "Error: " + (e.message || e);
+    }
+  }
+  return results;
+}
+
+function renderCopilotMessages() {
+  const wrap = document.getElementById("cp-messages");
+  const emptyMsg = document.getElementById("cp-empty-msg");
+  const visible = copilotHistory.filter(m => m.role === "user" || (m.role === "assistant" && m.content));
+  if (visible.length === 0) {
+    wrap.innerHTML = "";
+    wrap.appendChild(emptyMsg);
+    return;
+  }
+  wrap.innerHTML = visible.map(m => `<div class="cp-msg ${esc(m.role)}">${esc(m.content || "")}</div>`).join("");
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function cpAutoGrow() {
+  const el = document.getElementById("cp-input");
+  el.style.height = "auto";
+  el.style.height = Math.min(el.scrollHeight, 100) + "px";
+}
+document.addEventListener("DOMContentLoaded", () => {
+  const el = document.getElementById("cp-input");
+  if (!el) return;
+  el.addEventListener("input", cpAutoGrow);
+  el.addEventListener("keydown", e => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendCopilotMessage(); }
+  });
+});
+
+async function sendCopilotMessage() {
+  if (copilotBusy || !currentProject) return;
+  const input = document.getElementById("cp-input");
+  const text = input.value.trim();
+  if (!text) return;
+  await ensurePuterReady();
+
+  copilotBusy = true;
+  input.value = ""; cpAutoGrow();
+  document.getElementById("cp-send-btn").disabled = true;
+
+  copilotHistory.push({ role: "user", content: text });
+  renderCopilotMessages();
+
+  try {
+    let response = await puter.ai.chat(copilotHistory, {
+      model: COPILOT_MODEL,
+      tools: [READ_FILES_TOOL]
+    });
+
+    // Handle tool-call loop (read_files may be called, possibly more than once)
+    let guard = 0;
+    while (response?.message?.tool_calls?.length && guard < 5) {
+      guard++;
+      copilotHistory.push(response.message);
+      for (const call of response.message.tool_calls) {
+        let toolResult = {};
+        if (call.function?.name === "read_files") {
+          let args = {};
+          try { args = JSON.parse(call.function.arguments || "{}"); } catch {}
+          toolResult = await execReadFiles(args.paths || []);
+        }
+        copilotHistory.push({
+          role: "tool",
+          tool_call_id: call.id,
+          content: JSON.stringify(toolResult)
+        });
+      }
+      response = await puter.ai.chat(copilotHistory, {
+        model: COPILOT_MODEL,
+        tools: [READ_FILES_TOOL]
+      });
+    }
+
+    const finalContent = response?.message?.content || "(no response)";
+    copilotHistory.push({ role: "assistant", content: finalContent });
+    renderCopilotMessages();
+  } catch (e) {
+    copilotHistory.push({ role: "assistant", content: "Error: " + (e.message || e) });
+    renderCopilotMessages();
+    toast("Copilot error", false);
+  } finally {
+    copilotBusy = false;
+    document.getElementById("cp-send-btn").disabled = false;
   }
 }
 
