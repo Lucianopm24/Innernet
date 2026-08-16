@@ -249,10 +249,14 @@ html, body {
 #content-area { flex: 1; overflow: hidden; position: relative; }
 body.fullscreen #content-area { height: 100vh; }
 
-#page-frame {
+#frame-container { position: absolute; inset: 0; }
+#frame-container iframe {
+  position: absolute; inset: 0;
   width: 100%; height: 100%;
-  border: none; display: none; background: #fff;
+  border: none; background: #fff;
+  display: none;
 }
+#frame-container iframe.active { display: block; }
 
 /* ═══════════════════════════════
    HOME PAGE
@@ -982,7 +986,7 @@ body.fullscreen #content-area { height: 100vh; }
       <div class="fo-domain" id="fo-domain">—</div>
       <div class="fo-status"><span class="spin"></span>loading via proxy…</div>
     </div>
-    <iframe id="page-frame" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-top-navigation"></iframe>
+    <div id="frame-container"></div>
 
     <!-- Domain info (no CNAME) -->
     <div id="domain-info-page">
@@ -1339,11 +1343,12 @@ function formatLuxerText(text) {
 }
 
 function getCurrentPageHtml() {
-  const frame = document.getElementById("page-frame");
+  const tab = getActiveTab();
+  const frame = tab?.frameEl;
   try {
-    return frame.contentDocument ? frame.contentDocument.documentElement.outerHTML : (getActiveTab()?.frameHtml || "");
+    return frame && frame.contentDocument ? frame.contentDocument.documentElement.outerHTML : (tab?.frameHtml || "");
   } catch {
-    return getActiveTab()?.frameHtml || "(unable to read page content — cross-origin restricted)";
+    return tab?.frameHtml || "(unable to read page content — cross-origin restricted)";
   }
 }
 
@@ -1516,6 +1521,8 @@ function getActiveTab(){ return getTab(activeTabId); }
 function closeTab(id, e) {
   e && e.stopPropagation();
   const idx = tabs.findIndex(t => t.id === id);
+  const tab = tabs[idx];
+  if (tab) destroyTabFrame(tab);
   tabs.splice(idx, 1);
   if (tabs.length === 0) { newTab(); return; }
   if (activeTabId === id) setActiveTab(tabs[Math.min(idx, tabs.length - 1)].id);
@@ -1535,10 +1542,10 @@ function renderTabs() {
 function restoreTabView(tab) {
   setAddrBar(tab.url || "");
   showPage(tab.page, false);
-  // Re-load frame content if needed
-  if (tab.page === "frame" && tab.frameHtml) {
-    loadHtmlInFrame(tab.frameHtml);
-  }
+  // NOTE: we deliberately do NOT reload the iframe here.
+  // Each tab keeps its own persistent iframe (tab.frameEl), created once in
+  // loadHtmlInFrame(). Switching tabs just shows/hides it via showActiveTabFrame(),
+  // so in-page JS state survives a tab switch instead of resetting.
   updateNavBtns();
 }
 
@@ -1579,8 +1586,8 @@ async function navigateTo(rawUrl) {
       const html = await r.text();
       if (html == null) { showNotFound(trimmed); return; }
       tab.frameHtml = html;
-      loadHtmlInFrame(html, true);
-      showPage("frame");
+      loadHtmlInFrame(html, true, tab);
+      if (tab.id === activeTabId) showPage("frame");
       tab.title = extractTitle(html) || trimmed;
       tab.favicon = "🌐";
       tab.page = "frame";
@@ -1728,8 +1735,8 @@ tab.frameHtml = html;
     const proceed = await showSslWarning(domain);
     if (!proceed) { showHome(); return; }
   }
-  loadHtmlInFrame(html, effectiveSsl);
-  showPage("frame");
+  loadHtmlInFrame(html, effectiveSsl, tab);
+  if (tab.id === activeTabId) showPage("frame");
   tab.title   = extractTitle(html) || domain;
   tab.favicon = "🌐";
   tab.page    = "frame";
@@ -1770,9 +1777,12 @@ async function fetchViaProxy(url) {
   } catch { return null; }
 }
 
-// Load raw HTML into the iframe via blob URL
-function loadHtmlInFrame(html, ssl) {
-  const frame = document.getElementById("page-frame");
+// Load raw HTML into this tab's own persistent iframe.
+// Each tab gets ONE iframe created once; switching tabs never recreates it,
+// so in-page JS state (scroll position, form input, timers, etc) survives.
+function loadHtmlInFrame(html, ssl, tab) {
+  tab = tab || getActiveTab();
+  const frame = getOrCreateTabFrame(tab);
   const sandboxVal = ssl
     ? "allow-scripts allow-forms allow-same-origin allow-popups allow-top-navigation"
     : "allow-scripts allow-forms allow-popups allow-top-navigation";
@@ -1782,9 +1792,37 @@ function loadHtmlInFrame(html, ssl) {
   frame.src = burl;
   frame.onload = () => {
     setTimeout(() => URL.revokeObjectURL(burl), 5000);
-    hideFrameOverlay();
+    if (tab.id === activeTabId) hideFrameOverlay();
   };
-  showFrameOverlay(getActiveTab()?.url || "");
+  if (tab.id === activeTabId) showFrameOverlay(tab.url || "");
+  showActiveTabFrame();
+}
+
+// Returns this tab's iframe element, creating it if it doesn't exist yet.
+function getOrCreateTabFrame(tab) {
+  if (tab.frameEl && tab.frameEl.isConnected) return tab.frameEl;
+  const frame = document.createElement("iframe");
+  frame.id = "page-frame-" + tab.id;
+  frame.setAttribute("sandbox", "allow-scripts allow-forms allow-popups allow-top-navigation");
+  document.getElementById("frame-container").appendChild(frame);
+  tab.frameEl = frame;
+  return frame;
+}
+
+// Shows the active tab's iframe (if any) and hides every other tab's iframe.
+function showActiveTabFrame() {
+  const container = document.getElementById("frame-container");
+  Array.from(container.children).forEach(el => el.classList.remove("active"));
+  const tab = getActiveTab();
+  if (tab && tab.frameEl && tab.frameEl.isConnected) {
+    tab.frameEl.classList.add("active");
+  }
+}
+
+// Removes a closed tab's iframe from the DOM
+function destroyTabFrame(tab) {
+  if (tab.frameEl && tab.frameEl.isConnected) tab.frameEl.remove();
+  tab.frameEl = null;
 }
 
 function showFrameOverlay(domain) {
@@ -1803,6 +1841,15 @@ window.addEventListener("message", e => {
       newTab(e.data.url);
     } else {
       navigateTo(e.data.url);
+    }
+  }
+  if (e.data && e.data.type === "inn-navigate-external") {
+    if (puterConnected) {
+      // Open a new Innernet tab that fetches the real web page directly via Puter
+      newTab(e.data.url);
+    } else {
+      // No Puter: just open a real browser tab
+      window.open(e.data.url, "_blank", "noopener");
     }
   }
 });
@@ -1825,7 +1872,12 @@ function rewriteLinks(html, domain, currentPath) {
       window.parent.postMessage({ type: "inn-navigate", url, newTab: true }, "*");
       return;
     }
-    if (href.startsWith("http") || href.startsWith("//") || href.startsWith("mailto:") || href.startsWith("#")) return;
+    if (href.startsWith("http://") || href.startsWith("https://")) {
+      e.preventDefault();
+      window.parent.postMessage({ type: "inn-navigate-external", url: href }, "*");
+      return;
+    }
+    if (href.startsWith("//") || href.startsWith("mailto:") || href.startsWith("#")) return;
     e.preventDefault();
     const resolved = href.startsWith("/") ? DOMAIN + href : DOMAIN + "/" + href;
     window.parent.postMessage({ type: "inn-navigate", url: resolved }, "*");
@@ -1896,11 +1948,12 @@ function showNotFound(domain) {
 // ═══════════════════════════════════════════
 function showPage(name, updateTab = true) {
   document.getElementById("home-page").style.display        = name === "home"       ? "flex"  : "none";
-  document.getElementById("page-frame").style.display       = name === "frame"      ? "block" : "none";
+  document.getElementById("frame-container").style.display  = name === "frame"      ? "block" : "none";
   document.getElementById("frame-overlay").style.display    = name === "frame"      ? ""      : "none";
   document.getElementById("domain-info-page").style.display = name === "domaininfo" ? "flex"  : "none";
   document.getElementById("not-found-page").style.display   = name === "notfound"   ? "flex"  : "none";
 
+  if (name === "frame") showActiveTabFrame();
   if (name !== "frame") hideFrameOverlay();
   if (name === "home") setTimeout(() => document.getElementById("home-search-input").focus(), 80);
 }
